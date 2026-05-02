@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cromia — Case Study — PMPNY Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.cs-hero{padding:10rem 3rem 6rem;border-bottom:1px solid var(--faint);position:relative;overflow:hidden;}
+.cs-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(184,144,106,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,144,106,0.03) 1px,transparent 1px);background-size:60px 60px;}
+.hero-bg-img{position:absolute;right:0;top:0;width:50%;height:100%;object-fit:cover;opacity:0.2;}
+.cs-meta{display:flex;gap:2rem;flex-wrap:wrap;margin-top:2rem;}
+.cs-meta-item{border-top:1px solid var(--faint);padding-top:.75rem;}
+.cs-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.cs-meta-val{font-size:12px;color:var(--off-white);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+/* EDITORIAL IMAGE SYSTEM */
+.img-frame{background:var(--bg2);border:1px solid var(--faint);padding:1.5rem;display:flex;align-items:center;justify-content:center;}
+.img-frame img{width:100%;max-height:300px;object-fit:contain;display:block;}
+.img-frame.tall img{max-height:380px;}
+.img-frame.portrait img{max-height:440px;}
+.img-caption{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.6rem;}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;}
+.trio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:3rem;}
+/* RED CARPET - these are editorial photos, cover is fine but sized properly */
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.rc-item{position:relative;overflow:hidden;}
+.rc-item img{width:100%;height:380px;object-fit:cover;object-position:top;display:block;}
+.rc-caption{padding:.75rem 0;}
+.rc-name{font-family:var(--serif);font-size:1.1rem;color:var(--off-white);}
+.rc-event{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dim);}
+@media(max-width:768px){.two-col,.pair-grid,.trio-grid,.rc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
+  <ul class="nav-links"><li><a href="studio.html">Studio</a></li><li><a href="work.html" class="active">Work</a></li><li><a href="contact.html">Contact</a></li><li><a href="intelligence.html">Intelligence</a></li></ul>
+  <a href="contact.html" class="nav-cta">Hire Me</a>
+</nav>
+
+<div class="cs-hero">
+  <div class="cs-grid-bg"></div>
+  <img class="hero-bg-img" src="https://pmpny.com/wp-content/uploads/2026/02/IMG_20200804_153509-1024x1024.jpg" alt=""/>
+  <div style="position:relative;z-index:1;max-width:640px;">
+    <a href="work.html" style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:2.5rem;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Back to Work</a>
+    <div class="page-kicker">Case Study 003 — LA.I.PE SPA, Tolentino, Italy</div>
+    <h1 class="page-h1" style="margin-top:1rem;">Cromia —<br><em>Geometry & Scale.</em></h1>
+    <div class="cs-meta">
+      <div class="cs-meta-item"><div class="cs-meta-label">Role</div><div class="cs-meta-val">Accessories Designer</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Period</div><div class="cs-meta-val">July 2017 – July 2019</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Manufacturer for</div><div class="cs-meta-val">Vivienne Westwood, Valextra, Berluti</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Output</div><div class="cs-meta-val">17–25 Collections/Year</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="marquee-wrap"><div class="marquee-track"><span>Ginger Hardware</span><span class="accent">✦</span><span>Kiki Line</span><span class="accent">✦</span><span>Italian Craftsmanship</span><span class="accent">✦</span><span>Venice Film Festival</span><span class="accent">✦</span><span>CAD to 3D</span><span class="accent">✦</span><span>Matelassé</span><span class="accent">✦</span><span>Ginger Hardware</span><span class="accent">✦</span><span>Kiki Line</span><span class="accent">✦</span><span>Italian Craftsmanship</span><span class="accent">✦</span><span>Venice Film Festival</span><span class="accent">✦</span><span>CAD to 3D</span><span class="accent">✦</span><span>Matelassé</span><span class="accent">✦</span></div></div>
+
+<!-- OVERVIEW -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="two-col reveal">
+    <div>
+      <div class="section-label">The Work</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.1;color:var(--off-white);margin-bottom:1.5rem;font-style:italic;">"As a designer for La.i.pe — the manufacturing powerhouse behind Vivienne Westwood and Valextra — I led the end-to-end prototyping of custom hardware and structural silhouettes."</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;">Precise translation from 2D ideation to 3D mechanical CADs, ensuring the final product met the rigorous standards of high-end Italian craftsmanship.</p>
+    </div>
+    <div>
+      <div class="section-label">Scope</div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--faint);">
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">17–25 seasonal collections / year</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Scale</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">Custom hardware end-to-end</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Role</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">4+ overseas suppliers managed</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Network</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">Venice Film Festival placements</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">PR</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GINGER LINE -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">Ginger Line — Hardware Study</div>
+  <p style="font-size:12px;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.85;">The proprietary Ginger hardware lock. Engineered for scalability, it became the anchor for two consecutive seasons and a dedicated matelassé collection.</p>
+  <div class="pair-grid reveal">
+    <div><div class="img-frame tall"><img src="https://pmpny.com/wp-content/uploads/2026/02/Untitled-design-25-819x1024.png" alt="Ginger Lock Sketch"/></div><div class="img-caption">01 — Lock mechanism sketch</div></div>
+    <div><div class="img-frame tall"><img src="https://pmpny.com/wp-content/uploads/2026/02/1-2-819x1024.png" alt="Ginger Lock Prototype"/></div><div class="img-caption">02 — Prototype development</div></div>
+  </div>
+  <div class="trio-grid reveal">
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/Untitled-design-26-819x1024.png" alt="Ginger"/></div><div class="img-caption">03 — Hardware detail</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/3-3-819x1024.png" alt="Ginger"/></div><div class="img-caption">04 — Structural view</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/6-1-819x1024.png" alt="Ginger"/></div><div class="img-caption">05 — Final component</div></div>
+  </div>
+  <div class="pair-grid reveal">
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/2-3-819x1024.png" alt="Ginger"/></div><div class="img-caption">06 — Assembly sketch</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/4-2-819x1024.png" alt="Ginger"/></div><div class="img-caption">07 — Production ready</div></div>
+  </div>
+</section>
+
+<!-- KIKI LINE -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">Kiki Line — Hardware Study</div>
+  <div class="trio-grid reveal">
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/IMG-20190228-WA0000-e1771645233522-1024x829.jpg" alt="Kiki" style="max-height:240px;"/></div><div class="img-caption">08 — Kiki hardware</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/DDDD.jpg" alt="Kiki" style="max-height:240px;"/></div><div class="img-caption">09 — Detail</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/IMG_6267-1-e1771646733143.jpg" alt="Kiki" style="max-height:240px;"/></div><div class="img-caption">10 — Prototype</div></div>
+  </div>
+  <div class="trio-grid reveal">
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/DDD-e1771646750427.jpg" alt="Kiki" style="max-height:240px;"/></div><div class="img-caption">11</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/DDDDD-e1771646768706.jpg" alt="Kiki" style="max-height:240px;"/></div><div class="img-caption">12</div></div>
+    <div><div class="img-frame"><img src="https://pmpny.com/wp-content/uploads/2026/02/DDDDDD-e1771646784341.jpg" alt="Kiki" style="max-height:240px;"/></div><div class="img-caption">13</div></div>
+  </div>
+</section>
+
+<!-- COMMERCIAL -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">Commercial Archive</div>
+  <p style="font-size:12px;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.85;">Engineering best-selling silhouettes for the global market.</p>
+  <div class="pair-grid reveal">
+    <div>
+      <div class="img-frame portrait"><img src="https://pmpny.com/wp-content/uploads/2026/02/7-1-819x1024.png" alt="Nubia"/></div>
+      <div class="img-caption">Nubia Collection — highest-performing commercial line of the season</div>
+    </div>
+    <div>
+      <div class="img-frame portrait"><img src="https://pmpny.com/wp-content/uploads/2026/02/8-1-819x1024.png" alt="IT Selfie"/></div>
+      <div class="img-caption">IT Selfie — seasonal 'IT' bag for viral engagement and demographic expansion</div>
+    </div>
+  </div>
+</section>
+
+<!-- RED CARPET -->
+<section style="padding:5rem 3rem;">
+  <div class="section-label reveal">Red Carpet Placements</div>
+  <div class="rc-grid reveal">
+    <div class="rc-item">
+      <img src="https://pmpny.com/wp-content/uploads/2026/02/Untitled-Project-24.jpg" alt="Venice Film Festival"/>
+      <div class="rc-caption"><div class="rc-name">Eleonora Cucci</div><div class="rc-event">Venice Film Festival</div></div>
+    </div>
+    <div class="rc-item">
+      <img src="https://pmpny.com/wp-content/uploads/2026/02/Untitled-Project-23.jpg" alt="Movie Premiere"/>
+      <div class="rc-caption"><div class="rc-name">Sara Lazzaro</div><div class="rc-event">Movie Premiere</div></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:4rem 3rem;border-top:1px solid var(--faint);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:2rem;">
+  <div style="font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:300;color:var(--off-white);">Working on a similar<br><em style="color:rgba(237,233,224,.4)">challenge?</em></div>
+  <div style="display:flex;flex-direction:column;gap:1rem;align-items:flex-end;">
+    <a href="contact.html" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--off-white);text-decoration:none;padding:14px 32px;">Start a Project →</a>
+    <a href="work.html" class="btn-link">← All Work</a>
+  </div>
+</section>
+
+<footer><div class="footer-logo">PMPNY Design Studio</div><div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="intelligence.html">Intelligence</a><a href="contact.html">Contact</a></div><div class="footer-right">© 2026 Francesco Pimpinicchio</div></footer>
+<script>const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));</script>
+</body>
+</html>
