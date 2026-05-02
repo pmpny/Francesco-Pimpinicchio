@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Studio — Francesco Pimpinicchio / PMPNY Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.services-grid{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--faint);}
+.service-col{padding:3rem 2.5rem;border-right:1px solid var(--faint);position:relative;overflow:hidden;}
+.service-col:last-child{border-right:none;}
+.service-num{font-size:11px;letter-spacing:0.14em;color:var(--accent-dim);margin-bottom:2rem;display:block;}
+.service-title{font-family:var(--serif);font-size:2rem;font-weight:300;line-height:1.05;color:var(--off-white);margin-bottom:1.5rem;}
+.service-list{list-style:none;}
+.service-list li{font-size:12px;color:var(--muted);padding:0.5rem 0;border-top:1px solid var(--faint);display:flex;align-items:center;gap:0.75rem;}
+.service-list li::before{content:'→';color:var(--accent-dim);font-size:10px;}
+.resume-row{display:grid;grid-template-columns:200px 1fr;gap:2rem;padding:2rem 0;border-top:1px solid var(--faint);}
+.resume-date{font-size:11px;color:var(--accent-dim);padding-top:3px;}
+.resume-role{font-size:12px;font-weight:500;color:var(--off-white);margin-bottom:4px;letter-spacing:0.04em;}
+.resume-company{font-size:13px;color:var(--accent);margin-bottom:0.75rem;font-family:var(--serif);font-style:italic;}
+.resume-desc{font-size:12px;color:var(--muted);line-height:1.8;}
+.skills-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--faint);}
+.skill{background:var(--bg2);padding:1.25rem;font-size:11px;color:var(--off-white);}
+@media(max-width:768px){.services-grid{grid-template-columns:1fr;}.service-col{border-right:none;border-bottom:1px solid var(--faint);}.resume-row{grid-template-columns:1fr;gap:0.5rem;}.skills-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
+  <ul class="nav-links"><li><a href="studio.html" class="active">Studio</a></li><li><a href="work.html">Work</a></li><li><a href="contact.html">Contact</a></li><li><a href="intelligence.html">Intelligence</a></li></ul>
+  <a href="contact.html" class="nav-cta">Hire Me</a>
+</nav>
+<div class="page-header">
+  <div class="page-kicker reveal">About the Studio</div>
+  <h1 class="page-h1 reveal reveal-delay-1">PMPNY<br><em>Design Studio.</em></h1>
+  <p style="font-size:13px;color:var(--muted);max-width:600px;margin-top:1.5rem;line-height:1.85;" class="reveal reveal-delay-2">New York-based design and manufacturing studio led by Francesco Pimpinicchio. Specializing in luxury accessories from initial concept to final production. Trained in Rome, forged in New York.</p>
+</div>
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Senior Handbag Designer</span><span class="accent">✦</span><span>8+ Years International</span><span class="accent">✦</span><span>Accademia di Costume e Moda</span><span class="accent">✦</span><span>Italian Native</span><span class="accent">✦</span><span>Long Island City</span><span class="accent">✦</span><span>Available for Freelance</span><span class="accent">✦</span>
+    <span>Senior Handbag Designer</span><span class="accent">✦</span><span>8+ Years International</span><span class="accent">✦</span><span>Accademia di Costume e Moda</span><span class="accent">✦</span><span>Italian Native</span><span class="accent">✦</span><span>Long Island City</span><span class="accent">✦</span><span>Available for Freelance</span><span class="accent">✦</span>
+  </div>
+</div>
+<!-- FOUNDER -->
+<section style="padding:6rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;border-bottom:1px solid var(--faint);">
+  <div class="reveal">
+    <div class="section-label">The Founder</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;line-height:1.05;color:var(--off-white);margin-bottom:2rem;">Francesco<br><em>Pimpinicchio.</em></h2>
+    <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.5rem;">Visionary Senior Designer with over 8 years of international expertise, ranging from high-volume corporate collection management in Italy to technical capsule development for major New York houses.</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.5rem;">Specializing in the intersection of structural handbag architecture and bespoke hardware engineering — leading product lifecycles from 1:1 technical ideation to final global production. A heritage-trained eye for luxury leather fused with modern mastery of rapid prototyping and tech-integrated accessories.</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:2rem;">Originally from Foligno, raised in Spoleto, Italy. Based in Long Island City, New York.</p>
+    <blockquote style="font-family:var(--serif);font-style:italic;font-size:1.3rem;font-weight:300;color:rgba(237,233,224,0.7);line-height:1.5;border-left:2px solid var(--accent);padding-left:1.5rem;">"I design for the people who were told their style was too much."</blockquote>
+  </div>
+  <div class="reveal reveal-delay-2">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--faint);margin-bottom:2rem;">
+      <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">8+</div><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Years International Experience</div></div>
+      <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">3</div><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Continents of Production</div></div>
+      <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:1.1rem;font-weight:300;color:var(--off-white);margin-top:4px;">Rome → NYC</div><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Design Education</div></div>
+      <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:1.1rem;font-weight:300;color:var(--off-white);margin-top:4px;">Available</div><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">For Freelance Projects</div></div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--faint);padding:2rem;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;">Education</div>
+      <div style="border-bottom:1px solid var(--faint);padding-bottom:1rem;margin-bottom:1rem;">
+        <div style="font-size:12px;color:var(--off-white);margin-bottom:4px;">Accademia di Costume e Moda</div>
+        <div style="font-size:11px;color:var(--muted);">BA in Costume & Fashion — Rome, Italy</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--off-white);margin-bottom:4px;">Fashion Institute of Technology (FIT)</div>
+        <div style="font-size:11px;color:var(--muted);">Styling Certificate — In Progress, New York</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- SERVICES -->
+<section style="padding:6rem 3rem;">
+  <div class="section-label reveal">Studio Services</div>
+  <div class="services-grid reveal">
+    <div class="service-col">
+      <span class="service-num">01 / Engineering</span>
+      <h3 class="service-title">Concept to Structure</h3>
+      <p style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;">Creative direction and industrial design translation — transforming vision into precise, manufacturable reality.</p>
+      <ul class="service-list">
+        <li>Creative direction</li>
+        <li>Technical sketching</li>
+        <li>CAD rendering (Clo3D)</li>
+        <li>Hardware design</li>
+        <li>Comprehensive tech packs</li>
+      </ul>
+    </div>
+    <div class="service-col">
+      <span class="service-num">02 / Prototyping</span>
+      <h3 class="service-title">Material & Form</h3>
+      <p style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;">Physical sampling and global material sourcing — where architecture becomes tangible.</p>
+      <ul class="service-list">
+        <li>Pattern making</li>
+        <li>Luxury leather sourcing</li>
+        <li>Sustainable alternatives</li>
+        <li>Physical sampling</li>
+        <li>Structural testing</li>
+      </ul>
+    </div>
+    <div class="service-col">
+      <span class="service-num">03 / Production</span>
+      <h3 class="service-title">Scale & Delivery</h3>
+      <p style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;">End-to-end manufacturing management across Italy and global partners.</p>
+      <ul class="service-list">
+        <li>Small batch manufacturing</li>
+        <li>High-volume production</li>
+        <li>Italian factory management</li>
+        <li>Global sourcing network</li>
+        <li>Strict quality control</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<!-- EXPERIENCE -->
+<section style="padding:0 3rem 6rem;border-top:1px solid var(--faint);padding-top:4rem;">
+  <div class="section-label reveal">Work Experience</div>
+  <div class="reveal">
+    <div class="resume-row">
+      <div class="resume-date">01/2026</div>
+      <div>
+        <div class="resume-role">Freelance Handbag Designer</div>
+        <div class="resume-company">Betsey Johnson — New York, NY</div>
+        <div class="resume-desc">Conceptualized capsule translating heritage sketches into 3D structural elements, including bespoke "eye-lock" hardware with rhinestone/magnet integration and lightning bolt metal handles. Delivered full 1:1 technical specification packs for multi-category line-up. 8 pieces selected for production.</div>
+      </div>
+    </div>
+    <div class="resume-row">
+      <div class="resume-date">02/2022 – Present</div>
+      <div>
+        <div class="resume-role">Founder & Creative Director</div>
+        <div class="resume-company">PMPNY Design Studio — New York, NY</div>
+        <div class="resume-desc">Architected the creative and technical identity of the studio's flagship brand Pimpinicchio New York. Lead all phases of product development overseas. Presented SS25/SS26 collection at NYFW (Runway 7). Secured retail partnerships with Flying Solo NYC, Wolf & Badger, and Wanderobe.</div>
+      </div>
+    </div>
+    <div class="resume-row">
+      <div class="resume-date">07/2017 – 07/2019</div>
+      <div>
+        <div class="resume-role">Accessories Designer</div>
+        <div class="resume-company">LA.I.PE SPA, Cromia — Tolentino, Italy</div>
+        <div class="resume-desc">Designed and engineered 17–25 seasonal handbag collections annually. Led concept development and prototype refinement. Managed communication with 4+ overseas suppliers.</div>
+      </div>
+    </div>
+    <div class="resume-row">
+      <div class="resume-date">09/2020 – 10/2023</div>
+      <div>
+        <div class="resume-role">Designer's Assistant</div>
+        <div class="resume-company">Sunday Morning LLC — New York, NY</div>
+        <div class="resume-desc">Coordinated international production timelines to ensure prototypes aligned with high-level design direction.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- SKILLS -->
+<section style="padding:0 3rem 6rem;border-top:1px solid var(--faint);padding-top:4rem;">
+  <div class="section-label reveal">Core Competencies</div>
+  <div class="skills-grid reveal">
+    <div class="skill">Handbag Architecture</div>
+    <div class="skill">Hardware Engineering</div>
+    <div class="skill">Tech Pack Development</div>
+    <div class="skill">3D Prototyping (Clo3D)</div>
+    <div class="skill">Italian Leather Sourcing</div>
+    <div class="skill">Creative Direction</div>
+    <div class="skill">Global Production</div>
+    <div class="skill">Pattern Making</div>
+    <div class="skill">Capsule Development</div>
+    <div class="skill">CAD Rendering</div>
+  </div>
+</section>
+<footer>
+  <div class="footer-logo">PMPNY Design Studio<div style="font-size:9px;margin-top:4px;color:rgba(107,104,96,0.6)">Long Island City, NY</div></div>
+  <div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="intelligence.html">Intelligence</a><a href="contact.html">Contact</a></div>
+  <div class="footer-right">© 2026 Francesco Pimpinicchio</div>
+</footer>
+<script>
+const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));
+</script>
+</body>
+</html>

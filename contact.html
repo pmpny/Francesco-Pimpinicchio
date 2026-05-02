@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — PMPNY Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--faint);}
+.contact-left{padding:6rem 3rem;border-right:1px solid var(--faint);}
+.contact-right{padding:6rem 3rem;}
+.contact-line{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-bottom:1px solid var(--faint);}
+.contact-line-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
+.contact-line-val{font-size:12px;color:var(--off-white);text-decoration:none;transition:color 0.2s;}
+.contact-line-val:hover{color:var(--accent);}
+.avail-badge{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-dim);padding:5px 14px;margin-bottom:2rem;}
+.avail-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hire-types{display:flex;flex-direction:column;gap:1px;background:var(--faint);margin-top:2rem;}
+.hire-type{background:var(--bg2);padding:1.25rem;font-size:12px;color:var(--off-white);display:flex;align-items:center;gap:1rem;}
+.hire-type::before{content:'→';color:var(--accent-dim);font-size:10px;}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr;}.contact-left{border-right:none;border-bottom:1px solid var(--faint);padding:4rem 1.5rem;}.contact-right{padding:4rem 1.5rem;}}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
+  <ul class="nav-links"><li><a href="studio.html">Studio</a></li><li><a href="work.html">Work</a></li><li><a href="contact.html" class="active">Contact</a></li><li><a href="intelligence.html">Intelligence</a></li></ul>
+  <a href="contact.html" class="nav-cta">Hire Me</a>
+</nav>
+<div class="page-header">
+  <div class="page-kicker reveal">Get in Touch</div>
+  <h1 class="page-h1 reveal reveal-delay-1">Let's build<br><em>something exact.</em></h1>
+</div>
+<div class="contact-grid">
+  <div class="contact-left">
+    <div class="avail-badge reveal"><div class="avail-dot"></div>Available for Freelance</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:300;line-height:1.1;color:var(--off-white);margin-bottom:1.5rem;" class="reveal">Whether you're launching a capsule, scaling a collection, or need a studio partner — the conversation starts here.</h2>
+    <p style="font-size:12px;color:var(--muted);line-height:1.85;margin-bottom:2.5rem;" class="reveal">With 8+ years of international luxury accessories experience — from Italian factory floors to NYFW runways — PMPNY Design Studio delivers from concept sketch to production line.</p>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:0.75rem;" class="reveal">Available for:</div>
+    <div class="hire-types reveal">
+      <div class="hire-type">Freelance capsule design & hardware engineering</div>
+      <div class="hire-type">Full-time senior designer roles</div>
+      <div class="hire-type">End-to-end production management</div>
+      <div class="hire-type">Technical specification development</div>
+      <div class="hire-type">Brand creative direction</div>
+      <div class="hire-type">Italian manufacturing sourcing</div>
+    </div>
+  </div>
+  <div class="contact-right">
+    <div class="section-label reveal">Contact Details</div>
+    <div class="contact-line reveal">
+      <span class="contact-line-label">Email</span>
+      <a href="mailto:info@pmpny.com" class="contact-line-val">info@pmpny.com</a>
+    </div>
+    <div class="contact-line reveal">
+      <span class="contact-line-label">Direct</span>
+      <a href="mailto:francesco@pmpny.com" class="contact-line-val">francesco@pmpny.com</a>
+    </div>
+    <div class="contact-line reveal">
+      <span class="contact-line-label">Phone</span>
+      <a href="tel:+19176865563" class="contact-line-val">+1 917 686 5563</a>
+    </div>
+    <div class="contact-line reveal">
+      <span class="contact-line-label">Studio Address</span>
+      <span class="contact-line-val">51-02 21st St Suite 4A<br>Long Island City, NY 11101</span>
+    </div>
+    <div class="contact-line reveal">
+      <span class="contact-line-label">Stockist</span>
+      <span class="contact-line-val">Flying Solo NYC<br>419 Broome St, New York</span>
+    </div>
+    <div class="contact-line reveal">
+      <span class="contact-line-label">Instagram</span>
+      <a href="https://instagram.com/pmp.ny" target="_blank" class="contact-line-val">@pmp.ny</a>
+    </div>
+    <a href="mailto:info@pmpny.com" style="display:inline-block;margin-top:2.5rem;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bg);background:var(--off-white);text-decoration:none;padding:14px 32px;transition:background 0.2s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--off-white)'" class="reveal">Send a Message →</a>
+  </div>
+</div>
+<footer>
+  <div class="footer-logo">PMPNY Design Studio<div style="font-size:9px;margin-top:4px;color:rgba(107,104,96,0.6)">Long Island City, NY</div></div>
+  <div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="intelligence.html">Intelligence</a><a href="contact.html">Contact</a></div>
+  <div class="footer-right">© 2026 Francesco Pimpinicchio</div>
+</footer>
+<script>
+const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));
+</script>
+</body>
+</html>
