@@ -11,15 +11,15 @@
 <style>
 /* Override accent color — remove copper, use warm grey */
 :root {
-  --accent: #8a8a82;
-  --accent-dim: rgba(138,138,130,0.3);
+  --accent: #ccff00;
+  --accent-dim: rgba(204,255,0,0.25);
 }
 
 .hero{position:relative;height:100vh;min-height:700px;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3rem 4rem;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;background:var(--bg);}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(140,140,132,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(140,140,132,0.04) 1px,transparent 1px);background-size:80px 80px;animation:grid-drift 30s linear infinite;}
 @keyframes grid-drift{0%{transform:translate(0,0)}100%{transform:translate(80px,80px)}}
-.hero-line{position:absolute;top:0;left:38%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(140,140,132,0.12) 30%,rgba(140,140,132,0.12) 70%,transparent);}
+.hero-line{position:absolute;top:0;left:38%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(204,255,0,0.06) 30%,rgba(204,255,0,0.06) 70%,transparent);}
 .hero-arch{position:absolute;right:8%;top:50%;transform:translateY(-50%);width:340px;height:480px;border:1px solid rgba(140,140,132,0.1);border-radius:200px 200px 0 0;}
 .hero-arch::before{content:'';position:absolute;inset:24px;border:1px solid rgba(140,140,132,0.06);border-radius:180px 180px 0 0;}
 .hero-kicker{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;opacity:0;animation:fade-up 1s ease 0.3s forwards;}
@@ -27,7 +27,7 @@
 .hero-h1 em{font-style:italic;color:rgba(237,233,224,0.5);}
 .hero-sub-row{display:flex;align-items:flex-end;gap:3rem;opacity:0;animation:fade-up 1s ease 0.85s forwards;}
 .hero-sub{font-size:12px;color:var(--muted);max-width:340px;line-height:1.8;}
-.hero-cta{flex-shrink:0;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(138,138,130,0.4);padding-bottom:4px;white-space:nowrap;transition:color 0.2s,letter-spacing 0.3s;}
+.hero-cta{flex-shrink:0;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(204,255,0,0.3);padding-bottom:4px;white-space:nowrap;transition:color 0.2s,letter-spacing 0.3s;}
 .hero-cta:hover{color:var(--accent);letter-spacing:0.22em;}
 .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);opacity:0;animation:fade-in 1s ease 1.8s forwards;}
 .scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(138,138,130,0.5),transparent);animation:scroll-pulse 2s ease infinite;}
@@ -59,17 +59,17 @@
 .case-title{font-family:var(--serif);font-size:2.6rem;font-weight:300;line-height:1.05;color:var(--off-white);margin-bottom:1.5rem;font-style:italic;}
 .case-body{font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:2.5rem;}
 .case-tags{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:2.5rem;}
-.case-link{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(138,138,130,0.3);padding-bottom:3px;width:fit-content;transition:color 0.2s,letter-spacing 0.3s;}
+.case-link{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(204,255,0,0.2);padding-bottom:3px;width:fit-content;transition:color 0.2s,letter-spacing 0.3s;}
 .case-link:hover{color:var(--accent);letter-spacing:0.2em;}
 .vis-noise{position:absolute;inset:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
-.geo-cromia{width:160px;height:220px;border:1px solid rgba(140,140,132,0.25);position:relative;}
+.geo-cromia{width:160px;height:220px;border:1px solid rgba(204,255,0,0.15);position:relative;}
 .geo-cromia::before{content:'';position:absolute;inset:18px;border:1px solid rgba(140,140,132,0.1);}
-.geo-cromia::after{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(140,140,132,0.12);}
-.stud{position:absolute;width:8px;height:8px;border:1px solid rgba(140,140,132,0.35);border-radius:50%;}
+.geo-cromia::after{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(204,255,0,0.06);}
+.stud{position:absolute;width:8px;height:8px;border:1px solid rgba(204,255,0,0.2);border-radius:50%;}
 
 .ai{padding:8rem 3rem;border-top:1px solid var(--faint);display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
-.intel-badge{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);border:1px solid var(--faint);padding:5px 14px;margin-bottom:2rem;}
-.intel-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:pulse 2s ease infinite;}
+.intel-badge{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-dim);padding:5px 14px;margin-bottom:2rem;}
+.intel-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .intel-h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,3.5vw,3.5rem);line-height:1.05;color:var(--off-white);margin-bottom:1.5rem;}
 .intel-body{font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:2rem;}
@@ -77,7 +77,7 @@
 .intel-tier{background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;}
 .intel-tier-name{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
 .intel-tier-price{font-family:var(--serif);font-size:1.4rem;font-weight:300;color:var(--off-white);}
-.intel-link{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(138,138,130,0.3);padding-bottom:3px;width:fit-content;transition:letter-spacing 0.3s;}
+.intel-link{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(204,255,0,0.2);padding-bottom:3px;width:fit-content;transition:letter-spacing 0.3s;}
 .intel-link:hover{letter-spacing:0.22em;color:var(--accent);}
 .intel-visual{position:relative;height:420px;border:1px solid var(--faint);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg2);}
 .intel-grid-vis{position:absolute;inset:0;background-image:linear-gradient(rgba(140,140,132,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(140,140,132,0.05) 1px,transparent 1px);background-size:40px 40px;}
@@ -85,7 +85,7 @@
 .ibar-row{display:flex;flex-direction:column;gap:6px;}
 .ibar-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;}
 .ibar-track{height:2px;background:var(--faint);}
-.ibar-fill{height:100%;background:rgba(138,138,130,0.6);}
+.ibar-fill{height:100%;background:rgba(204,255,0,0.6);}
 
 .contact-section{padding:8rem 3rem;border-top:1px solid var(--faint);display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;}
 .contact-h2{font-family:var(--serif);font-weight:300;font-size:clamp(3rem,5vw,5.5rem);line-height:0.95;color:var(--off-white);margin-bottom:1rem;}
@@ -198,7 +198,7 @@
       <div class="stud" style="bottom:12px;left:12px;"></div>
       <div class="stud" style="bottom:12px;right:12px;"></div>
     </div>
-    <div style="position:absolute;bottom:1.5rem;right:1.5rem;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(140,140,132,0.45);">Cromia — Geometry & Scale</div>
+    <div style="position:absolute;bottom:1.5rem;right:1.5rem;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(204,255,0,0.2);">Cromia — Geometry & Scale</div>
   </div>
   <div class="case-info">
     <div class="case-num">Case Study 003</div>
@@ -240,7 +240,7 @@
       <div class="ibar-row"><div class="ibar-label"><span>Warm Neutral Tones</span><span>↑ 63%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:63%"></div></div></div>
       <div class="ibar-row"><div class="ibar-label"><span>Bio Material Adoption</span><span>↑ 58%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:58%"></div></div></div>
       <div class="ibar-row"><div class="ibar-label"><span>Chain Hardware</span><span>↑ 47%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:47%"></div></div></div>
-      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(140,140,132,0.12);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(140,140,132,0.35);">Sample signal — SS27</div>
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(204,255,0,0.06);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(204,255,0,0.2);">Sample signal — SS27</div>
     </div>
   </div>
 </div>
