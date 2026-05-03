@@ -7,8 +7,8 @@
   --off-white: #ede9e0;
   --muted: #6b6860;
   --faint: #2a2925;
-  --accent: #b8906a;
-  --accent-dim: #7a5e42;
+  --accent: #ccff00;
+  --accent-dim: rgba(204,255,0,0.25);
   --serif: 'Cormorant Garamond', serif;
   --mono: 'IBM Plex Mono', monospace;
 }
