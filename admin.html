@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMPNY Admin — Intelligence Platform</title>
+    <link rel="icon" href="/favicon.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --black: #080808; --white: #f4f4ee; --off-white: #e0e0d8;
+            --gray: #888880; --dim: #444440; --panel: #141412; --panel-2: #1e1e1a;
+            --accent: #ccff00; --accent-dim: rgba(204,255,0,0.07); --accent-border: rgba(204,255,0,0.2);
+            --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.18);
+            --red: #ff4444; --red-dim: rgba(255,68,68,0.08);
+            --font-display: 'Cormorant Garamond', serif; --font-mono: 'DM Mono', monospace;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; min-height: 100vh; }
+
+        /* LOGIN SCREEN */
+        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: var(--panel); border: 1px solid var(--accent-border); padding: 52px; width: 100%; max-width: 400px; }
+        .login-logo { font-size: 10px; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
+        .login-title { font-family: var(--font-display); font-size: 36px; font-weight: 300; margin-bottom: 8px; }
+        .login-title em { font-style: italic; color: var(--gray); }
+        .login-sub { font-size: 11px; color: var(--gray); margin-bottom: 36px; }
+        .login-input { width: 100%; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 13px 16px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+        .login-input:focus { border-color: var(--border-hover); }
+        .login-input::placeholder { color: var(--dim); }
+        .login-btn { width: 100%; background: var(--accent); color: var(--black); border: none; padding: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+        .login-btn:hover { opacity: 0.85; }
+        .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .login-error { font-size: 11px; color: var(--red); padding: 10px 14px; background: var(--red-dim); border: 1px solid rgba(255,68,68,0.2); margin-bottom: 12px; display: none; }
+        .login-screen.hidden { display: none; }
+
+        /* ADMIN LAYOUT */
+        .admin-layout { display: none; }
+        .admin-layout.show { display: block; }
+
+        /* HEADER */
+        .admin-header { background: rgba(8,8,8,0.98); border-bottom: 1px solid var(--accent-border); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .admin-logo { display: flex; align-items: center; gap: 12px; }
+        .admin-logo-text { font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
+        .admin-badge { font-size: 9px; color: var(--red); background: var(--red-dim); border: 1px solid rgba(255,68,68,0.2); padding: 3px 10px; letter-spacing: 0.14em; }
+        .admin-nav { display: flex; gap: 8px; }
+        .admin-nav-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--gray); transition: all 0.18s; text-decoration: none; }
+        .admin-nav-btn:hover, .admin-nav-btn.active { border-color: var(--accent); color: var(--accent); }
+        .admin-nav-btn.danger { border-color: rgba(255,68,68,0.3); color: var(--red); }
+        .admin-nav-btn.danger:hover { background: var(--red-dim); }
+
+        /* CONTENT */
+        .admin-content { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .admin-section { display: none; }
+        .admin-section.active { display: block; }
+
+        /* STATS */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-bottom: 40px; }
+        .stat { background: var(--panel); padding: 28px 24px; }
+        .stat-label { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; margin-bottom: 12px; }
+        .stat-value { font-family: var(--font-display); font-size: 40px; font-weight: 300; color: var(--white); line-height: 1; margin-bottom: 6px; }
+        .stat-sub { font-size: 10px; color: var(--dim); }
+        .stat.highlight .stat-value { color: var(--accent); }
+
+        /* SECTIONS */
+        .section-title { font-family: var(--font-display); font-size: 28px; font-weight: 300; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* AI CHAT (admin - unlimited) */
+        .admin-chat { background: var(--panel); border: 1px solid var(--border); height: 500px; display: flex; flex-direction: column; margin-bottom: 24px; }
+        .admin-chat-top { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .admin-chat-status { font-size: 9px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 2.5s ease infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .admin-unlimited { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+        .admin-chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .admin-chat-body::-webkit-scrollbar { width: 3px; }
+        .admin-chat-body::-webkit-scrollbar-thumb { background: var(--border); }
+        .amsg { max-width: 85%; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .amsg.user { align-self: flex-end; }
+        .amsg.ai { align-self: flex-start; }
+        .amsg-label { font-size: 8px; letter-spacing: 0.2em; color: var(--dim); margin-bottom: 5px; text-transform: uppercase; }
+        .amsg.user .amsg-label { text-align: right; }
+        .amsg-body { padding: 12px 16px; font-size: 13px; line-height: 1.7; }
+        .amsg.user .amsg-body { background: var(--accent); color: var(--black); }
+        .amsg.ai .amsg-body { background: var(--panel-2); border: 1px solid var(--border); color: var(--off-white); }
+        .admin-chat-foot { border-top: 1px solid var(--border); padding: 14px 20px; display: flex; gap: 10px; }
+        .admin-chat-input { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 15px; outline: none; resize: none; min-height: 44px; max-height: 120px; transition: border-color 0.18s; }
+        .admin-chat-input:focus { border-color: var(--border-hover); }
+        .admin-chat-input::placeholder { color: var(--dim); }
+        .admin-send { background: var(--accent); color: var(--black); border: none; padding: 12px 22px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; cursor: pointer; height: 44px; transition: opacity 0.18s; }
+        .admin-send:hover { opacity: 0.85; }
+        .admin-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* BRIEF MANAGEMENT */
+        .brief-editor { background: var(--panel); border: 1px solid var(--border); padding: 32px; margin-bottom: 24px; }
+        .brief-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; }
+        .form-input { background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 14px; outline: none; transition: border-color 0.18s; }
+        .form-input:focus { border-color: var(--border-hover); }
+        .form-input::placeholder { color: var(--dim); }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+        .signals-editor { display: flex; flex-direction: column; gap: 8px; }
+        .signal-row { display: grid; grid-template-columns: 1fr 80px; gap: 8px; }
+        .form-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-save { background: var(--accent); color: var(--black); border: none; padding: 13px 28px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: opacity 0.18s; }
+        .btn-save:hover { opacity: 0.85; }
+        .btn-secondary { background: transparent; color: var(--gray); border: 1px solid var(--border); padding: 13px 28px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
+        .btn-secondary:hover { border-color: var(--border-hover); color: var(--white); }
+        .save-status { font-size: 11px; color: var(--accent); display: none; align-items: center; gap: 8px; }
+
+        /* IMAGE UPLOAD (admin - unlimited) */
+        .admin-upload { background: var(--panel); border: 1px solid var(--border); padding: 32px; margin-bottom: 24px; }
+        .admin-upload-zone { border: 1px dashed var(--border); padding: 48px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; text-align: center; margin-bottom: 20px; }
+        .admin-upload-zone:hover { border-color: var(--accent); background: var(--accent-dim); }
+        .upload-icon { font-size: 32px; opacity: 0.4; }
+        .upload-text { font-size: 13px; color: var(--gray); }
+        .upload-text span { color: var(--accent); }
+        .upload-note { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
+        #adminFileInput { display: none; }
+        #adminPreview { display: none; margin-bottom: 16px; }
+        #adminPreview img { max-width: 100%; max-height: 300px; object-fit: contain; display: block; border: 1px solid var(--border); }
+        .admin-analysis { display: none; margin-top: 20px; padding: 20px; background: var(--panel-2); border: 1px solid var(--border); }
+        .admin-analysis-label { font-size: 9px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+        .admin-analysis-text { font-size: 13px; color: var(--off-white); line-height: 1.8; white-space: pre-line; }
+
+        /* USERS */
+        .users-table { background: var(--panel); border: 1px solid var(--border); overflow: hidden; }
+        .users-table-head { display: grid; grid-template-columns: 1fr 120px 100px 80px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 9px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+        .users-table-row { display: grid; grid-template-columns: 1fr 120px 100px 80px; padding: 14px 20px; border-bottom: 1px solid var(--border); transition: background 0.18s; }
+        .users-table-row:hover { background: var(--panel-2); }
+        .users-table-row:last-child { border-bottom: none; }
+        .user-email { font-size: 12px; color: var(--off-white); }
+        .user-date { font-size: 11px; color: var(--gray); }
+        .user-tier { font-size: 9px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+        .user-convs { font-size: 11px; color: var(--gray); }
+
+        /* TYPING */
+        .typing { display: flex; gap: 5px; padding: 12px 16px; background: var(--panel-2); border: 1px solid var(--border); width: fit-content; }
+        .t-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gray); animation: bounce 1.3s ease infinite; }
+        .t-dot:nth-child(2) { animation-delay: 0.18s; }
+        .t-dot:nth-child(3) { animation-delay: 0.36s; }
+        @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: 0.25; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .admin-header { padding: 14px 20px; }
+            .admin-content { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .brief-form { grid-template-columns: 1fr; }
+            .admin-nav { gap: 4px; }
+            .admin-nav-btn { padding: 7px 10px; font-size: 9px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">PMPNY Intelligence</div>
+        <h1 class="login-title">Admin<br><em>Access.</em></h1>
+        <p class="login-sub">For Francesco Pimpinicchio only.</p>
+        <input type="email" class="login-input" id="adminEmail" placeholder="Email address" autocomplete="email">
+        <input type="password" class="login-input" id="adminPassword" placeholder="Password" autocomplete="current-password">
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="loginBtn" onclick="adminLogin()">Access Admin →</button>
+    </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-layout" id="adminLayout">
+
+    <div class="admin-header">
+        <div class="admin-logo">
+            <span class="admin-logo-text">PMPNY Intelligence</span>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div class="admin-nav">
+            <button class="admin-nav-btn active" onclick="showSection('dashboard', this)">Dashboard</button>
+            <button class="admin-nav-btn" onclick="showSection('chat', this)">AI Chat</button>
+            <button class="admin-nav-btn" onclick="showSection('brief', this)">Weekly Brief</button>
+            <button class="admin-nav-btn" onclick="showSection('upload', this)">Analysis</button>
+            <button class="admin-nav-btn" onclick="showSection('users', this)">Users</button>
+            <a href="ai.html" class="admin-nav-btn">← Platform</a>
+            <button class="admin-nav-btn danger" onclick="adminLogout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="admin-content">
+
+        <!-- DASHBOARD -->
+        <div class="admin-section active" id="section-dashboard">
+            <div class="stats-grid">
+                <div class="stat highlight">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="statUsers">—</div>
+                    <div class="stat-sub">Registered accounts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Conversations</div>
+                    <div class="stat-value" id="statConvs">—</div>
+                    <div class="stat-sub">All time</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Messages</div>
+                    <div class="stat-value" id="statMsgs">—</div>
+                    <div class="stat-sub">Total sent</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Platform</div>
+                    <div class="stat-value" style="font-size:24px;color:var(--accent)">LIVE</div>
+                    <div class="stat-sub">pmpny.com/ai</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Quick Actions</h2>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn-save" onclick="showSection('chat', document.querySelector('[onclick*=chat]'))">Open AI Chat →</button>
+                <button class="btn-save" onclick="showSection('brief', document.querySelector('[onclick*=brief]'))">Update Weekly Brief →</button>
+                <button class="btn-save" onclick="showSection('upload', document.querySelector('[onclick*=upload]'))">Analyze Image →</button>
+                <a href="ai.html" class="btn-secondary">View Platform →</a>
+            </div>
+        </div>
+
+        <!-- ADMIN CHAT (unlimited) -->
+        <div class="admin-section" id="section-chat">
+            <h2 class="section-title">AI Intelligence Chat</h2>
+            <div class="admin-chat">
+                <div class="admin-chat-top">
+                    <div class="admin-chat-status"><div class="dot-live"></div>PMPNY Intelligence — Admin Mode</div>
+                    <div class="admin-unlimited">∞ Unlimited</div>
+                </div>
+                <div class="admin-chat-body" id="adminChatBody">
+                    <div class="amsg ai">
+                        <div class="amsg-label">PMPNY Intelligence</div>
+                        <div class="amsg-body">Ciao Francesco. Admin mode — unlimited access, no restrictions. Ask me anything, test new prompts, or research trends for the weekly brief.</div>
+                    </div>
+                </div>
+                <div class="admin-chat-foot">
+                    <textarea class="admin-chat-input" id="adminChatInput" placeholder="Ask anything..." rows="1" onkeydown="adminOnKey(event)" oninput="adminGrow(this)"></textarea>
+                    <button class="admin-send" id="adminSendBtn" onclick="adminSend()">Send →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRIEF EDITOR -->
+        <div class="admin-section" id="section-brief">
+            <h2 class="section-title">Weekly Brief Editor</h2>
+            <div class="brief-editor">
+                <div class="brief-form">
+                    <div class="form-group">
+                        <label class="form-label">Week Label</label>
+                        <input type="text" class="form-input" id="briefWeek" placeholder="Week 18 · May 2026">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Season</label>
+                        <input type="text" class="form-input" id="briefSeason" placeholder="SS27">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Brief Title</label>
+                        <input type="text" class="form-input" id="briefTitle" placeholder="The Architecture of Restraint">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Color Story (comma separated hex codes)</label>
+                        <input type="text" class="form-input" id="briefColors" placeholder="#6B1C23,#3D2817,#9CAF88,#e8e0d0,#080808">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Color Names (comma separated)</label>
+                        <input type="text" class="form-input" id="briefColorNames" placeholder="Burgundy,Bark,Sage,Bone,Matte">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Trend Signals</label>
+                        <div class="signals-editor" id="signalsEditor">
+                            <div class="signal-row">
+                                <input type="text" class="form-input" placeholder="Signal name" value="Structural Volume">
+                                <input type="number" class="form-input" placeholder="%" value="84" min="0" max="100">
+                            </div>
+                            <div class="signal-row">
+                                <input type="text" class="form-input" placeholder="Signal name" value="Hardware Detail">
+                                <input type="number" class="form-input" placeholder="%" value="71" min="0" max="100">
+                            </div>
+                            <div class="signal-row">
+                                <input type="text" class="form-input" placeholder="Signal name" value="Bio Materials">
+                                <input type="number" class="form-input" placeholder="%" value="58" min="0" max="100">
+                            </div>
+                            <div class="signal-row">
+                                <input type="text" class="form-input" placeholder="Signal name" value="Chain Hardware">
+                                <input type="number" class="form-input" placeholder="%" value="47" min="0" max="100">
+                            </div>
+                        </div>
+                        <button class="btn-secondary" onclick="addSignalRow()" style="margin-top:8px;padding:8px 16px;">+ Add Signal</button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-save" onclick="saveBrief()">Save & Publish Brief →</button>
+                    <div class="save-status" id="saveStatus">✓ Brief saved and live</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IMAGE ANALYSIS (unlimited) -->
+        <div class="admin-section" id="section-upload">
+            <h2 class="section-title">Visual Trend Analysis</h2>
+            <div class="admin-upload">
+                <div class="admin-upload-zone" onclick="document.getElementById('adminFileInput').click()" ondragover="adOver(event)" ondragleave="adLeave(event)" ondrop="adDrop(event)">
+                    <div class="upload-icon">⬆</div>
+                    <div class="upload-text">Drop an image or <span>browse</span></div>
+                    <div class="upload-note">Unlimited uploads · JPG · PNG · WEBP</div>
+                </div>
+                <input type="file" id="adminFileInput" accept="image/*" onchange="adminOnFile(event)">
+                <div id="adminPreview"><img id="adminPreviewImg" src="" alt="Preview"></div>
+                <div style="display:none;gap:8px;" id="adminImgActions">
+                    <button class="btn-secondary" onclick="clearAdminImg()">Clear</button>
+                    <button class="btn-save" id="adminAnalyzeBtn" onclick="adminAnalyze()">Analyze →</button>
+                </div>
+                <div class="admin-analysis" id="adminAnalysis">
+                    <div class="admin-analysis-label">Trend Analysis</div>
+                    <div class="admin-analysis-text" id="adminAnalysisText"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="admin-section" id="section-users">
+            <h2 class="section-title">Registered Users</h2>
+            <div class="users-table">
+                <div class="users-table-head">
+                    <span>Email</span>
+                    <span>Joined</span>
+                    <span>Tier</span>
+                    <span>Convs</span>
+                </div>
+                <div id="usersList">
+                    <div style="padding:20px;font-size:11px;color:var(--dim);text-align:center;">Loading users...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ADMIN AUTH
+async function adminLogin() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const pass = document.getElementById('adminPassword').value;
+    const btn = document.getElementById('loginBtn');
+    const err = document.getElementById('loginError');
+    if (!email || !pass) { showErr('Fill in all fields.'); return; }
+    btn.disabled = true; btn.textContent = 'Logging in...';
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) { showErr(error.message); btn.disabled = false; btn.textContent = 'Access Admin →'; return; }
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminLayout').classList.add('show');
+    loadDashboard();
+}
+
+function showErr(msg) { const e = document.getElementById('loginError'); e.textContent = msg; e.style.display = 'block'; }
+
+async function adminLogout() {
+    await sb.auth.signOut();
+    document.getElementById('adminLayout').classList.remove('show');
+    document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+// Check if already logged in
+sb.auth.getSession().then(({ data }) => {
+    if (data.session) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminLayout').classList.add('show');
+        loadDashboard();
+    }
+});
+
+// NAVIGATION
+function showSection(id, btn) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (id === 'users') loadUsers();
+}
+
+// DASHBOARD STATS
+async function loadDashboard() {
+    try {
+        const { count: convCount } = await sb.from('conversations').select('*', { count: 'exact', head: true });
+        const { count: msgCount } = await sb.from('messages').select('*', { count: 'exact', head: true });
+        document.getElementById('statConvs').textContent = convCount || 0;
+        document.getElementById('statMsgs').textContent = msgCount || 0;
+        document.getElementById('statUsers').textContent = '—';
+    } catch(e) { console.log('Stats error:', e); }
+}
+
+// ADMIN CHAT (unlimited)
+const adminHistory = [];
+
+async function adminSend() {
+    const inp = document.getElementById('adminChatInput');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    addAdminMsg('user', txt);
+    inp.value = ''; inp.style.height = 'auto';
+    adminHistory.push({ role: 'user', content: txt });
+    document.getElementById('adminSendBtn').disabled = true;
+    showAdminTyping();
+    try {
+        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: adminHistory }) });
+        const data = await res.json();
+        const reply = data.content?.[0]?.text || 'Error — check API.';
+        hideAdminTyping();
+        adminHistory.push({ role: 'assistant', content: reply });
+        addAdminMsg('ai', reply);
+    } catch(e) {
+        hideAdminTyping();
+        addAdminMsg('ai', 'Connection error: ' + e.message);
+    }
+    document.getElementById('adminSendBtn').disabled = false;
+}
+
+function addAdminMsg(role, text) {
+    const body = document.getElementById('adminChatBody');
+    const d = document.createElement('div');
+    d.className = `amsg ${role}`;
+    d.innerHTML = `<div class="amsg-label">${role === 'user' ? 'FRANCESCO' : 'PMPNY INTELLIGENCE'}</div><div class="amsg-body">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+    body.appendChild(d); body.scrollTop = body.scrollHeight;
+}
+
+function showAdminTyping() {
+    const body = document.getElementById('adminChatBody');
+    const d = document.createElement('div'); d.id = 'adminTyping'; d.className = 'amsg ai';
+    d.innerHTML = `<div class="amsg-label">PMPNY INTELLIGENCE</div><div class="typing"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div>`;
+    body.appendChild(d); body.scrollTop = body.scrollHeight;
+}
+function hideAdminTyping() { const t = document.getElementById('adminTyping'); if (t) t.remove(); }
+function adminOnKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); adminSend(); } }
+function adminGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+
+// BRIEF EDITOR
+function addSignalRow() {
+    const ed = document.getElementById('signalsEditor');
+    const row = document.createElement('div');
+    row.className = 'signal-row';
+    row.innerHTML = `<input type="text" class="form-input" placeholder="Signal name"><input type="number" class="form-input" placeholder="%" min="0" max="100">`;
+    ed.appendChild(row);
+}
+
+function saveBrief() {
+    const status = document.getElementById('saveStatus');
+    status.style.display = 'flex';
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
+    // In a full implementation this would save to Supabase and update the live brief
+    alert('Brief saved! To update the live platform, update the weekly brief section in ai.html on GitHub.');
+}
+
+// IMAGE ANALYSIS (unlimited)
+let adminImgB64 = null, adminImgMime = null;
+function adOver(e) { e.preventDefault(); document.querySelector('.admin-upload-zone').style.borderColor = 'var(--accent)'; }
+function adLeave() { document.querySelector('.admin-upload-zone').style.borderColor = ''; }
+function adDrop(e) { e.preventDefault(); adLeave(); const f = e.dataTransfer.files[0]; if (f) adminLoadImg(f); }
+function adminOnFile(e) { const f = e.target.files[0]; if (f) adminLoadImg(f); }
+function adminLoadImg(file) {
+    adminImgMime = file.type;
+    const r = new FileReader();
+    r.onload = ev => {
+        adminImgB64 = ev.target.result.split(',')[1];
+        document.getElementById('adminPreviewImg').src = ev.target.result;
+        document.getElementById('adminPreview').style.display = 'block';
+        document.getElementById('adminImgActions').style.display = 'flex';
+        document.getElementById('adminAnalysis').style.display = 'none';
+    };
+    r.readAsDataURL(file);
+}
+function clearAdminImg() {
+    adminImgB64 = null;
+    document.getElementById('adminPreview').style.display = 'none';
+    document.getElementById('adminImgActions').style.display = 'none';
+    document.getElementById('adminAnalysis').style.display = 'none';
+    document.getElementById('adminFileInput').value = '';
+}
+async function adminAnalyze() {
+    if (!adminImgB64) return;
+    const btn = document.getElementById('adminAnalyzeBtn');
+    btn.disabled = true; btn.textContent = 'Analyzing...';
+    try {
+        const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageData: adminImgB64, mediaType: adminImgMime }) });
+        const data = await res.json();
+        const text = data.content?.[0]?.text || 'Analysis failed.';
+        document.getElementById('adminAnalysisText').textContent = text;
+        document.getElementById('adminAnalysis').style.display = 'block';
+    } catch(e) {
+        document.getElementById('adminAnalysisText').textContent = 'Error: ' + e.message;
+        document.getElementById('adminAnalysis').style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = 'Analyze →';
+}
+
+// USERS
+async function loadUsers() {
+    const { data: convs } = await sb.from('conversations').select('user_id').order('created_at');
+    const userConvCount = {};
+    convs?.forEach(c => { userConvCount[c.user_id] = (userConvCount[c.user_id] || 0) + 1; });
+    const list = document.getElementById('usersList');
+    if (!convs || convs.length === 0) {
+        list.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--dim);text-align:center;">No registered users yet</div>';
+        document.getElementById('statUsers').textContent = '0';
+        return;
+    }
+    const uniqueUsers = [...new Set(convs.map(c => c.user_id))];
+    document.getElementById('statUsers').textContent = uniqueUsers.length;
+    list.innerHTML = uniqueUsers.map(uid => `
+        <div class="users-table-row">
+            <span class="user-email">${uid.substring(0,8)}...</span>
+            <span class="user-date">—</span>
+            <span class="user-tier">Spark</span>
+            <span class="user-convs">${userConvCount[uid] || 0}</span>
+        </div>
+    `).join('');
+}
+</script>
+</body>
+</html>
