@@ -165,8 +165,7 @@
         <div class="login-logo">PMPNY Intelligence</div>
         <h1 class="login-title">Admin<br><em>Access.</em></h1>
         <p class="login-sub">For Francesco Pimpinicchio only.</p>
-        <input type="email" class="login-input" id="adminEmail" placeholder="Email address" autocomplete="email">
-        <input type="password" class="login-input" id="adminPassword" placeholder="Password" autocomplete="current-password">
+        <input type="password" class="login-input" id="adminPassword" placeholder="Admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter') adminLogin()">
         <div class="login-error" id="loginError"></div>
         <button class="login-btn" id="loginBtn" onclick="adminLogin()">Access Admin →</button>
     </div>
@@ -350,36 +349,33 @@ const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ADMIN AUTH
-async function adminLogin() {
-    const email = document.getElementById('adminEmail').value.trim();
+function adminLogin() {
     const pass = document.getElementById('adminPassword').value;
-    const btn = document.getElementById('loginBtn');
     const err = document.getElementById('loginError');
-    if (!email || !pass) { showErr('Fill in all fields.'); return; }
-    btn.disabled = true; btn.textContent = 'Logging in...';
-    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-    if (error) { showErr(error.message); btn.disabled = false; btn.textContent = 'Access Admin →'; return; }
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('adminLayout').classList.add('show');
-    loadDashboard();
+    if (pass === 'PMPny92-') {
+        sessionStorage.setItem('pmpny_admin', '1');
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminLayout').classList.add('show');
+        loadDashboard();
+    } else {
+        showErr('Incorrect password.');
+    }
 }
 
 function showErr(msg) { const e = document.getElementById('loginError'); e.textContent = msg; e.style.display = 'block'; }
 
-async function adminLogout() {
-    await sb.auth.signOut();
+function adminLogout() {
+    sessionStorage.removeItem('pmpny_admin');
     document.getElementById('adminLayout').classList.remove('show');
     document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-// Check if already logged in
-sb.auth.getSession().then(({ data }) => {
-    if (data.session) {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('adminLayout').classList.add('show');
-        loadDashboard();
-    }
-});
+// Check if already logged in this session
+if (sessionStorage.getItem('pmpny_admin') === '1') {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminLayout').classList.add('show');
+    loadDashboard();
+}
 
 // NAVIGATION
 function showSection(id, btn) {
