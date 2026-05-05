@@ -751,9 +751,16 @@ window.addEventListener('load', () => {
 const SECTION_LABELS = { 'COLOR': 'Color', 'SILHOUETTE': 'Silhouette', 'MATERIAL': 'Material', 'HARDWARE': 'Hardware', 'MARKET SIGNAL': 'Market Signal', 'PREDICTION': 'Prediction' };
 
 function processColorSwatches(text) {
-    return text.replace(/#([0-9A-Fa-f]{6})\b/g, (match, hex) => {
+    // First make URLs clickable
+    text = text.replace(/https?:\/\/[^\s<>"]+/g, (url) => {
+        const clean = url.replace(/[.,;!?]$/, '');
+        return `<a href="${clean}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${clean}</a>`;
+    });
+    // Then process hex colors
+    text = text.replace(/#([0-9A-Fa-f]{6})\b/g, (match) => {
         return `<span class="color-swatch-inline"><span class="color-dot" style="background:${match}"></span><span class="hex-text">${match}</span></span>`;
     });
+    return text;
 }
 
 function renderAIResponse(text) {
@@ -891,34 +898,49 @@ async function displayProgressively(container, text) {
 }
 
 async function typeText(el, text, body, speed = 22) {
-    const words = text.replace(/\n/g, ' \n ').split(' ');
-    let html = '';
-    for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        if (word === '\n') { html += '<br>'; }
-        else {
-            // Check for hex color
-            const hexMatch = word.match(/#([0-9A-Fa-f]{6})\b/);
-            if (hexMatch) {
-                html += `<span class="color-swatch-inline"><span class="color-dot" style="background:${hexMatch[0]}"></span><span class="hex-text">${hexMatch[0]}</span></span> `;
-            } else {
-                // Bold markdown
-                const boldProcessed = word.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                html += boldProcessed + (i < words.length - 1 ? ' ' : '');
+    // Pre-process the full text first
+    const processed = processColorSwatches(
+        text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    );
+    
+    // Split into chunks preserving HTML tags
+    const chunks = processed.split(/(<[^>]+>.*?<\/[^>]+>|<[^>]+\/>|<[^>]+>)/g).filter(Boolean);
+    let built = '';
+    
+    for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        if (chunk.startsWith('<')) {
+            // HTML tag — add whole thing at once
+            built += chunk;
+            el.innerHTML = built + '<span class="streaming-cursor"></span>';
+        } else {
+            // Plain text — type word by word
+            const words = chunk.split(' ');
+            for (let j = 0; j < words.length; j++) {
+                const word = words[j];
+                if (word === '\n' || word === '') {
+                    built += word === '\n' ? '<br>' : '';
+                } else {
+                    built += (built.length > 0 && !built.endsWith('>') && !built.endsWith(' ') ? ' ' : '') + word;
+                }
+                el.innerHTML = built + '<span class="streaming-cursor"></span>';
+                body.scrollTop = body.scrollHeight;
+                await new Promise(r => setTimeout(r, speed));
             }
         }
-        el.innerHTML = html + '<span class="streaming-cursor"></span>';
         body.scrollTop = body.scrollHeight;
-        await new Promise(r => setTimeout(r, speed));
     }
-    // Remove cursor at end
-    el.innerHTML = html;
-    // Apply color swatches to any remaining hex codes not caught
-    el.innerHTML = processColorSwatches(el.innerHTML);
+    el.innerHTML = built;
 }
 
 // CHAT
 const history = [];
+
+function isConversational(text) {
+    const t = text.toLowerCase().trim();
+    const conversational = ['ciao', 'hello', 'hi', 'hey', 'come stai', 'how are you', 'grazie', 'thanks', 'thank you', 'ok', 'okay', 'buongiorno', 'buonasera', 'good morning', 'good evening', 'bene', 'good', 'perfetto', 'great'];
+    return conversational.some(w => t.startsWith(w) || t === w) || t.length < 20;
+}
 
 async function send() {
     const inp = document.getElementById('chatInput');
@@ -944,10 +966,11 @@ async function send() {
     const responseContainer = document.createElement('div');
     responseContainer.className = 'ai-response';
 
-    // Show thinking indicator RIGHT AWAY
+    // Show thinking indicator RIGHT AWAY with smart text
+    const thinkingText = isConversational(txt) ? 'Thinking' : 'Analyzing trends';
     const thinking = document.createElement('div');
     thinking.className = 'thinking-indicator';
-    thinking.innerHTML = '<div class="thinking-symbol"></div><span class="thinking-text">Analyzing trends</span>';
+    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text">${thinkingText}</span>`;
     responseContainer.appendChild(thinking);
     msgEl.appendChild(responseContainer);
     body.appendChild(msgEl);
