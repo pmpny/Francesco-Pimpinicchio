@@ -938,27 +938,29 @@ async function displayProgressively(container, text) {
 }
 
 async function typeText(el, text, body, speed = 20) {
-    const processed = processText(text);
-    // Split on spaces but preserve HTML tags intact
-    const tokens = processed.split(/(<[^>]*>)/g);
-    let built = '';
-    for (const token of tokens) {
-        if (token.startsWith('<')) {
-            built += token;
-            el.innerHTML = built + '<span class="streaming-cursor"></span>';
+    // Get the final fully-processed HTML (with swatches, links, prices)
+    const finalHTML = processText(text);
+
+    // Type plain words for animation effect
+    const words = text.replace(/\n\n/g, ' ¶ ').replace(/\n/g, ' ').split(' ').filter(w => w !== '');
+    let shown = '';
+
+    for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        if (w === '¶') {
+            shown += '\n\n';
         } else {
-            const words = token.split(' ');
-            for (let i = 0; i < words.length; i++) {
-                if (words[i]) {
-                    built += (built && !built.endsWith('>') && !built.endsWith(' ') ? ' ' : '') + words[i];
-                    el.innerHTML = built + '<span class="streaming-cursor"></span>';
-                    body.scrollTop = body.scrollHeight;
-                    await new Promise(r => setTimeout(r, speed));
-                }
-            }
+            shown += (shown.length > 0 ? ' ' : '') + w;
         }
+        // Show plain text with cursor during typing
+        el.innerHTML = shown.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>') + '<span class="streaming-cursor"></span>';
+        body.scrollTop = body.scrollHeight;
+        await new Promise(r => setTimeout(r, speed));
     }
-    el.innerHTML = built;
+
+    // At the end, show fully processed HTML with swatches, links, prices
+    el.innerHTML = finalHTML;
+    body.scrollTop = body.scrollHeight;
 }
 
 // CHAT
@@ -998,16 +1000,28 @@ async function send() {
     const thinkingText = isConversational(txt) ? 'Thinking' : 'Analyzing trends';
     const thinking = document.createElement('div');
     thinking.className = 'thinking-indicator';
-    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text">${thinkingText}</span>`;
+    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text" id="thinkingText">${thinkingText}</span>`;
     responseContainer.appendChild(thinking);
     msgEl.appendChild(responseContainer);
     body.appendChild(msgEl);
     body.scrollTop = body.scrollHeight;
 
+    // Cycle through messages while waiting
+    const messages = isConversational(txt)
+        ? ['Thinking', 'Processing', 'Almost there']
+        : ['Analyzing trends', 'Searching signals', 'Scanning runway', 'Reading market data', 'Almost there'];
+    let msgIdx = 0;
+    const cycleInterval = setInterval(() => {
+        msgIdx = (msgIdx + 1) % messages.length;
+        const el = document.getElementById('thinkingText');
+        if (el) el.textContent = messages[msgIdx];
+    }, 1800);
+
     try {
         const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
         const data = await res.json();
         const reply = data.content?.[0]?.text || 'Sorry, something went wrong.';
+        clearInterval(cycleInterval);
 
         // Progressive display
         await displayProgressively(responseContainer, reply);
@@ -1025,6 +1039,7 @@ async function send() {
         if (document.getElementById('autoSpeak').checked) speakMsg(speakBtn);
 
     } catch (e) {
+        clearInterval(cycleInterval);
         responseContainer.innerHTML = '<div class="ai-plain">Connection error. Please try again.</div>';
     }
 
