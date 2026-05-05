@@ -822,18 +822,14 @@ function renderAIResponse(text) {
 async function displayProgressively(container, text) {
     const body = document.getElementById('chatBody');
 
-    // Show thinking indicator
-    const searching = document.createElement('div');
-    searching.className = 'thinking-indicator';
-    searching.innerHTML = '<div class="thinking-symbol"></div><span class="thinking-text">Analyzing trends</span>';
-    container.appendChild(searching);
-    body.scrollTop = body.scrollHeight;
+    // Remove thinking indicator
+    const existing = container.querySelector('.thinking-indicator');
+    if (existing) existing.remove();
 
-    await new Promise(r => setTimeout(r, 900));
-    searching.remove();
+    // Check if response has section headers (broad trend questions)
+    const hasSections = /^(COLOR|SILHOUETTE|MATERIAL|HARDWARE|MARKET SIGNAL|PREDICTION)\s*$/m.test(text);
 
-    // Check if has sections
-    if (!text.includes('SECTION:')) {
+    if (!hasSections) {
         const plain = document.createElement('div');
         plain.className = 'ai-plain';
         container.appendChild(plain);
@@ -841,26 +837,25 @@ async function displayProgressively(container, text) {
         return;
     }
 
-    // Progressive section reveal
-    const parts = text.split(/SECTION:\s*/);
-    for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
-        if (i === 0) {
-            const trimmed = part.trim();
-            if (trimmed) {
-                const plain = document.createElement('div');
-                plain.className = 'ai-plain';
-                container.appendChild(plain);
-                await typeText(plain, trimmed, body);
-                await new Promise(r => setTimeout(r, 100));
-            }
-            continue;
-        }
+    // Parse sections with simple headers
+    const sectionNames = ['COLOR', 'SILHOUETTE', 'MATERIAL', 'HARDWARE', 'MARKET SIGNAL', 'PREDICTION'];
+    const regex = new RegExp(`^(${sectionNames.join('|')})\\s*$`, 'm');
+    const parts = text.split(regex);
 
-        const lines = part.trim().split('\n');
-        const sectionKey = lines[0].trim().replace(/\s+/g, ' ');
-        const content = lines.slice(1).join('\n').trim();
-        if (!content) continue;
+    let i = 0;
+    // Text before first section
+    if (parts[0].trim()) {
+        const plain = document.createElement('div');
+        plain.className = 'ai-plain';
+        container.appendChild(plain);
+        await typeText(plain, parts[0].trim(), body);
+    }
+
+    // Section pairs
+    for (let j = 1; j < parts.length; j += 2) {
+        const sectionKey = parts[j]?.trim();
+        const content = parts[j + 1]?.trim();
+        if (!sectionKey || !content) continue;
 
         const card = document.createElement('div');
         card.className = 'section-card';
@@ -872,7 +867,7 @@ async function displayProgressively(container, text) {
         header.className = 'section-header';
         const label = document.createElement('span');
         label.className = 'section-label-text';
-        label.textContent = SECTION_LABELS[sectionKey] || sectionKey;
+        label.textContent = sectionKey.charAt(0) + sectionKey.slice(1).toLowerCase().replace('signal', 'Signal');
         const line = document.createElement('div');
         line.className = 'section-line';
         header.appendChild(label);
@@ -885,14 +880,13 @@ async function displayProgressively(container, text) {
         card.appendChild(contentDiv);
         container.appendChild(card);
 
-        // Fade in card
         await new Promise(r => setTimeout(r, 50));
         card.style.opacity = '1';
         card.style.transform = 'translateY(0)';
         body.scrollTop = body.scrollHeight;
 
         await typeText(contentDiv, content, body, 18);
-        await new Promise(r => setTimeout(r, 80));
+        await new Promise(r => setTimeout(r, 60));
     }
 }
 
@@ -942,13 +936,19 @@ async function send() {
 
     document.getElementById('sendBtn').disabled = true;
 
-    // Create AI message container
+    // Create AI message container IMMEDIATELY
     const body = document.getElementById('chatBody');
     const msgEl = document.createElement('div');
     msgEl.className = 'msg ai';
     msgEl.innerHTML = '<div class="msg-label">PMPNY Intelligence</div>';
     const responseContainer = document.createElement('div');
     responseContainer.className = 'ai-response';
+
+    // Show thinking indicator RIGHT AWAY
+    const thinking = document.createElement('div');
+    thinking.className = 'thinking-indicator';
+    thinking.innerHTML = '<div class="thinking-symbol"></div><span class="thinking-text">Analyzing trends</span>';
+    responseContainer.appendChild(thinking);
     msgEl.appendChild(responseContainer);
     body.appendChild(msgEl);
     body.scrollTop = body.scrollHeight;
