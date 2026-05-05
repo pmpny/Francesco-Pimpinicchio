@@ -184,12 +184,12 @@
         .ai-response { display: flex; flex-direction: column; gap: 4px; }
         .ai-plain { background: var(--panel-2); border: 1px solid var(--border); padding: 18px 20px; font-size: 13px; line-height: 1.9; color: var(--off-white); }
 
-        /* SECTION CARDS */
-        .section-card { border: 1px solid var(--border); overflow: hidden; margin-bottom: 3px; }
-        .section-header { padding: 10px 18px 10px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; }
-        .section-label-text { font-family: var(--font-display); font-size: 18px; font-weight: 300; font-style: italic; color: var(--gray-light); letter-spacing: 0.02em; white-space: nowrap; }
-        .section-line { flex: 1; height: 1px; background: var(--border); }
-        .section-content { padding: 16px 18px; background: var(--panel-2); font-family: var(--font-mono); font-size: 13px; line-height: 1.9; color: var(--off-white); }
+        /* SECTION CARDS — one unified card */
+        .section-card { border: 1px solid var(--border); background: var(--panel-2); margin-bottom: 4px; overflow: hidden; }
+        .section-header { padding: 14px 18px 10px; display: flex; align-items: center; gap: 16px; background: var(--panel-2); border-bottom: none; }
+        .section-label-text { font-family: 'Cormorant Garamond', Georgia, serif !important; font-size: 22px !important; font-weight: 300 !important; font-style: italic !important; color: var(--gray-light) !important; letter-spacing: 0.01em; white-space: nowrap; }
+        .section-line { flex: 1; height: 1px; background: rgba(255,255,255,0.06); margin-top: 2px; }
+        .section-content { padding: 2px 18px 16px; font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9; color: var(--off-white); background: var(--panel-2); }
 
         /* COLOR SWATCHES INLINE */
         .color-swatch-inline { display: inline-flex; align-items: center; gap: 5px; vertical-align: middle; margin: 0 2px; }
@@ -769,6 +769,8 @@ function processText(text) {
     text = text.replace(/(\$[\d,]+)/g, '<strong style="color:var(--off-white)">$1</strong>');
     // Bold markdown
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Bullet points · 
+    text = text.replace(/^· /gm, '<span style="color:var(--accent);margin-right:6px;">·</span>');
     return text;
 }
 
@@ -931,7 +933,10 @@ async function displayProgressively(container, text) {
         card.style.transform = 'translateY(0)';
         body.scrollTop = body.scrollHeight;
 
+        // Type the text plain, then swap to fully processed HTML with swatches
         await typeText(contentDiv, content, body, 18);
+        // Force full processText at end to ensure swatches and links appear
+        contentDiv.innerHTML = processText(content.replace(/\n/g, '<br>'));
         await new Promise(r => setTimeout(r, 60));
     }
 }
