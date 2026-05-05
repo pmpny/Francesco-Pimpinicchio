@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMPNY Intelligence — AI Trend Platform</title>
+    <meta name="description" content="AI-powered fashion trend intelligence for independent designers.">
+    <meta name="theme-color" content="#080808">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="PMPNY AI">
+    <link rel="icon" href="/favicon.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/favicon.jpg">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --black: #080808;
+            --white: #f4f4ee;
+            --off-white: #e0e0d8;
+            --gray: #888880;
+            --gray-light: #b0b0a8;
+            --dim: #444440;
+            --panel: #141412;
+            --panel-2: #1e1e1a;
+            --accent: #ccff00;
+            --accent-dim: rgba(204,255,0,0.07);
+            --accent-border: rgba(204,255,0,0.2);
+            --border: rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.18);
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-mono: 'DM Mono', 'Courier New', monospace;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; line-height: 1.65; min-height: 100vh; overflow-x: hidden; }
+
+        /* NAV */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(8,8,8,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .nav-logo-text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
+        .nav-badge { font-size: 9px; letter-spacing: 0.18em; color: var(--accent); background: var(--accent-dim); border: 1px solid var(--accent-border); padding: 3px 10px; }
+        .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+        .nav-links a { font-size: 10px; letter-spacing: 0.15em; color: var(--gray); text-decoration: none; transition: color 0.2s; text-transform: uppercase; }
+        .nav-links a:hover, .nav-links a.active { color: var(--white); }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-user { font-size: 10px; letter-spacing: 0.1em; color: var(--gray); }
+        .nav-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 7px 16px; cursor: pointer; text-decoration: none; border: 1px solid var(--border); background: transparent; color: var(--gray); transition: all 0.2s; }
+        .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .nav-btn.primary { background: var(--white); color: var(--black); border-color: var(--white); }
+        .nav-btn.primary:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
+
+        /* AUTH MODAL */
+        .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(8,8,8,0.92); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.hidden { display: none; }
+        .modal { background: var(--panel); border: 1px solid var(--border); padding: 48px; width: 100%; max-width: 420px; position: relative; }
+        .modal-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
+        .modal-logo-text { font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
+        .modal-badge { font-size: 9px; color: var(--accent); letter-spacing: 0.14em; }
+        .modal h2 { font-family: var(--font-display); font-size: 32px; font-weight: 300; line-height: 1.05; margin-bottom: 8px; }
+        .modal h2 em { font-style: italic; color: var(--gray-light); }
+        .modal p { font-size: 12px; color: var(--gray); margin-bottom: 32px; line-height: 1.7; }
+        .modal-tabs { display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
+        .modal-tab { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; color: var(--gray); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
+        .modal-tab.active { color: var(--white); border-bottom-color: var(--accent); }
+        .modal-form { display: flex; flex-direction: column; gap: 12px; }
+        .modal-input { background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 13px 16px; outline: none; width: 100%; transition: border-color 0.2s; }
+        .modal-input::placeholder { color: var(--dim); }
+        .modal-input:focus { border-color: var(--border-hover); }
+        .modal-submit { background: var(--white); color: var(--black); border: none; padding: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+        .modal-submit:hover { background: var(--accent); color: var(--black); }
+        .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .modal-error { font-size: 11px; color: #ff6b6b; padding: 10px 14px; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); display: none; }
+        .modal-success { font-size: 11px; color: var(--accent); padding: 10px 14px; background: var(--accent-dim); border: 1px solid var(--accent-border); display: none; }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--dim); font-size: 18px; cursor: pointer; }
+        .modal-close:hover { color: var(--white); }
+        .modal-divider { text-align: center; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin: 4px 0; }
+
+        /* PAYWALL MODAL */
+        .paywall-modal { background: var(--panel); border: 1px solid var(--accent-border); padding: 48px; width: 100%; max-width: 480px; position: relative; }
+        .paywall-eyebrow { font-size: 9px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
+        .paywall-title { font-family: var(--font-display); font-size: 36px; font-weight: 300; line-height: 1.05; margin-bottom: 12px; }
+        .paywall-title em { font-style: italic; color: var(--gray-light); }
+        .paywall-desc { font-size: 12px; color: var(--gray); line-height: 1.8; margin-bottom: 32px; }
+        .paywall-plans { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-bottom: 28px; }
+        .paywall-plan { background: var(--panel-2); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .paywall-plan.featured { background: rgba(204,255,0,0.06); border-left: 2px solid var(--accent); }
+        .paywall-plan-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--off-white); }
+        .paywall-plan-price { font-family: var(--font-display); font-size: 22px; font-weight: 300; color: var(--white); }
+        .paywall-plan-price span { font-family: var(--font-mono); font-size: 11px; color: var(--gray); }
+        .paywall-cta { width: 100%; background: var(--accent); color: var(--black); border: none; padding: 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; margin-bottom: 12px; transition: opacity 0.2s; }
+        .paywall-cta:hover { opacity: 0.85; }
+        .paywall-skip { width: 100%; background: transparent; color: var(--dim); border: 1px solid var(--border); padding: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+        .paywall-skip:hover { color: var(--gray); border-color: var(--border-hover); }
+        .msg-counter { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); }
+        .msg-counter.warning { color: #ff9944; }
+
+        /* HERO */
+        .hero { min-height: 100vh; padding: 140px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; overflow: hidden; }
+        .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 70% at 5% 50%, rgba(204,255,0,0.025) 0%, transparent 70%); pointer-events: none; }
+        .hero-left { position: relative; z-index: 1; }
+        .eyebrow { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; }
+        .eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gray); }
+        h1 { font-family: var(--font-display); font-size: clamp(56px, 7vw, 108px); font-weight: 300; line-height: 0.88; letter-spacing: -0.015em; margin-bottom: 36px; color: var(--white); }
+        h1 em { font-style: italic; color: var(--gray-light); }
+        .hero-desc { font-size: 13px; color: var(--gray); max-width: 400px; line-height: 1.85; margin-bottom: 44px; }
+        .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+        .btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 14px 28px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; transition: all 0.22s; }
+        .btn-primary { background: var(--white); color: var(--black); }
+        .btn-primary:hover { background: var(--accent); color: var(--black); }
+        .btn-ghost { background: transparent; color: var(--gray); border: 1px solid var(--border); }
+        .btn-ghost:hover { border-color: var(--border-hover); color: var(--white); }
+
+        .hero-signals { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+        .signal-card { background: var(--panel); border: 1px solid var(--border); padding: 16px 20px; position: relative; overflow: hidden; }
+        .signal-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); opacity: 0.4; }
+        .signal-meta { font-size: 8px; letter-spacing: 0.22em; color: var(--gray); text-transform: uppercase; margin-bottom: 6px; }
+        .signal-name { font-size: 13px; color: var(--white); margin-bottom: 10px; }
+        .signal-track { height: 1px; background: var(--border); position: relative; margin-bottom: 6px; }
+        .signal-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); opacity: 0.6; transition: width 2.5s cubic-bezier(0.16,1,0.3,1); width: 0%; }
+        .signal-pct { font-size: 9px; color: var(--gray-light); text-align: right; letter-spacing: 0.1em; }
+
+        /* CHAT SECTION */
+        .section { padding: 0 48px 80px; max-width: 1440px; margin: 0 auto; }
+        #chat { padding-top: 24px; }
+        .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 0 22px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+        .app-bar-label { font-size: 9px; letter-spacing: 0.3em; color: var(--gray); text-transform: uppercase; }
+        .app-bar-right { display: flex; align-items: center; gap: 16px; }
+        .tier-pill { font-size: 9px; letter-spacing: 0.18em; padding: 5px 12px; background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+        .interface { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
+
+        /* HISTORY */
+        .history-panel { background: var(--panel); border: 1px solid var(--border); }
+        .panel-head { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: 0.22em; color: var(--gray); text-transform: uppercase; }
+        .history-list { max-height: 200px; overflow-y: auto; }
+        .history-list::-webkit-scrollbar { width: 3px; }
+        .history-list::-webkit-scrollbar-thumb { background: var(--border); }
+        .history-item { padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.18s; }
+        .history-item:hover { background: var(--panel-2); }
+        .history-item:last-child { border-bottom: none; }
+        .history-item-title { font-size: 11px; color: var(--off-white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+        .history-item-date { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+        .history-empty { padding: 20px 18px; font-size: 11px; color: var(--dim); text-align: center; }
+        .new-chat-btn { width: 100%; padding: 11px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: transparent; border: 1px solid var(--border); color: var(--gray); cursor: pointer; transition: all 0.18s; }
+        .new-chat-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* CHAT */
+        .chat-panel { background: var(--panel); border: 1px solid var(--border); display: flex; flex-direction: column; height: 640px; }
+        .chat-top { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .chat-status { display: flex; align-items: center; gap: 8px; font-size: 9px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+        .dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 2.5s ease infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .voice-toggle { display: flex; align-items: center; gap: 8px; font-size: 9px; color: var(--gray); letter-spacing: 0.12em; cursor: pointer; }
+        .voice-toggle input { display: none; }
+        .toggle-track { width: 28px; height: 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 7px; position: relative; transition: all 0.2s; }
+        .toggle-thumb { position: absolute; left: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: var(--gray); transition: all 0.2s; }
+        .voice-toggle input:checked + .toggle-track { border-color: var(--accent); }
+        .voice-toggle input:checked + .toggle-track .toggle-thumb { left: 16px; background: var(--accent); }
+        .quick-bar { padding: 12px 20px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+        .qp { font-size: 10px; letter-spacing: 0.1em; color: var(--gray); border: 1px solid var(--border); padding: 5px 11px; background: transparent; font-family: var(--font-mono); cursor: pointer; transition: all 0.18s; }
+        .qp:hover { border-color: var(--accent); color: var(--accent); }
+        .voice-status { padding: 6px 20px; font-size: 9px; letter-spacing: 0.18em; color: var(--accent); display: none; align-items: center; gap: 8px; text-transform: uppercase; }
+        .voice-status.show { display: flex; }
+        .vs-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 0.8s ease infinite; }
+
+        .chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
+        .chat-body::-webkit-scrollbar { width: 3px; }
+        .chat-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+        /* USER MESSAGE */
+        .msg { max-width: 88%; animation: slideUp 0.28s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .msg.user { align-self: flex-end; }
+        .msg.ai { align-self: flex-start; width: 100%; max-width: 100%; }
+        .msg-label { font-size: 8px; letter-spacing: 0.22em; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; }
+        .msg.user .msg-label { text-align: right; }
+        .msg-body { padding: 13px 17px; font-size: 13px; line-height: 1.75; }
+        .msg.user .msg-body { background: var(--white); color: var(--black); }
+
+        /* AI RESPONSE — VISUAL CARDS */
+        .ai-response { display: flex; flex-direction: column; gap: 4px; }
+        .ai-plain { background: var(--panel-2); border: 1px solid var(--border); padding: 18px 20px; font-size: 13px; line-height: 1.9; color: var(--off-white); }
+
+        /* SECTION CARDS — unified single card */
+        .section-card { border: 1px solid rgba(255,255,255,0.07); background: #1e1e1a; margin-bottom: 4px; overflow: hidden; padding: 0; }
+        .section-title-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px 0 18px; }
+        .section-title-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 300; font-style: italic; color: #b0b0a8; letter-spacing: 0.01em; flex-shrink: 0; text-transform: none; }
+        .section-title-line { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+        .section-body { padding: 8px 18px 16px 18px; font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9; color: #e0e0d8; }
+
+        /* COLOR SWATCHES INLINE */
+        .color-swatch-inline { display: inline-flex; align-items: center; gap: 5px; vertical-align: middle; margin: 0 2px; }
+        .color-dot { width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.15); display: inline-block; flex-shrink: 0; }
+        .hex-text { font-family: var(--font-mono); font-size: 11px; color: var(--gray-light); }
+
+        /* STREAMING CURSOR */
+        .streaming-cursor { display: inline-block; width: 2px; height: 14px; background: var(--accent); animation: cursor-blink 0.7s ease infinite; vertical-align: middle; margin-left: 2px; }
+        @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* THINKING INDICATOR */
+        .thinking-indicator { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--panel-2); border: 1px solid var(--border); width: fit-content; }
+        .thinking-symbol { width: 18px; height: 18px; position: relative; }
+        .thinking-symbol::before { content: ''; position: absolute; inset: 0; border: 1.5px solid var(--accent); transform: rotate(45deg); animation: think-rotate 2s linear infinite; }
+        .thinking-symbol::after { content: ''; position: absolute; inset: 4px; background: var(--accent); transform: rotate(45deg); animation: think-pulse 2s ease infinite; }
+        @keyframes think-rotate { 0% { transform: rotate(45deg); } 100% { transform: rotate(405deg); } }
+        @keyframes think-pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(0.8); } 50% { opacity: 1; transform: rotate(45deg) scale(1); } }
+        .thinking-text { font-size: 10px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+
+        .speak-btn { margin-top: 8px; background: none; border: none; font-size: 9px; letter-spacing: 0.14em; color: var(--dim); cursor: pointer; font-family: var(--font-mono); padding: 2px 0; transition: color 0.18s; }
+        .speak-btn:hover { color: var(--gray-light); }
+
+        .chat-foot { border-top: 1px solid var(--border); padding: 14px 20px; display: flex; gap: 10px; align-items: flex-end; }
+        textarea#chatInput { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 15px; resize: none; outline: none; min-height: 44px; max-height: 120px; line-height: 1.6; transition: border-color 0.18s; }
+        textarea#chatInput::placeholder { color: var(--dim); }
+        textarea#chatInput:focus { border-color: var(--border-hover); }
+        #micBtn { width: 44px; height: 44px; background: var(--panel-2); border: 1px solid var(--border); color: var(--gray); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; flex-shrink: 0; }
+        #micBtn:hover { border-color: var(--border-hover); color: var(--white); }
+        #micBtn.recording { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+        #sendBtn { background: var(--white); color: var(--black); border: none; padding: 12px 22px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; cursor: pointer; height: 44px; transition: all 0.18s; white-space: nowrap; }
+        #sendBtn:hover { background: var(--accent); color: var(--black); }
+        #sendBtn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--white); color: var(--black); }
+
+        /* RIGHT COLUMN */
+        .right-col { display: flex; flex-direction: column; gap: 16px; }
+        .panel { background: var(--panel); border: 1px solid var(--border); }
+        .upload-zone { margin: 14px; padding: 28px 16px; border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; cursor: pointer; transition: all 0.2s; }
+        .upload-zone:hover, .upload-zone.over { border-color: var(--accent); background: var(--accent-dim); }
+        .upload-icon { font-size: 24px; opacity: 0.3; }
+        .upload-hint { font-size: 12px; color: var(--gray); line-height: 1.6; }
+        .upload-hint span { color: var(--accent); text-decoration: underline; }
+        .upload-cap { font-size: 9px; color: var(--dim); letter-spacing: 0.14em; }
+        #fileInput { display: none; }
+        #imgPreviewWrap { display: none; padding: 10px; }
+        #imgPreviewWrap img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
+        .img-actions { display: none; gap: 8px; padding: 0 10px 12px; }
+        .ia-btn { flex: 1; padding: 9px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; transition: all 0.18s; }
+        .ia-btn:hover { border-color: var(--border-hover); color: var(--white); }
+        .ia-btn.go { background: var(--white); color: var(--black); border-color: var(--white); }
+        .ia-btn.go:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
+        .ia-btn.go:disabled { opacity: 0.45; cursor: not-allowed; }
+        .analysis-out { display: none; padding: 0 18px 18px; animation: slideUp 0.3s ease; }
+        .analysis-label { font-size: 8px; letter-spacing: 0.24em; color: var(--gray); text-transform: uppercase; margin-bottom: 8px; }
+        .analysis-text { font-size: 12px; color: var(--off-white); line-height: 1.8; white-space: pre-line; }
+
+        /* WEEKLY BRIEF */
+        .brief-body { padding: 18px; }
+        .brief-week { font-size: 8px; letter-spacing: 0.24em; color: var(--gray); text-transform: uppercase; margin-bottom: 10px; }
+        .brief-title { font-family: var(--font-display); font-size: 20px; font-weight: 300; font-style: italic; line-height: 1.15; margin-bottom: 16px; color: var(--white); }
+        .swatches { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .swatch-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .swatch { width: 26px; height: 26px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.08); }
+        .swatch-name { font-size: 7px; color: var(--dim); letter-spacing: 0.1em; }
+        .brief-signals { display: flex; flex-direction: column; gap: 9px; }
+        .bs { display: flex; align-items: center; font-size: 11px; }
+        .bs-name { color: var(--off-white); min-width: 110px; }
+        .bs-track { flex: 1; height: 1px; background: var(--border); margin: 0 10px; position: relative; }
+        .bs-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--gray); opacity: 0.6; }
+        .bs-pct { font-size: 9px; color: var(--gray-light); min-width: 30px; text-align: right; }
+
+        /* PRICING */
+        .pricing-wrap { padding: 80px 48px; max-width: 1440px; margin: 0 auto; }
+        .section-eye { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+        .section-eye::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gray); }
+        .pricing-h { font-family: var(--font-display); font-size: clamp(36px, 4vw, 60px); font-weight: 300; line-height: 1.05; margin-bottom: 14px; }
+        .pricing-h em { font-style: italic; color: var(--gray-light); }
+        .pricing-sub { font-size: 13px; color: var(--gray); margin-bottom: 52px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+        .pc { background: var(--black); padding: 40px 32px; }
+        .pc.featured { background: var(--panel); }
+        .pc-label { font-size: 9px; letter-spacing: 0.28em; color: var(--gray); text-transform: uppercase; margin-bottom: 22px; }
+        .pc-label .badge { display: inline-block; font-size: 8px; padding: 2px 7px; background: rgba(255,255,255,0.05); color: var(--gray-light); border: 1px solid var(--border); margin-left: 8px; }
+        .pc-price { font-family: var(--font-display); font-size: 52px; font-weight: 300; line-height: 1; margin-bottom: 6px; color: var(--white); }
+        .pc-price sup { font-size: 22px; vertical-align: super; }
+        .pc-price span { font-family: var(--font-mono); font-size: 14px; color: var(--gray); }
+        .pc-desc { font-size: 12px; color: var(--gray); line-height: 1.7; margin-bottom: 28px; min-height: 52px; }
+        .pc-features { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 36px; }
+        .pc-features li { font-size: 12px; color: var(--off-white); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+        .pc-features li::before { content: '✓'; color: var(--accent); font-size: 10px; flex-shrink: 0; margin-top: 2px; }
+        .pc-features li.off { color: var(--dim); }
+        .pc-features li.off::before { content: '—'; color: var(--dim); }
+        .pc-cta { display: block; text-align: center; text-decoration: none; }
+
+        footer { border-top: 1px solid var(--border); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; }
+        .foot-copy { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
+        .foot-links { display: flex; gap: 28px; }
+        .foot-links a { font-size: 10px; letter-spacing: 0.14em; color: var(--gray); text-decoration: none; transition: color 0.18s; text-transform: uppercase; }
+        .foot-links a:hover { color: var(--white); }
+
+        @media (max-width: 1024px) {
+            nav { padding: 14px 24px; }
+            .hero { padding: 120px 24px 60px; grid-template-columns: 1fr; gap: 48px; }
+            .hero-signals { display: grid; grid-template-columns: 1fr 1fr; }
+            .section, .pricing-wrap { padding-left: 24px; padding-right: 24px; }
+            .interface { grid-template-columns: 1fr; }
+            .chat-panel { height: 560px; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 20px; text-align: center; padding: 28px 24px; }
+        }
+        @media (max-width: 640px) {
+            h1 { font-size: 46px; }
+            .nav-links { display: none; }
+            .hero-signals { grid-template-columns: 1fr; }
+            .pc { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-logo">
+            <span class="modal-logo-text">PMPNY</span>
+            <span class="modal-badge">INTELLIGENCE</span>
+        </div>
+        <h2>Your trend<br><em>intelligence.</em></h2>
+        <p>Sign in to save your chat history and unlock your personalized trend analysis.</p>
+        <div class="modal-tabs">
+            <button class="modal-tab active" onclick="switchTab('signin')">Sign In</button>
+            <button class="modal-tab" onclick="switchTab('signup')">Create Account</button>
+        </div>
+        <div id="signinForm" class="modal-form">
+            <button class="modal-submit" style="background:#fff;color:#000;border:none;display:flex;align-items:center;justify-content:center;gap:10px;font-size:11px;" onclick="signInWithGoogle()">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+            <div class="modal-divider">or</div>
+            <input type="email" class="modal-input" id="signinEmail" placeholder="Email address" autocomplete="email">
+            <input type="password" class="modal-input" id="signinPassword" placeholder="Password" autocomplete="current-password">
+            <div class="modal-error" id="signinError"></div>
+            <button class="modal-submit" id="signinBtn" onclick="signIn()">Sign In →</button>
+            <div class="modal-divider">or</div>
+            <button class="modal-submit" style="background:var(--panel-2);color:var(--white);border:1px solid var(--border);" onclick="continueAsGuest()">Continue as Guest</button>
+        </div>
+        <div id="signupForm" class="modal-form" style="display:none">
+            <button class="modal-submit" style="background:#fff;color:#000;border:none;display:flex;align-items:center;justify-content:center;gap:10px;font-size:11px;" onclick="signInWithGoogle()">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+            <div class="modal-divider">or</div>
+            <input type="email" class="modal-input" id="signupEmail" placeholder="Email address" autocomplete="email">
+            <input type="password" class="modal-input" id="signupPassword" placeholder="Password (min 6 chars)" autocomplete="new-password">
+            <div class="modal-error" id="signupError"></div>
+            <div class="modal-success" id="signupSuccess">✓ Check your email to confirm your account.</div>
+            <button class="modal-submit" id="signupBtn" onclick="signUp()">Create Account →</button>
+            <div class="modal-divider">or</div>
+            <button class="modal-submit" style="background:var(--panel-2);color:var(--white);border:1px solid var(--border);" onclick="continueAsGuest()">Continue as Guest</button>
+        </div>
+    </div>
+</div>
+
+<!-- PAYWALL MODAL -->
+<div class="modal-overlay hidden" id="paywallModal">
+    <div class="paywall-modal">
+        <button class="modal-close" onclick="closePaywall()">×</button>
+        <div class="paywall-eyebrow">Daily Limit Reached</div>
+        <h2 class="paywall-title">Upgrade for<br><em>unlimited access.</em></h2>
+        <p class="paywall-desc">You've used your 20 free messages today. Upgrade to Plus for unlimited trend intelligence, mood boards, and visual palettes.</p>
+        <div class="paywall-plans">
+            <div class="paywall-plan">
+                <span class="paywall-plan-name">Spark</span>
+                <span class="paywall-plan-price">Free <span>/ forever</span></span>
+            </div>
+            <div class="paywall-plan featured">
+                <span class="paywall-plan-name">Plus</span>
+                <span class="paywall-plan-price">$9 <span>/ mo</span></span>
+            </div>
+            <div class="paywall-plan">
+                <span class="paywall-plan-name">Studio</span>
+                <span class="paywall-plan-price">$50 <span>/ mo</span></span>
+            </div>
+        </div>
+        <button class="paywall-cta" onclick="handleUpgrade()">Get Plus — $9/mo →</button>
+        <button class="paywall-skip" onclick="closePaywall()">Maybe tomorrow</button>
+    </div>
+</div>
+
+<!-- NAV -->
+<nav>
+    <a href="index.html" class="nav-logo">
+        <span class="nav-logo-text">PMPNY Design Studio</span>
+        <span class="nav-badge">— AI</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="studio.html">Studio</a></li>
+        <li><a href="work.html">Work</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="ai.html" class="active">AI</a></li>
+    </ul>
+    <div class="nav-right">
+        <span class="nav-user" id="navUserEmail"></span>
+        <button class="nav-btn" id="authNavBtn" onclick="showModal()">Sign In</button>
+        <a href="contact.html" class="nav-btn primary">Start a Project</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-left">
+        <div class="eyebrow">PMPNY Intelligence — SS27</div>
+        <h1>Trend intel<br>for <em>every</em><br>designer.</h1>
+        <p class="hero-desc">AI-powered fashion trend intelligence. Colors, silhouettes, materials — from runway to resale. Speak it, type it, or upload a photo. Built for independent designers worldwide.</p>
+        <div class="hero-ctas">
+            <a href="#chat" class="btn btn-primary">Start Free →</a>
+            <a href="#pricing" class="btn btn-ghost">See Plans</a>
+        </div>
+    </div>
+    <div class="hero-signals">
+        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Structural Volume</div><div class="signal-track"><div class="signal-fill" data-w="84"></div></div><div class="signal-pct">↑ 84%</div></div>
+        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Warm Neutral Tones</div><div class="signal-track"><div class="signal-fill" data-w="63"></div></div><div class="signal-pct">↑ 63%</div></div>
+        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Hardware Detailing</div><div class="signal-track"><div class="signal-fill" data-w="71"></div></div><div class="signal-pct">↑ 71%</div></div>
+        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Bio Material Adoption</div><div class="signal-track"><div class="signal-fill" data-w="58"></div></div><div class="signal-pct">↑ 58%</div></div>
+        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Chain Hardware</div><div class="signal-track"><div class="signal-fill" data-w="47"></div></div><div class="signal-pct">↑ 47%</div></div>
+    </div>
+</section>
+
+<!-- CHAT -->
+<div class="section" id="chat">
+    <div class="app-bar">
+        <span class="app-bar-label">Intelligence Platform</span>
+        <div class="app-bar-right">
+            <span class="msg-counter" id="msgCounter">20 messages left today</span>
+            <span class="tier-pill" id="tierPill">SPARK — FREE</span>
+        </div>
+    </div>
+    <div class="interface">
+        <div class="chat-panel">
+            <div class="chat-top">
+                <div class="chat-status"><div class="dot-live"></div>AI Trend Analyst — Online</div>
+                <label class="voice-toggle">
+                    <input type="checkbox" id="autoSpeak">
+                    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                    Auto-speak
+                </label>
+            </div>
+            <div class="quick-bar">
+                <button class="qp" onclick="qp('What are the latest handbag trends for FW27?')">FW27 Bags</button>
+                <button class="qp" onclick="qp('Top colors for Spring Summer 2027')">SS27 Colors</button>
+                <button class="qp" onclick="qp('Trending sustainable materials for accessories 2027')">Eco Materials</button>
+                <button class="qp" onclick="qp('Hardware and chain trends for luxury accessories 2027')">Hardware</button>
+            </div>
+            <div class="voice-status" id="voiceStatus"><div class="vs-dot"></div><span id="vsText">Listening...</span></div>
+            <div class="chat-body" id="chatBody">
+                <div class="msg ai">
+                    <div class="msg-label">PMPNY Intelligence</div>
+                    <div class="ai-response">
+                        <div class="ai-plain">Welcome. I'm your AI trend analyst — built by PMPNY Design Studio.<br><br>Ask me anything about fashion trends for any season — colors, silhouettes, materials, hardware, market signals.<br><br>Tap the mic to speak in any language. Upload an image for instant visual trend analysis.</div>
+                    </div>
+                    <button class="speak-btn" onclick="speakMsg(this)">Listen →</button>
+                </div>
+            </div>
+            <div class="chat-foot">
+                <textarea id="chatInput" placeholder="Ask about trends... or tap the mic to speak" rows="1" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
+                <button id="micBtn" onclick="toggleMic()" title="Speak">🎤</button>
+                <button id="sendBtn" onclick="send()">Send →</button>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="history-panel panel">
+                <div class="panel-head">
+                    <span>Chat History</span>
+                    <button class="new-chat-btn" onclick="newChat()" style="width:auto;padding:4px 10px;font-size:8px;">+ New</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <div class="history-empty">Sign in to save history</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><span>Visual Analysis</span><span id="uploadLimit">5 free / mo</span></div>
+                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event)">
+                    <div class="upload-icon">⬆</div>
+                    <div class="upload-hint">Drop an image or <span>browse</span><br>Get instant trend analysis</div>
+                    <div class="upload-cap">JPG · PNG · WEBP — Max 5MB</div>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" onchange="onFile(event)">
+                <div id="imgPreviewWrap"><img id="imgPreview" src="" alt="Preview"></div>
+                <div class="img-actions" id="imgActions">
+                    <button class="ia-btn" onclick="clearImg()">Clear</button>
+                    <button class="ia-btn go" id="analyzeBtn" onclick="analyze()">Analyze →</button>
+                </div>
+                <div class="analysis-out" id="analysisOut">
+                    <div class="analysis-label">Trend Analysis</div>
+                    <div class="analysis-text" id="analysisText"></div>
+                    <button class="speak-btn" onclick="speakAnalysis()" style="margin-top:10px">Listen →</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><span>Weekly Brief</span><span>SS27</span></div>
+                <div class="brief-body">
+                    <div class="brief-week">Week 18 · May 2026</div>
+                    <div class="brief-title">The Architecture of Restraint</div>
+                    <div class="swatches">
+                        <div class="swatch-wrap"><div class="swatch" style="background:#6B1C23"></div><div class="swatch-name">Burgundy</div></div>
+                        <div class="swatch-wrap"><div class="swatch" style="background:#3D2817"></div><div class="swatch-name">Bark</div></div>
+                        <div class="swatch-wrap"><div class="swatch" style="background:#9CAF88"></div><div class="swatch-name">Sage</div></div>
+                        <div class="swatch-wrap"><div class="swatch" style="background:#e8e0d0"></div><div class="swatch-name">Bone</div></div>
+                        <div class="swatch-wrap"><div class="swatch" style="background:#080808;border-color:rgba(255,255,255,0.15)"></div><div class="swatch-name">Matte</div></div>
+                    </div>
+                    <div class="brief-signals">
+                        <div class="bs"><span class="bs-name">Structural Volume</span><div class="bs-track"><div class="bs-fill" style="width:84%"></div></div><span class="bs-pct">↑84%</span></div>
+                        <div class="bs"><span class="bs-name">Hardware Detail</span><div class="bs-track"><div class="bs-fill" style="width:71%"></div></div><span class="bs-pct">↑71%</span></div>
+                        <div class="bs"><span class="bs-name">Bio Materials</span><div class="bs-track"><div class="bs-fill" style="width:58%"></div></div><span class="bs-pct">↑58%</span></div>
+                        <div class="bs"><span class="bs-name">Chain Hardware</span><div class="bs-track"><div class="bs-fill" style="width:47%"></div></div><span class="bs-pct">↑47%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-wrap" id="pricing">
+    <div class="section-eye">Pricing</div>
+    <h2 class="pricing-h">Intelligence for<br>every <em>budget.</em></h2>
+    <p class="pricing-sub">Start free. Upgrade when you're ready. No contracts.</p>
+    <div class="pricing-grid">
+        <div class="pc">
+            <div class="pc-label">Spark</div>
+            <div class="pc-price">Free <span>forever</span></div>
+            <div class="pc-desc">Everything you need to start making smarter design decisions.</div>
+            <ul class="pc-features">
+                <li>Weekly visual trend brief</li>
+                <li>20 AI messages per day</li>
+                <li>Voice input & text-to-speech</li>
+                <li>5 image uploads per month</li>
+                <li>Chat history (sign in required)</li>
+                <li class="off">Mood board generation</li>
+                <li class="off">Visual color palettes</li>
+                <li class="off">PDF & mood board export</li>
+            </ul>
+            <button onclick="showModal()" class="btn btn-primary pc-cta">Start Free →</button>
+        </div>
+        <div class="pc featured">
+            <div class="pc-label">Plus <span class="badge">POPULAR</span></div>
+            <div class="pc-price"><sup>$</sup>9 <span>/ mo</span></div>
+            <div class="pc-desc">Unlimited access for the serious working designer.</div>
+            <ul class="pc-features">
+                <li>Everything in Spark</li>
+                <li>Unlimited AI messages</li>
+                <li>Unlimited image uploads</li>
+                <li>Mood board generation</li>
+                <li>Visual color palettes</li>
+                <li>Full brief archive + search</li>
+                <li>Export as PDF</li>
+            </ul>
+            <button onclick="handleUpgrade()" class="btn btn-primary pc-cta">Get Plus →</button>
+        </div>
+        <div class="pc">
+            <div class="pc-label">Studio</div>
+            <div class="pc-price"><sup>$</sup>50 <span>/ mo</span></div>
+            <div class="pc-desc">Francesco's expert eyes on your work. Async. Quarterly.</div>
+            <ul class="pc-features">
+                <li>Everything in Plus</li>
+                <li>Quarterly trend analysis on your work</li>
+                <li>Written feedback PDF via email</li>
+                <li>Early access to new features</li>
+                <li>Direct studio intelligence</li>
+            </ul>
+            <button onclick="handleUpgrade('studio')" class="btn btn-primary pc-cta">Get Studio →</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="foot-copy">© 2026 PMPNY Intelligence — A PMPNY Design Studio Product</div>
+    <div class="foot-links">
+        <a href="index.html">Portfolio</a>
+        <a href="studio.html">Studio</a>
+        <a href="https://pimpinicchio.com">Shop</a>
+        <a href="contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+// SUPABASE
+const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentConvId = null;
+let isGuest = false;
+const FREE_LIMIT = 20;
+
+// AUTH
+sb.auth.onAuthStateChange((event, session) => {
+    currentUser = session?.user || null;
+    updateAuthUI();
+    if (currentUser) {
+        loadHistory();
+        closeModal();
+        if (window.location.hash.includes('access_token')) {
+            window.history.replaceState({}, document.title, '/ai');
+        }
+    }
+});
+
+async function signInWithGoogle() {
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pmpny.com/ai' } });
+    if (error) console.error(error);
+}
+
+async function signIn() {
+    const email = document.getElementById('signinEmail').value.trim();
+    const pass = document.getElementById('signinPassword').value;
+    const btn = document.getElementById('signinBtn');
+    const err = document.getElementById('signinError');
+    if (!email || !pass) { showErr(err, 'Fill in all fields.'); return; }
+    btn.disabled = true; btn.textContent = 'Signing in...';
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Sign In →'; }
+}
+
+async function signUp() {
+    const email = document.getElementById('signupEmail').value.trim();
+    const pass = document.getElementById('signupPassword').value;
+    const btn = document.getElementById('signupBtn');
+    const err = document.getElementById('signupError');
+    const suc = document.getElementById('signupSuccess');
+    if (!email || !pass) { showErr(err, 'Fill in all fields.'); return; }
+    if (pass.length < 6) { showErr(err, 'Password must be at least 6 characters.'); return; }
+    btn.disabled = true; btn.textContent = 'Creating account...';
+    const { error } = await sb.auth.signUp({ email, password: pass });
+    if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Create Account →'; }
+    else { err.style.display = 'none'; suc.style.display = 'block'; btn.textContent = 'Check your email'; }
+}
+
+async function signOut() {
+    await sb.auth.signOut();
+    currentUser = null; currentConvId = null; isGuest = false;
+    updateAuthUI();
+    document.getElementById('historyList').innerHTML = '<div class="history-empty">Sign in to save history</div>';
+}
+
+function continueAsGuest() { isGuest = true; closeModal(); updateAuthUI(); }
+
+function updateAuthUI() {
+    const btn = document.getElementById('authNavBtn');
+    const emailEl = document.getElementById('navUserEmail');
+    if (currentUser) {
+        emailEl.textContent = currentUser.email.split('@')[0];
+        btn.textContent = 'Sign Out';
+        btn.onclick = signOut;
+    } else {
+        emailEl.textContent = '';
+        btn.textContent = 'Sign In';
+        btn.onclick = showModal;
+    }
+    updateMsgCounter();
+}
+
+function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+function showModal() { document.getElementById('authModal').classList.remove('hidden'); }
+function closeModal() { document.getElementById('authModal').classList.add('hidden'); }
+function closePaywall() { document.getElementById('paywallModal').classList.add('hidden'); }
+async function handleUpgrade(plan = 'plus') {
+    const btn = event?.target;
+    if (btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
+    try {
+        const res = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan, email: currentUser?.email || '' })
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+        else { alert('Something went wrong. Please try again.'); if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; } }
+    } catch(e) {
+        alert('Something went wrong. Please try again.');
+        if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; }
+    }
+}
+function switchTab(tab) {
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('signinForm').style.display = tab === 'signin' ? 'flex' : 'none';
+    document.getElementById('signupForm').style.display = tab === 'signup' ? 'flex' : 'none';
+}
+
+// MESSAGE COUNTER
+function getTodayKey() { return 'pmpny_msgs_' + new Date().toISOString().split('T')[0]; }
+function getMsgCount() { return parseInt(localStorage.getItem(getTodayKey()) || '0'); }
+function incrementMsgCount() { localStorage.setItem(getTodayKey(), getMsgCount() + 1); updateMsgCounter(); }
+function updateMsgCounter() {
+    const count = getMsgCount();
+    const remaining = Math.max(0, FREE_LIMIT - count);
+    const el = document.getElementById('msgCounter');
+    if (remaining <= 5) { el.className = 'msg-counter warning'; el.textContent = remaining + ' messages left today'; }
+    else if (remaining <= 0) { el.className = 'msg-counter warning'; el.textContent = 'Daily limit reached'; }
+    else { el.className = 'msg-counter'; el.textContent = remaining + ' messages left today'; }
+}
+function checkLimit() {
+    if (getMsgCount() >= FREE_LIMIT) {
+        document.getElementById('paywallModal').classList.remove('hidden');
+        return false;
+    }
+    return true;
+}
+
+// HISTORY
+async function loadHistory() {
+    if (!currentUser) return;
+    const { data } = await sb.from('conversations').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(20);
+    const list = document.getElementById('historyList');
+    if (!data || data.length === 0) { list.innerHTML = '<div class="history-empty">No conversations yet</div>'; return; }
+    list.innerHTML = data.map(c => `<div class="history-item" onclick="loadConversation('${c.id}')"><div class="history-item-title">${c.title}</div><div class="history-item-date">${new Date(c.created_at).toLocaleDateString()}</div></div>`).join('');
+}
+
+async function loadConversation(convId) {
+    if (!currentUser) return;
+    currentConvId = convId;
+    const { data } = await sb.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
+    if (!data) return;
+    const body = document.getElementById('chatBody');
+    body.innerHTML = '';
+    history.length = 0;
+    data.forEach(msg => { history.push({ role: msg.role, content: msg.content }); addMsg(msg.role === 'user' ? 'user' : 'ai', msg.content); });
+}
+
+async function saveMessage(role, content) {
+    if (!currentUser) return;
+    if (!currentConvId) {
+        const title = content.substring(0, 50) + (content.length > 50 ? '...' : '');
+        const { data } = await sb.from('conversations').insert({ user_id: currentUser.id, title }).select().single();
+        if (data) { currentConvId = data.id; loadHistory(); }
+    }
+    if (currentConvId) await sb.from('messages').insert({ conversation_id: currentConvId, user_id: currentUser.id, role, content });
+}
+
+function newChat() {
+    currentConvId = null; history.length = 0;
+    document.getElementById('chatBody').innerHTML = `<div class="msg ai"><div class="msg-label">PMPNY Intelligence</div><div class="ai-response"><div class="ai-plain">New conversation started. What trends are you researching?</div></div></div>`;
+}
+
+// INIT
+window.addEventListener('load', () => {
+    setTimeout(() => { document.querySelectorAll('.signal-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 500);
+    updateMsgCounter();
+    setTimeout(() => { sb.auth.getSession().then(({ data }) => { if (!data.session && !isGuest) showModal(); }); }, 2000);
+});
+
+// PARSE & RENDER AI RESPONSE
+const SECTION_LABELS = { 'COLOR': 'Color', 'SILHOUETTE': 'Silhouette', 'MATERIAL': 'Material', 'HARDWARE': 'Hardware', 'MARKET SIGNAL': 'Market Signal', 'PREDICTION': 'Prediction' };
+
+function processText(text) {
+    // Convert markdown links [text](url) to HTML
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
+        (_, label, url) => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${label}</a>`);
+    // Convert bare https URLs to links
+    text = text.replace(/(?<![">])(https?:\/\/[^\s<>")\]]+)/g,
+        (url) => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${url}</a>`);
+    // Convert bare domains like versace.com, net-a-porter.com
+    text = text.replace(/(?<![/"@=a-zA-Z])([a-zA-Z0-9][a-zA-Z0-9-]*\.(com|net|org|io|co|it|fr|uk|de|es)(?:\/[^\s<>")\]]*)?)/g,
+        (match) => {
+            if (text.indexOf('href="') > -1 && text.indexOf(match) > text.indexOf('href="')) return match;
+            return `<a href="https://${match}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${match}</a>`;
+        });
+    // Hex colors to swatches
+    text = text.replace(/#([0-9A-Fa-f]{6})\b/g,
+        (match) => `<span class="color-swatch-inline"><span class="color-dot" style="background:${match}"></span><span class="hex-text">${match}</span></span>`);
+    // Highlight prices
+    text = text.replace(/(\$[\d,]+)/g, '<strong style="color:var(--off-white)">$1</strong>');
+    // Bold markdown
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Bullet points · 
+    text = text.replace(/^· /gm, '<span style="color:var(--accent);margin-right:6px;">·</span>');
+    return text;
+}
+
+function processColorSwatches(text) {
+    return processText(text);
+}
+
+function renderConversational(text) {
+    const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+    if (paragraphs.length <= 1) {
+        const div = document.createElement('div');
+        div.className = 'ai-plain';
+        div.innerHTML = processText(text.replace(/\n/g, '<br>'));
+        return [div];
+    }
+    return paragraphs.map(para => {
+        const div = document.createElement('div');
+        div.className = 'ai-plain';
+        div.style.marginBottom = '3px';
+        div.innerHTML = processText(para.replace(/\n/g, '<br>'));
+        return div;
+    });
+}
+
+function renderAIResponse(text) {
+    const container = document.createElement('div');
+    container.className = 'ai-response';
+
+    // Check if response has SECTION markers
+    if (!text.includes('SECTION:')) {
+        const plain = document.createElement('div');
+        plain.className = 'ai-plain';
+        plain.innerHTML = processColorSwatches(text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
+        container.appendChild(plain);
+        return container;
+    }
+
+    // Parse sections
+    const parts = text.split(/SECTION:\s*/);
+    parts.forEach((part, i) => {
+        if (i === 0) {
+            // Text before first section
+            const trimmed = part.trim();
+            if (trimmed) {
+                const plain = document.createElement('div');
+                plain.className = 'ai-plain';
+                plain.innerHTML = processColorSwatches(trimmed.replace(/\n/g, '<br>'));
+                container.appendChild(plain);
+            }
+            return;
+        }
+
+        const lines = part.trim().split('\n');
+        const sectionKey = lines[0].trim().replace(/\s+/g, ' ');
+        const content = lines.slice(1).join('\n').trim();
+
+        if (!content) return;
+
+        const card = document.createElement('div');
+        card.className = 'section-card';
+
+        const header = document.createElement('div');
+        header.className = 'section-header';
+
+        const label = document.createElement('span');
+        label.className = 'section-label-text';
+        label.textContent = SECTION_LABELS[sectionKey] || sectionKey;
+
+        const line = document.createElement('div');
+        line.className = 'section-line';
+
+        header.appendChild(label);
+        header.appendChild(line);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'section-content';
+        contentDiv.innerHTML = processColorSwatches(content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
+
+        card.appendChild(header);
+        card.appendChild(contentDiv);
+        container.appendChild(card);
+    });
+
+    return container;
+}
+
+// PROGRESSIVE DISPLAY
+async function displayProgressively(container, text) {
+    const body = document.getElementById('chatBody');
+
+    // Remove thinking indicator
+    const existing = container.querySelector('.thinking-indicator');
+    if (existing) existing.remove();
+
+    const hasSections = /^(COLOR|SILHOUETTE|MATERIAL|HARDWARE|MARKET SIGNAL|PREDICTION)\s*$/m.test(text);
+
+    if (!hasSections) {
+        // Split into paragraphs and show each one progressively
+        const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+        for (let i = 0; i < paragraphs.length; i++) {
+            const div = document.createElement('div');
+            div.className = 'ai-plain';
+            if (i > 0) div.style.marginTop = '4px';
+            div.style.opacity = '0';
+            div.style.transition = 'opacity 0.25s ease';
+            container.appendChild(div);
+            await new Promise(r => setTimeout(r, 30));
+            div.style.opacity = '1';
+            await typeText(div, paragraphs[i], body);
+            if (i < paragraphs.length - 1) await new Promise(r => setTimeout(r, 60));
+        }
+        return;
+    }
+
+    // Parse sections with simple headers
+    const sectionNames = ['COLOR', 'SILHOUETTE', 'MATERIAL', 'HARDWARE', 'MARKET SIGNAL', 'PREDICTION'];
+    const regex = new RegExp(`^(${sectionNames.join('|')})\\s*$`, 'm');
+    const parts = text.split(regex);
+
+    let i = 0;
+    // Text before first section
+    if (parts[0].trim()) {
+        const plain = document.createElement('div');
+        plain.className = 'ai-plain';
+        container.appendChild(plain);
+        await typeText(plain, parts[0].trim(), body);
+    }
+
+    // Section pairs
+    for (let j = 1; j < parts.length; j += 2) {
+        const sectionKey = parts[j]?.trim();
+        const content = parts[j + 1]?.trim();
+        if (!sectionKey || !content) continue;
+
+        const card = document.createElement('div');
+        card.className = 'section-card';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(8px)';
+        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+        const titleRow = document.createElement('div');
+        titleRow.className = 'section-title-row';
+
+        const titleText = document.createElement('span');
+        titleText.className = 'section-title-text';
+        titleText.textContent = sectionKey.charAt(0) + sectionKey.slice(1).toLowerCase().replace('signal', 'Signal');
+
+        const titleLine = document.createElement('div');
+        titleLine.className = 'section-title-line';
+
+        titleRow.appendChild(titleText);
+        titleRow.appendChild(titleLine);
+
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'section-body';
+
+        card.appendChild(titleRow);
+        card.appendChild(bodyDiv);
+        container.appendChild(card);
+
+        await new Promise(r => setTimeout(r, 50));
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+        body.scrollTop = body.scrollHeight;
+
+        await typeText(bodyDiv, content, body, 18);
+        bodyDiv.innerHTML = processText(content.replace(/\n/g, '<br>'));
+        await new Promise(r => setTimeout(r, 60));
+    }
+}
+
+async function typeText(el, text, body, speed = 20) {
+    // Get the final fully-processed HTML (with swatches, links, prices)
+    const finalHTML = processText(text);
+
+    // Type plain words for animation effect
+    const words = text.replace(/\n\n/g, ' ¶ ').replace(/\n/g, ' ').split(' ').filter(w => w !== '');
+    let shown = '';
+
+    for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        if (w === '¶') {
+            shown += '\n\n';
+        } else {
+            shown += (shown.length > 0 ? ' ' : '') + w;
+        }
+        // Show plain text with cursor during typing
+        el.innerHTML = shown.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>') + '<span class="streaming-cursor"></span>';
+        body.scrollTop = body.scrollHeight;
+        await new Promise(r => setTimeout(r, speed));
+    }
+
+    // At the end, show fully processed HTML with swatches, links, prices
+    el.innerHTML = finalHTML;
+    body.scrollTop = body.scrollHeight;
+}
+
+// CHAT
+const history = [];
+
+function isConversational(text) {
+    const t = text.toLowerCase().trim();
+    const conversational = ['ciao', 'hello', 'hi', 'hey', 'come stai', 'how are you', 'grazie', 'thanks', 'thank you', 'ok', 'okay', 'buongiorno', 'buonasera', 'good morning', 'good evening', 'bene', 'good', 'perfetto', 'great'];
+    return conversational.some(w => t.startsWith(w) || t === w) || t.length < 20;
+}
+
+async function send() {
+    const inp = document.getElementById('chatInput');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    // Check daily limit
+    if (!checkLimit()) return;
+
+    addUserMsg(txt);
+    inp.value = ''; inp.style.height = 'auto';
+    history.push({ role: 'user', content: txt });
+    saveMessage('user', txt);
+    incrementMsgCount();
+
+    document.getElementById('sendBtn').disabled = true;
+
+    // Create AI message container IMMEDIATELY
+    const body = document.getElementById('chatBody');
+    const msgEl = document.createElement('div');
+    msgEl.className = 'msg ai';
+    msgEl.innerHTML = '<div class="msg-label">PMPNY Intelligence</div>';
+    const responseContainer = document.createElement('div');
+    responseContainer.className = 'ai-response';
+
+    // Show thinking indicator RIGHT AWAY with smart text
+    const thinkingText = isConversational(txt) ? 'Thinking' : 'Analyzing trends';
+    const thinking = document.createElement('div');
+    thinking.className = 'thinking-indicator';
+    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text" id="thinkingText">${thinkingText}</span>`;
+    responseContainer.appendChild(thinking);
+    msgEl.appendChild(responseContainer);
+    body.appendChild(msgEl);
+    body.scrollTop = body.scrollHeight;
+
+    // Cycle through messages while waiting
+    const messages = isConversational(txt)
+        ? ['Thinking', 'Processing', 'Almost there']
+        : ['Analyzing trends', 'Searching signals', 'Scanning runway', 'Reading market data', 'Almost there'];
+    let msgIdx = 0;
+    const cycleInterval = setInterval(() => {
+        msgIdx = (msgIdx + 1) % messages.length;
+        const el = document.getElementById('thinkingText');
+        if (el) el.textContent = messages[msgIdx];
+    }, 1800);
+
+    try {
+        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
+        const data = await res.json();
+        const reply = data.content?.[0]?.text || 'Sorry, something went wrong.';
+        clearInterval(cycleInterval);
+
+        // Progressive display
+        await displayProgressively(responseContainer, reply);
+
+        // Add speak button
+        const speakBtn = document.createElement('button');
+        speakBtn.className = 'speak-btn';
+        speakBtn.textContent = 'Listen →';
+        speakBtn.onclick = () => speakMsg(speakBtn);
+        msgEl.appendChild(speakBtn);
+
+        history.push({ role: 'assistant', content: reply });
+        saveMessage('assistant', reply);
+
+        if (document.getElementById('autoSpeak').checked) speakMsg(speakBtn);
+
+    } catch (e) {
+        clearInterval(cycleInterval);
+        responseContainer.innerHTML = '<div class="ai-plain">Connection error. Please try again.</div>';
+    }
+
+    document.getElementById('sendBtn').disabled = false;
+}
+
+function addUserMsg(text) {
+    const body = document.getElementById('chatBody');
+    const d = document.createElement('div');
+    d.className = 'msg user';
+    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div><div class="msg-body">${text}</div>`;
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+}
+
+function addMsg(role, text) {
+    const body = document.getElementById('chatBody');
+    const d = document.createElement('div');
+    d.className = `msg ${role}`;
+    if (role === 'user') {
+        d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div><div class="msg-body">${text}</div>`;
+    } else {
+        const label = document.createElement('div');
+        label.className = 'msg-label';
+        label.textContent = 'PMPNY INTELLIGENCE';
+        d.appendChild(label);
+        d.appendChild(renderAIResponse(text));
+        const btn = document.createElement('button');
+        btn.className = 'speak-btn';
+        btn.textContent = 'Listen →';
+        btn.onclick = () => speakMsg(btn);
+        d.appendChild(btn);
+    }
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+    return d;
+}
+
+function qp(text) { document.getElementById('chatInput').value = text; send(); }
+function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+function grow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+
+// VOICE
+let recognition = null, isRecording = false;
+function initRec() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return null;
+    const r = new SR(); r.continuous = false; r.interimResults = true; r.lang = '';
+    r.onstart = () => { isRecording = true; document.getElementById('micBtn').classList.add('recording'); document.getElementById('micBtn').textContent = '⏹'; showVS('Listening...'); };
+    r.onresult = (e) => { let t = ''; for (let i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript; document.getElementById('chatInput').value = t; };
+    r.onend = () => { isRecording = false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').textContent = '🎤'; hideVS(); const txt = document.getElementById('chatInput').value.trim(); if (txt) setTimeout(() => send(), 300); };
+    r.onerror = () => { isRecording = false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').textContent = '🎤'; hideVS(); };
+    return r;
+}
+function toggleMic() {
+    if (!recognition) recognition = initRec();
+    if (!recognition) { alert('Voice not supported. Try Chrome or Safari.'); return; }
+    if (isRecording) recognition.stop(); else recognition.start();
+}
+function showVS(t) { document.getElementById('vsText').textContent = t; document.getElementById('voiceStatus').classList.add('show'); }
+function hideVS() { document.getElementById('voiceStatus').classList.remove('show'); }
+function getBestVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    // Priority: American English male voices
+    const preferred = [
+        'Google US English', 'Microsoft Guy Online', 'Alex',
+        'Fred', 'Google US English Male', 'en-US-Neural2-D',
+        'en-US-Standard-B', 'en-US-Standard-D'
+    ];
+    for (const name of preferred) {
+        const v = voices.find(v => v.name === name);
+        if (v) return v;
+    }
+    // Fallback: any en-US voice
+    const usVoice = voices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('male'));
+    if (usVoice) return usVoice;
+    const anyUS = voices.find(v => v.lang === 'en-US');
+    if (anyUS) return anyUS;
+    // Last resort: any English
+    return voices.find(v => v.lang.startsWith('en')) || null;
+}
+
+function speakMsg(btn) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const msg = btn.closest('.msg');
+    const text = Array.from(msg.querySelectorAll('.ai-plain, .section-content')).map(el => el.innerText).join('. ');
+    if (!text) return;
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate = 0.88;
+    utt.lang = 'en-US';
+    const voice = getBestVoice();
+    if (voice) utt.voice = voice;
+    btn.textContent = 'Stop →';
+    utt.onend = () => { btn.textContent = 'Listen →'; btn.onclick = () => speakMsg(btn); };
+    btn.onclick = () => { window.speechSynthesis.cancel(); btn.textContent = 'Listen →'; btn.onclick = () => speakMsg(btn); };
+    window.speechSynthesis.speak(utt);
+}
+function speakAnalysis() {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(document.getElementById('analysisText').innerText));
+}
+
+// IMAGE
+let imgB64 = null, imgMime = null;
+function dOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('over'); }
+function dLeave() { document.getElementById('uploadZone').classList.remove('over'); }
+function dDrop(e) { e.preventDefault(); dLeave(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) loadImg(f); }
+function onFile(e) { const f = e.target.files[0]; if (f) loadImg(f); }
+function loadImg(file) {
+    imgMime = file.type;
+    const r = new FileReader();
+    r.onload = ev => { imgB64 = ev.target.result.split(',')[1]; document.getElementById('imgPreview').src = ev.target.result; document.getElementById('imgPreviewWrap').style.display = 'block'; document.getElementById('imgActions').style.display = 'flex'; document.getElementById('uploadZone').style.display = 'none'; document.getElementById('analysisOut').style.display = 'none'; };
+    r.readAsDataURL(file);
+}
+function clearImg() { imgB64 = null; document.getElementById('imgPreviewWrap').style.display = 'none'; document.getElementById('imgActions').style.display = 'none'; document.getElementById('uploadZone').style.display = 'flex'; document.getElementById('analysisOut').style.display = 'none'; document.getElementById('fileInput').value = ''; }
+async function analyze() {
+    if (!imgB64) return;
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true; btn.textContent = 'Analyzing...';
+    try {
+        const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageData: imgB64, mediaType: imgMime }) });
+        const data = await res.json();
+        const text = data.content?.[0]?.text || 'Analysis failed.';
+        document.getElementById('analysisText').textContent = text;
+        document.getElementById('analysisOut').style.display = 'block';
+        if (document.getElementById('autoSpeak').checked) speakAnalysis();
+    } catch (e) {
+        document.getElementById('analysisText').textContent = 'Analysis error. Please try again.';
+        document.getElementById('analysisOut').style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = 'Analyze →';
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); });
+</script>
+</body>
+</html>
