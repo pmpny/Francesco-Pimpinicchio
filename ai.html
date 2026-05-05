@@ -492,10 +492,12 @@
             </div>
 
             <div class="panel">
-                <div class="panel-head"><span>Weekly Brief</span><span>SS27</span></div>
+                <div class="panel-head"><span>Biweekly Brief</span><span id="briefSeasonLabel">SS27</span></div>
                 <div class="brief-body">
-                    <div class="brief-week">Week 18 · May 2026</div>
+                    <div class="brief-week">Biweekly Drop · May 2026</div>
                     <div class="brief-title">The Architecture of Restraint</div>
+                    <div class="brief-note" id="briefNote" style="display:none;font-size:11px;color:var(--gray);line-height:1.7;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);font-style:italic;"></div>
+                    <div class="brief-images" id="briefImages" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px;"></div>
                     <div class="swatches">
                         <div class="swatch-wrap"><div class="swatch" style="background:#6B1C23"></div><div class="swatch-name">Burgundy</div></div>
                         <div class="swatch-wrap"><div class="swatch" style="background:#3D2817"></div><div class="swatch-name">Bark</div></div>
@@ -745,24 +747,33 @@ async function loadWeeklyBrief() {
         const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
         if (!data) return;
 
-        // Update week label and title
         const weekEl = document.querySelector('.brief-week');
         const titleEl = document.querySelector('.brief-title');
         if (weekEl) weekEl.textContent = data.week_label;
         if (titleEl) titleEl.textContent = data.title;
 
-        // Update swatches
+        // Note — I'm seeing...
+        const noteEl = document.getElementById('briefNote');
+        if (noteEl && data.note) { noteEl.textContent = data.note; noteEl.style.display = 'block'; }
+
+        // Images
+        const imagesEl = document.getElementById('briefImages');
+        if (imagesEl && data.images?.length) {
+            imagesEl.style.display = 'grid';
+            imagesEl.innerHTML = data.images.map(url => `<img src="${url}" alt="Brief inspiration" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">`).join('');
+        }
+
+        // Swatches
         const swatchesEl = document.querySelector('.swatches');
         if (swatchesEl && data.colors?.length) {
             swatchesEl.innerHTML = data.colors.map(c => `
                 <div class="swatch-wrap">
                     <div class="swatch" style="background:${c.hex}"></div>
                     <div class="swatch-name">${c.name}</div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
-        // Update signals
+        // Signals
         const signalsEl = document.querySelector('.brief-signals');
         if (signalsEl && data.signals?.length) {
             signalsEl.innerHTML = data.signals.map(s => `
@@ -770,13 +781,12 @@ async function loadWeeklyBrief() {
                     <span class="bs-name">${s.name}</span>
                     <div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div>
                     <span class="bs-pct">↑${s.pct}%</span>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
-        // Update season label in panel head
-        const briefHead = document.querySelector('.panel-head span:last-child');
-        if (briefHead && data.season) briefHead.textContent = data.season;
+        // Season label
+        const seasonEl = document.getElementById('briefSeasonLabel');
+        if (seasonEl && data.season) seasonEl.textContent = data.season;
 
     } catch (err) {
         console.log('Brief load error:', err);
