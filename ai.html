@@ -750,17 +750,48 @@ window.addEventListener('load', () => {
 // PARSE & RENDER AI RESPONSE
 const SECTION_LABELS = { 'COLOR': 'Color', 'SILHOUETTE': 'Silhouette', 'MATERIAL': 'Material', 'HARDWARE': 'Hardware', 'MARKET SIGNAL': 'Market Signal', 'PREDICTION': 'Prediction' };
 
-function processColorSwatches(text) {
-    // First make URLs clickable
-    text = text.replace(/https?:\/\/[^\s<>"]+/g, (url) => {
-        const clean = url.replace(/[.,;!?]$/, '');
-        return `<a href="${clean}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${clean}</a>`;
-    });
-    // Then process hex colors
-    text = text.replace(/#([0-9A-Fa-f]{6})\b/g, (match) => {
-        return `<span class="color-swatch-inline"><span class="color-dot" style="background:${match}"></span><span class="hex-text">${match}</span></span>`;
-    });
+function processText(text) {
+    // Convert markdown links [text](url) to HTML
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
+        (_, label, url) => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${label}</a>`);
+    // Convert bare https URLs to links
+    text = text.replace(/(?<![">])(https?:\/\/[^\s<>")\]]+)/g,
+        (url) => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${url}</a>`);
+    // Convert bare domains like versace.com, net-a-porter.com
+    text = text.replace(/(?<![/"@=a-zA-Z])([a-zA-Z0-9][a-zA-Z0-9-]*\.(com|net|org|io|co|it|fr|uk|de|es)(?:\/[^\s<>")\]]*)?)/g,
+        (match) => {
+            if (text.indexOf('href="') > -1 && text.indexOf(match) > text.indexOf('href="')) return match;
+            return `<a href="https://${match}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${match}</a>`;
+        });
+    // Hex colors to swatches
+    text = text.replace(/#([0-9A-Fa-f]{6})\b/g,
+        (match) => `<span class="color-swatch-inline"><span class="color-dot" style="background:${match}"></span><span class="hex-text">${match}</span></span>`);
+    // Highlight prices
+    text = text.replace(/(\$[\d,]+)/g, '<strong style="color:var(--off-white)">$1</strong>');
+    // Bold markdown
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     return text;
+}
+
+function processColorSwatches(text) {
+    return processText(text);
+}
+
+function renderConversational(text) {
+    const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+    if (paragraphs.length <= 1) {
+        const div = document.createElement('div');
+        div.className = 'ai-plain';
+        div.innerHTML = processText(text.replace(/\n/g, '<br>'));
+        return [div];
+    }
+    return paragraphs.map(para => {
+        const div = document.createElement('div');
+        div.className = 'ai-plain';
+        div.style.marginBottom = '3px';
+        div.innerHTML = processText(para.replace(/\n/g, '<br>'));
+        return div;
+    });
 }
 
 function renderAIResponse(text) {
@@ -833,14 +864,23 @@ async function displayProgressively(container, text) {
     const existing = container.querySelector('.thinking-indicator');
     if (existing) existing.remove();
 
-    // Check if response has section headers (broad trend questions)
     const hasSections = /^(COLOR|SILHOUETTE|MATERIAL|HARDWARE|MARKET SIGNAL|PREDICTION)\s*$/m.test(text);
 
     if (!hasSections) {
-        const plain = document.createElement('div');
-        plain.className = 'ai-plain';
-        container.appendChild(plain);
-        await typeText(plain, text, body);
+        // Split into paragraphs and show each one progressively
+        const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+        for (let i = 0; i < paragraphs.length; i++) {
+            const div = document.createElement('div');
+            div.className = 'ai-plain';
+            if (i > 0) div.style.marginTop = '4px';
+            div.style.opacity = '0';
+            div.style.transition = 'opacity 0.25s ease';
+            container.appendChild(div);
+            await new Promise(r => setTimeout(r, 30));
+            div.style.opacity = '1';
+            await typeText(div, paragraphs[i], body);
+            if (i < paragraphs.length - 1) await new Promise(r => setTimeout(r, 60));
+        }
         return;
     }
 
@@ -897,38 +937,26 @@ async function displayProgressively(container, text) {
     }
 }
 
-async function typeText(el, text, body, speed = 22) {
-    // Pre-process the full text first
-    const processed = processColorSwatches(
-        text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    );
-    
-    // Split into chunks preserving HTML tags
-    const chunks = processed.split(/(<[^>]+>.*?<\/[^>]+>|<[^>]+\/>|<[^>]+>)/g).filter(Boolean);
+async function typeText(el, text, body, speed = 20) {
+    const processed = processText(text);
+    // Split on spaces but preserve HTML tags intact
+    const tokens = processed.split(/(<[^>]*>)/g);
     let built = '';
-    
-    for (let i = 0; i < chunks.length; i++) {
-        const chunk = chunks[i];
-        if (chunk.startsWith('<')) {
-            // HTML tag — add whole thing at once
-            built += chunk;
+    for (const token of tokens) {
+        if (token.startsWith('<')) {
+            built += token;
             el.innerHTML = built + '<span class="streaming-cursor"></span>';
         } else {
-            // Plain text — type word by word
-            const words = chunk.split(' ');
-            for (let j = 0; j < words.length; j++) {
-                const word = words[j];
-                if (word === '\n' || word === '') {
-                    built += word === '\n' ? '<br>' : '';
-                } else {
-                    built += (built.length > 0 && !built.endsWith('>') && !built.endsWith(' ') ? ' ' : '') + word;
+            const words = token.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                if (words[i]) {
+                    built += (built && !built.endsWith('>') && !built.endsWith(' ') ? ' ' : '') + words[i];
+                    el.innerHTML = built + '<span class="streaming-cursor"></span>';
+                    body.scrollTop = body.scrollHeight;
+                    await new Promise(r => setTimeout(r, speed));
                 }
-                el.innerHTML = built + '<span class="streaming-cursor"></span>';
-                body.scrollTop = body.scrollHeight;
-                await new Promise(r => setTimeout(r, speed));
             }
         }
-        body.scrollTop = body.scrollHeight;
     }
     el.innerHTML = built;
 }
