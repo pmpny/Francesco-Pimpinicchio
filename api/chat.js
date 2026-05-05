@@ -32,7 +32,9 @@ For BROAD trend analysis (seasonal overview, what is trending now, full breakdow
 Use this format:
 
 COLOR
-[2-3 sentences with specific hex codes like #6B1C23]
+CRITICAL: Always list colors in this exact format: Color Name #HEXCODE
+Example: Burgundy #6B1C23, Forest Green #2D4A3E, Warm Bone #E8E0D0
+Then 1-2 sentences of context. Never mention a color without its hex code.
 
 SILHOUETTE
 [2-3 sentences]
