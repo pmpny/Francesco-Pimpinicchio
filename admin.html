@@ -357,6 +357,7 @@ function adminLogin() {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('adminLayout').classList.add('show');
         loadDashboard();
+        loadCurrentBrief();
     } else {
         showErr('Incorrect password.');
     }
@@ -450,12 +451,78 @@ function addSignalRow() {
     ed.appendChild(row);
 }
 
-function saveBrief() {
+async function saveBrief() {
+    const btn = document.querySelector('[onclick="saveBrief()"]');
     const status = document.getElementById('saveStatus');
-    status.style.display = 'flex';
-    setTimeout(() => { status.style.display = 'none'; }, 3000);
-    // In a full implementation this would save to Supabase and update the live brief
-    alert('Brief saved! To update the live platform, update the weekly brief section in ai.html on GitHub.');
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    const week = document.getElementById('briefWeek').value.trim();
+    const season = document.getElementById('briefSeason').value.trim();
+    const title = document.getElementById('briefTitle').value.trim();
+    const hexCodes = document.getElementById('briefColors').value.split(',').map(s => s.trim()).filter(Boolean);
+    const colorNames = document.getElementById('briefColorNames').value.split(',').map(s => s.trim()).filter(Boolean);
+
+    const colors = hexCodes.map((hex, i) => ({ hex, name: colorNames[i] || '' }));
+
+    const signalRows = document.querySelectorAll('#signalsEditor .signal-row');
+    const signals = Array.from(signalRows).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return { name: inputs[0].value.trim(), pct: parseInt(inputs[1].value) || 0 };
+    }).filter(s => s.name);
+
+    if (!week || !title) {
+        alert('Please fill in Week Label and Title.');
+        btn.textContent = 'Save & Publish Brief →';
+        btn.disabled = false;
+        return;
+    }
+
+    try {
+        // Deactivate all existing briefs
+        await sb.from('weekly_brief').update({ is_active: false }).eq('is_active', true);
+
+        // Insert new active brief
+        const { error } = await sb.from('weekly_brief').insert({
+            week_label: week,
+            season: season || 'SS27',
+            title,
+            colors,
+            signals,
+            is_active: true
+        });
+
+        if (error) throw error;
+
+        status.style.display = 'flex';
+        status.textContent = '✓ Brief published live';
+        setTimeout(() => { status.style.display = 'none'; }, 4000);
+    } catch (err) {
+        console.error(err);
+        alert('Error saving brief: ' + err.message);
+    }
+
+    btn.textContent = 'Save & Publish Brief →';
+    btn.disabled = false;
+}
+
+// Load current brief into form
+async function loadCurrentBrief() {
+    const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
+    if (!data) return;
+    document.getElementById('briefWeek').value = data.week_label || '';
+    document.getElementById('briefSeason').value = data.season || '';
+    document.getElementById('briefTitle').value = data.title || '';
+    document.getElementById('briefColors').value = data.colors.map(c => c.hex).join(',');
+    document.getElementById('briefColorNames').value = data.colors.map(c => c.name).join(',');
+    const ed = document.getElementById('signalsEditor');
+    ed.innerHTML = '';
+    data.signals.forEach(s => {
+        const row = document.createElement('div');
+        row.className = 'signal-row';
+        row.innerHTML = `<input type="text" class="form-input" placeholder="Signal name" value="${s.name}"><input type="number" class="form-input" placeholder="%" value="${s.pct}" min="0" max="100">`;
+        ed.appendChild(row);
+    });
 }
 
 // IMAGE ANALYSIS (unlimited)
