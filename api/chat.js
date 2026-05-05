@@ -79,8 +79,15 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
-        max_tokens: 1024,
+        max_tokens: 2048,
         system: PMPNY_SYSTEM,
+        tools: [
+          {
+            type: 'web_search_20250305',
+            name: 'web_search',
+            max_uses: 3
+          }
+        ],
         messages: messages
       })
     });
@@ -92,7 +99,13 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: 'AI service error', details: data });
     }
 
-    return res.status(200).json(data);
+    // Extract text from response — handles both regular and tool_use responses
+    const textContent = data.content?.filter(b => b.type === 'text').map(b => b.text).join('\n') || '';
+    
+    return res.status(200).json({
+      ...data,
+      content: [{ type: 'text', text: textContent }]
+    });
 
   } catch (error) {
     console.error('Chat handler error:', error);
