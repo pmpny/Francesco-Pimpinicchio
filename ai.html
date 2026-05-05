@@ -201,12 +201,14 @@
         .streaming-cursor { display: inline-block; width: 2px; height: 14px; background: var(--accent); animation: cursor-blink 0.7s ease infinite; vertical-align: middle; margin-left: 2px; }
         @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* SEARCHING INDICATOR */
-        .searching-indicator { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: var(--panel-2); border: 1px solid var(--border); font-size: 11px; color: var(--gray); letter-spacing: 0.1em; }
-        .search-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: bounce 1.3s ease infinite; }
-        .search-dot:nth-child(2) { animation-delay: 0.18s; }
-        .search-dot:nth-child(3) { animation-delay: 0.36s; }
-        @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: 0.25; } 30% { transform: translateY(-4px); opacity: 1; } }
+        /* THINKING INDICATOR */
+        .thinking-indicator { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--panel-2); border: 1px solid var(--border); width: fit-content; }
+        .thinking-symbol { width: 18px; height: 18px; position: relative; }
+        .thinking-symbol::before { content: ''; position: absolute; inset: 0; border: 1.5px solid var(--accent); transform: rotate(45deg); animation: think-rotate 2s linear infinite; }
+        .thinking-symbol::after { content: ''; position: absolute; inset: 4px; background: var(--accent); transform: rotate(45deg); animation: think-pulse 2s ease infinite; }
+        @keyframes think-rotate { 0% { transform: rotate(45deg); } 100% { transform: rotate(405deg); } }
+        @keyframes think-pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(0.8); } 50% { opacity: 1; transform: rotate(45deg) scale(1); } }
+        .thinking-text { font-size: 10px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
 
         .speak-btn { margin-top: 8px; background: none; border: none; font-size: 9px; letter-spacing: 0.14em; color: var(--dim); cursor: pointer; font-family: var(--font-mono); padding: 2px 0; transition: color 0.18s; }
         .speak-btn:hover { color: var(--gray-light); }
@@ -820,14 +822,14 @@ function renderAIResponse(text) {
 async function displayProgressively(container, text) {
     const body = document.getElementById('chatBody');
 
-    // Show searching indicator briefly
+    // Show thinking indicator
     const searching = document.createElement('div');
-    searching.className = 'searching-indicator';
-    searching.innerHTML = '<div class="search-dot"></div><div class="search-dot"></div><div class="search-dot"></div><span style="margin-left:4px">Searching trends...</span>';
+    searching.className = 'thinking-indicator';
+    searching.innerHTML = '<div class="thinking-symbol"></div><span class="thinking-text">Analyzing trends</span>';
     container.appendChild(searching);
     body.scrollTop = body.scrollHeight;
 
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 900));
     searching.remove();
 
     // Check if has sections
@@ -1033,13 +1035,38 @@ function toggleMic() {
 }
 function showVS(t) { document.getElementById('vsText').textContent = t; document.getElementById('voiceStatus').classList.add('show'); }
 function hideVS() { document.getElementById('voiceStatus').classList.remove('show'); }
+function getBestVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    // Priority: American English male voices
+    const preferred = [
+        'Google US English', 'Microsoft Guy Online', 'Alex',
+        'Fred', 'Google US English Male', 'en-US-Neural2-D',
+        'en-US-Standard-B', 'en-US-Standard-D'
+    ];
+    for (const name of preferred) {
+        const v = voices.find(v => v.name === name);
+        if (v) return v;
+    }
+    // Fallback: any en-US voice
+    const usVoice = voices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('male'));
+    if (usVoice) return usVoice;
+    const anyUS = voices.find(v => v.lang === 'en-US');
+    if (anyUS) return anyUS;
+    // Last resort: any English
+    return voices.find(v => v.lang.startsWith('en')) || null;
+}
+
 function speakMsg(btn) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const msg = btn.closest('.msg');
     const text = Array.from(msg.querySelectorAll('.ai-plain, .section-content')).map(el => el.innerText).join('. ');
     if (!text) return;
-    const utt = new SpeechSynthesisUtterance(text); utt.rate = 0.88;
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate = 0.88;
+    utt.lang = 'en-US';
+    const voice = getBestVoice();
+    if (voice) utt.voice = voice;
     btn.textContent = 'Stop →';
     utt.onend = () => { btn.textContent = 'Listen →'; btn.onclick = () => speakMsg(btn); };
     btn.onclick = () => { window.speechSynthesis.cancel(); btn.textContent = 'Listen →'; btn.onclick = () => speakMsg(btn); };
