@@ -739,10 +739,55 @@ function newChat() {
     document.getElementById('chatBody').innerHTML = `<div class="msg ai"><div class="msg-label">PMPNY Intelligence</div><div class="ai-response"><div class="ai-plain">New conversation started. What trends are you researching?</div></div></div>`;
 }
 
+// WEEKLY BRIEF — load from Supabase
+async function loadWeeklyBrief() {
+    try {
+        const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
+        if (!data) return;
+
+        // Update week label and title
+        const weekEl = document.querySelector('.brief-week');
+        const titleEl = document.querySelector('.brief-title');
+        if (weekEl) weekEl.textContent = data.week_label;
+        if (titleEl) titleEl.textContent = data.title;
+
+        // Update swatches
+        const swatchesEl = document.querySelector('.swatches');
+        if (swatchesEl && data.colors?.length) {
+            swatchesEl.innerHTML = data.colors.map(c => `
+                <div class="swatch-wrap">
+                    <div class="swatch" style="background:${c.hex}"></div>
+                    <div class="swatch-name">${c.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update signals
+        const signalsEl = document.querySelector('.brief-signals');
+        if (signalsEl && data.signals?.length) {
+            signalsEl.innerHTML = data.signals.map(s => `
+                <div class="bs">
+                    <span class="bs-name">${s.name}</span>
+                    <div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div>
+                    <span class="bs-pct">↑${s.pct}%</span>
+                </div>
+            `).join('');
+        }
+
+        // Update season label in panel head
+        const briefHead = document.querySelector('.panel-head span:last-child');
+        if (briefHead && data.season) briefHead.textContent = data.season;
+
+    } catch (err) {
+        console.log('Brief load error:', err);
+    }
+}
+
 // INIT
 window.addEventListener('load', () => {
     setTimeout(() => { document.querySelectorAll('.signal-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 500);
     updateMsgCounter();
+    loadWeeklyBrief();
     setTimeout(() => { sb.auth.getSession().then(({ data }) => { if (!data.session && !isGuest) showModal(); }); }, 2000);
 });
 
