@@ -15,19 +15,26 @@ export default async function handler(req, res) {
   const CX = process.env.GOOGLE_CX;
 
   try {
-    // Build search queries based on trend content
+    if (!API_KEY || !CX) {
+      return res.status(500).json({ error: 'Missing API credentials', details: 'GOOGLE_API_KEY or GOOGLE_CX not set' });
+    }
+
     const queries = [
-      `${query} fashion 2026 2027`,
-      `${season || 'SS27'} runway ${query}`,
-      `luxury accessories ${query} trend`,
+      `${query} fashion bag 2027`,
+      `luxury handbag ${query} runway`,
     ];
 
     const imageResults = [];
 
     for (const q of queries) {
-      const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=3&imgSize=large&imgType=photo&safe=active`;
+      const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=4&imgSize=medium&safe=active`;
       const response = await fetch(url);
       const data = await response.json();
+
+      if (data.error) {
+        console.error('Google API error:', data.error);
+        return res.status(400).json({ error: 'Google API error', details: data.error.message });
+      }
 
       if (data.items) {
         data.items.forEach(item => {
@@ -35,7 +42,6 @@ export default async function handler(req, res) {
             url: item.link,
             title: item.title,
             source: item.displayLink,
-            thumbnail: item.image?.thumbnailLink
           });
         });
       }
