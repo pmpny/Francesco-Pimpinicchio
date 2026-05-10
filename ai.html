@@ -597,10 +597,15 @@
             <div class="panel">
                 <div class="panel-head"><span>Mood Board Builder</span><span style="font-size:9px;color:var(--accent);letter-spacing:0.1em;">PLUS</span></div>
                 <div style="padding:14px 18px;">
-                    <div style="font-size:11px;color:var(--gray);line-height:1.6;margin-bottom:12px;">Describe what you want to visualize — a trend, a collection concept, a silhouette.</div>
-                    <textarea id="mbQuery" placeholder="Ex: SS27 bowler bag in sage green matte leather with gold hardware..." style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:12px;padding:10px 12px;resize:none;outline:none;min-height:72px;line-height:1.6;margin-bottom:8px;box-sizing:border-box;"></textarea>
-                    <input type="text" id="mbColorsInput" placeholder="Colors (optional): #6B1C23, #9CAF88" style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:12px;padding:10px 12px;outline:none;margin-bottom:8px;box-sizing:border-box;">
-                    <button onclick="buildMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:opacity 0.2s;">Generate Mood Board →</button>
+                    <div style="font-size:11px;color:var(--gray);line-height:1.6;margin-bottom:12px;">Describe your concept, add colors, upload your reference photos.</div>
+                    <textarea id="mbConcept" placeholder="SS27 collection concept — silhouette, materials, mood..." style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:10px 12px;resize:none;outline:none;min-height:60px;line-height:1.6;margin-bottom:8px;box-sizing:border-box;"></textarea>
+                    <input type="text" id="mbColorsInput" placeholder="Colors: #9CAF88, #F4E4C1" style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:9px 12px;outline:none;margin-bottom:8px;box-sizing:border-box;">
+                    <div id="mbPhotoUploadZone" onclick="document.getElementById('mbPhotoInput').click()" style="border:1px dashed var(--border);padding:16px;text-align:center;cursor:pointer;margin-bottom:8px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
+                        <div style="font-size:11px;color:var(--gray);">⬆ Add reference photos (max 12)</div>
+                    </div>
+                    <input type="file" id="mbPhotoInput" accept="image/*" multiple style="display:none" onchange="onMbPhotos(event)">
+                    <div id="mbPhotoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:8px;"></div>
+                    <button onclick="buildHybridMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Build Mood Board →</button>
                 </div>
             </div>
 
@@ -992,20 +997,95 @@ function downloadMoodboard() {
     setTimeout(() => w.print(), 600);
 }
 
-function buildMoodboard() {
-    const query = document.getElementById('mbQuery')?.value.trim();
-    const colorsRaw = document.getElementById('mbColorsInput')?.value.trim();
-    if (!query) { alert('Please describe what you want to visualize.'); return; }
+// HYBRID MOOD BOARD
+let mbPhotos = [];
 
-    // Parse colors from input
-    const colors = [];
-    if (colorsRaw) {
-        const hexes = colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || [];
-        hexes.forEach(h => colors.push({ hex: h, name: h }));
+async function onMbPhotos(e) {
+    const files = Array.from(e.target.files || []);
+    const remaining = 12 - mbPhotos.length;
+    for (const file of files.slice(0, remaining)) {
+        const compressed = await compressImage(file);
+        mbPhotos.push(compressed);
+    }
+    renderMbPhotoGrid();
+    document.getElementById('mbPhotoInput').value = '';
+}
+
+function renderMbPhotoGrid() {
+    const grid = document.getElementById('mbPhotoGrid');
+    if (!grid) return;
+    grid.innerHTML = mbPhotos.map((p, i) => `
+        <div style="position:relative;aspect-ratio:1;overflow:hidden;">
+            <img src="${p.src}" style="width:100%;height:100%;object-fit:cover;">
+            <button onclick="mbRemovePhoto(${i})" style="position:absolute;top:1px;right:1px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:10px;width:16px;height:16px;cursor:pointer;">×</button>
+        </div>`).join('');
+}
+
+function mbRemovePhoto(idx) { mbPhotos.splice(idx, 1); renderMbPhotoGrid(); }
+
+async function buildHybridMoodboard() {
+    const concept = document.getElementById('mbConcept')?.value.trim();
+    const colorsRaw = document.getElementById('mbColorsInput')?.value.trim();
+    if (!concept && mbPhotos.length === 0) { alert('Add a concept or photos first.'); return; }
+
+    const hexes = colorsRaw ? (colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || []) : [];
+
+    // Get AI narrative
+    let narrative = '';
+    if (concept) {
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: `Write a 3-sentence mood board narrative for: "${concept}". Poetic, specific, creative director voice. No bullets.` }]
+                })
+            });
+            const data = await res.json();
+            narrative = data.content?.[0]?.text || '';
+        } catch(e) {}
     }
 
-    generateMoodboard(query, colors, 'SS27', query.substring(0, 40));
+    // Open mood board overlay
+    document.getElementById('moodboardOverlay').classList.add('show');
+    document.getElementById('mbTitle').textContent = concept?.substring(0, 40) || 'Mood Board';
+    document.getElementById('mbSeason').textContent = 'SS27';
+
+    // Colors
+    const colorsEl = document.getElementById('mbColors');
+    colorsEl.innerHTML = hexes.map(h => `
+        <div class="mb-swatch">
+            <div class="mb-swatch-block" style="background:${h}"></div>
+            <div class="mb-swatch-name">${h}</div>
+        </div>`).join('');
+
+    // Photos grid
+    const grid = document.getElementById('mbGrid');
+    if (mbPhotos.length > 0) {
+        const cols = mbPhotos.length <= 3 ? mbPhotos.length : mbPhotos.length <= 6 ? 3 : 4;
+        grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        grid.innerHTML = mbPhotos.map(p => `
+            <div class="mb-img-wrap">
+                <img src="${p.src}" alt="Reference">
+            </div>`).join('');
+    } else {
+        grid.innerHTML = '<div class="mb-loading" style="grid-column:1/-1">No photos added — add reference images for a richer mood board.</div>';
+    }
+
+    // Narrative
+    if (narrative) {
+        let narDiv = document.getElementById('mbNarrative');
+        if (!narDiv) {
+            narDiv = document.createElement('div');
+            narDiv.id = 'mbNarrative';
+            narDiv.style.cssText = 'padding:16px;border-left:2px solid var(--accent);margin-top:16px;font-size:12px;color:var(--off-white);line-height:1.9;font-style:italic;';
+            document.querySelector('.moodboard-inner').insertBefore(narDiv, document.querySelector('.moodboard-actions'));
+        }
+        narDiv.textContent = narrative;
+    }
 }
+
+function buildMoodboard() { buildHybridMoodboard(); }
 
 function extractMoodboardData(text) {
     const colors = [];
