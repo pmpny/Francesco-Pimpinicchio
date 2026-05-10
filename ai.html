@@ -298,6 +298,14 @@
         .generate-mb-btn:hover { background: var(--accent-dim); }
         .generate-mb-btn.locked { border-color: var(--border); color: var(--gray); }
 
+        /* PWA INSTALL BANNER */
+        .pwa-banner { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--accent-border); padding: 14px 20px; display: none; align-items: center; gap: 14px; z-index: 300; max-width: 340px; width: calc(100% - 40px); }
+        .pwa-banner.show { display: flex; }
+        .pwa-banner-text { font-size: 11px; color: var(--off-white); line-height: 1.5; flex: 1; }
+        .pwa-banner-text span { display: block; font-size: 9px; color: var(--gray); letter-spacing: 0.1em; margin-top: 2px; }
+        .pwa-install-btn { background: var(--accent); color: var(--black); border: none; padding: 8px 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+        .pwa-dismiss { background: none; border: none; color: var(--dim); font-size: 18px; cursor: pointer; padding: 0 4px; }
+
         /* PRICING */
         .pricing-wrap { padding: 80px 48px; max-width: 1440px; margin: 0 auto; }
         .section-eye { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
@@ -346,6 +354,13 @@
     </style>
 </head>
 <body>
+
+<!-- PWA INSTALL BANNER -->
+<div class="pwa-banner" id="pwaBanner">
+    <div class="pwa-banner-text">Install PMPNY Intelligence<span>Add to Home Screen for instant access</span></div>
+    <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+    <button class="pwa-dismiss" onclick="dismissPWA()">×</button>
+</div>
 
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
@@ -657,6 +672,32 @@
 </footer>
 
 <script>
+// PWA INSTALL
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!localStorage.getItem('pwa_dismissed')) {
+        setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 3000);
+    }
+});
+document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('pwaBanner').classList.remove('show');
+});
+function dismissPWA() {
+    document.getElementById('pwaBanner').classList.remove('show');
+    localStorage.setItem('pwa_dismissed', '1');
+}
+
+// SERVICE WORKER — PWA
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
 // SUPABASE
 const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
