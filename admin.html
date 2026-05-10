@@ -212,6 +212,7 @@
             <button class="admin-nav-btn" onclick="showSection('chat', this)">AI Chat</button>
             <button class="admin-nav-btn" onclick="showSection('brief', this)">Weekly Brief</button>
             <button class="admin-nav-btn" onclick="showSection('upload', this)">Analysis</button>
+            <button class="admin-nav-btn" onclick="showSection('moodboard', this)">Mood Board</button>
             <button class="admin-nav-btn" onclick="showSection('users', this)">Users</button>
             <a href="ai.html" class="admin-nav-btn">← Platform</a>
             <button class="admin-nav-btn danger" onclick="adminLogout()">Logout</button>
@@ -394,6 +395,32 @@
                 <div class="admin-analysis" id="adminAnalysis">
                     <div class="admin-analysis-label">Trend Analysis</div>
                     <div class="admin-analysis-text" id="adminAnalysisText"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOOD BOARD -->
+        <div class="admin-section" id="section-moodboard">
+            <h2 class="section-title">Mood Board Builder</h2>
+            <div class="brief-editor" style="max-width:700px;">
+                <div style="font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:24px;">Describe what you want to visualize. The AI will search for real images matching your concept and build a visual mood board.</div>
+                <div class="form-group full" style="margin-bottom:16px;">
+                    <label class="form-label">Concept / Query</label>
+                    <textarea class="form-input" id="adminMbQuery" placeholder="Ex: SS27 bowler bag in sage green matte nappa leather with chunky gold hardware..." style="min-height:80px;"></textarea>
+                </div>
+                <div class="form-group full" style="margin-bottom:16px;">
+                    <label class="form-label">Colors (optional — hex codes comma separated)</label>
+                    <input type="text" class="form-input" id="adminMbColors" placeholder="#6B1C23, #9CAF88, #F4E4C1">
+                </div>
+                <div class="form-group full" style="margin-bottom:24px;">
+                    <label class="form-label">Season</label>
+                    <input type="text" class="form-input" id="adminMbSeason" placeholder="SS27" style="max-width:120px;">
+                </div>
+                <button class="btn-save" onclick="adminBuildMoodboard()">Generate Mood Board →</button>
+                <div id="adminMbResult" style="margin-top:28px;display:none;">
+                    <div style="font-size:9px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-bottom:14px;" id="adminMbTitle"></div>
+                    <div id="adminMbGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:16px;"></div>
+                    <button class="btn-secondary" onclick="adminDownloadMoodboard()">Download →</button>
                 </div>
             </div>
         </div>
@@ -904,6 +931,42 @@ async function loadCurrentBrief() {
 }
 
 // IMAGE ANALYSIS (unlimited)
+// ADMIN MOOD BOARD
+let adminMbData = null;
+
+async function adminBuildMoodboard() {
+    const query = document.getElementById('adminMbQuery')?.value.trim();
+    const colorsRaw = document.getElementById('adminMbColors')?.value.trim();
+    const season = document.getElementById('adminMbSeason')?.value.trim() || 'SS27';
+    if (!query) { alert('Please enter a concept.'); return; }
+    const colors = [];
+    if (colorsRaw) { const hexes = colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || []; hexes.forEach(h => colors.push({ hex: h, name: h })); }
+    const result = document.getElementById('adminMbResult');
+    const grid = document.getElementById('adminMbGrid');
+    document.getElementById('adminMbTitle').textContent = query.substring(0, 60) + ' · ' + season;
+    result.style.display = 'block';
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray);font-size:11px;letter-spacing:0.1em;">Generating mood board...</div>';
+    try {
+        const res = await fetch('/api/moodboard', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, colors, season, title: query }) });
+        const data = await res.json();
+        adminMbData = data;
+        if (!data.images?.length) { grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray);">No images found. Try a different query.</div>'; return; }
+        grid.innerHTML = data.images.map(img => `
+            <div style="aspect-ratio:4/3;overflow:hidden;background:var(--panel-2);position:relative;">
+                <img src="${img.url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
+                <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(8,8,8,0.7);font-size:8px;color:var(--dim);padding:3px 6px;">${img.source}</div>
+            </div>`).join('');
+    } catch(e) { grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray);">Error. Try again.</div>'; }
+}
+
+function adminDownloadMoodboard() {
+    if (!adminMbData) return;
+    const w = window.open('', '_blank');
+    w.document.write(`<html><head><title>PMPNY Mood Board</title><style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}h1{font-size:32px;font-style:italic;font-weight:300;margin-bottom:4px;}.season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}.footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}</style></head><body><h1>${adminMbData.title}</h1><div class="season">${adminMbData.season} · PMPNY Intelligence</div><div class="grid">${adminMbData.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div><div class="footer">pmpny.com/ai · PMPNY Design Studio</div></body></html>`);
+    w.document.close(); setTimeout(() => w.print(), 600);
+}
+
+// ADMIN IMAGE ANALYSIS (unlimited)
 let adminImgB64 = null, adminImgMime = null;
 function adOver(e) { e.preventDefault(); document.querySelector('.admin-upload-zone').style.borderColor = 'var(--accent)'; }
 function adLeave() { document.querySelector('.admin-upload-zone').style.borderColor = ''; }
