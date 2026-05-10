@@ -513,13 +513,10 @@
                 </div>
             </div>
             <div class="chat-foot">
-                <div class="chat-attach-preview" id="chatAttachPreview">
-                    <img id="chatAttachImg" src="" alt="Attached image">
-                    <button class="chat-attach-remove" onclick="removeChatAttach()">×</button>
-                </div>
+                <div class="chat-attach-preview" id="chatAttachPreview"></div>
                 <div class="chat-foot-row">
                     <textarea id="chatInput" placeholder="Ask about trends, share a sketch, upload a photo..." rows="1" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
-                    <input type="file" id="chatAttachInput" accept="image/*" onchange="onChatAttach(event)">
+                    <input type="file" id="chatAttachInput" accept="image/*" multiple onchange="onChatAttach(event)">
                     <button id="attachBtn" onclick="document.getElementById('chatAttachInput').click()" title="Attach image">⬆</button>
                     <button id="micBtn" onclick="toggleMic()" title="Speak">🎤</button>
                     <button id="sendBtn" onclick="send()">Send →</button>
@@ -1187,32 +1184,58 @@ async function typeText(el, text, body, speed = 20) {
 // CHAT
 const history = [];
 
-// CHAT IMAGE ATTACHMENT
-let chatAttachB64 = null;
-let chatAttachMime = null;
+// CHAT IMAGE ATTACHMENT — up to 5 images
+let chatAttachments = []; // [{b64, mime, src}]
 
 function onChatAttach(e) {
-    if (!checkUploadLimit()) return;
-    const file = e.target.files[0];
-    if (!file) return;
-    chatAttachMime = file.type;
-    const reader = new FileReader();
-    reader.onload = ev => {
-        chatAttachB64 = ev.target.result.split(',')[1];
-        document.getElementById('chatAttachImg').src = ev.target.result;
-        document.getElementById('chatAttachPreview').style.display = 'block';
-        document.getElementById('attachBtn').classList.add('has-image');
-    };
-    reader.readAsDataURL(file);
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    const remaining = 5 - chatAttachments.length;
+    if (remaining <= 0) { alert('Maximum 5 images per message.'); return; }
+
+    const toLoad = files.slice(0, remaining);
+    toLoad.forEach(file => {
+        if (!checkUploadLimit()) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const src = ev.target.result;
+            const b64 = src.split(',')[1];
+            chatAttachments.push({ b64, mime: file.type, src });
+            incrementUploadCount();
+            renderChatAttachPreviews();
+        };
+        reader.readAsDataURL(file);
+    });
     e.target.value = '';
 }
 
-function removeChatAttach() {
-    chatAttachB64 = null;
-    chatAttachMime = null;
-    document.getElementById('chatAttachPreview').style.display = 'none';
-    document.getElementById('chatAttachImg').src = '';
-    document.getElementById('attachBtn').classList.remove('has-image');
+function renderChatAttachPreviews() {
+    const container = document.getElementById('chatAttachPreview');
+    if (chatAttachments.length === 0) {
+        container.style.display = 'none';
+        document.getElementById('attachBtn').classList.remove('has-image');
+        return;
+    }
+    container.style.display = 'block';
+    document.getElementById('attachBtn').classList.add('has-image');
+    container.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;">` +
+        chatAttachments.map((a, i) => `
+            <div style="position:relative;display:inline-block;">
+                <img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);" alt="Attachment ${i+1}">
+                <button onclick="removeChatAttach(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:12px;width:18px;height:18px;cursor:pointer;line-height:1;">×</button>
+            </div>`).join('') +
+        `</div>`;
+}
+
+function removeChatAttach(idx) {
+    chatAttachments.splice(idx, 1);
+    renderChatAttachPreviews();
+}
+
+function clearAllChatAttach() {
+    chatAttachments = [];
+    renderChatAttachPreviews();
 }
 
 function isConversational(text) {
@@ -1229,25 +1252,26 @@ async function send() {
     // Check daily limit
     if (!checkLimit()) return;
 
-    addUserMsg(txt, chatAttachB64 ? document.getElementById('chatAttachImg').src : null);
-    
-    // Build message content
+    addUserMsg(txt, chatAttachments.map(a => a.src));
+
+    // Build message content with multiple images
     let messageContent;
-    if (chatAttachB64) {
+    if (chatAttachments.length > 0) {
         messageContent = [
-            { type: 'image', source: { type: 'base64', media_type: chatAttachMime || 'image/jpeg', data: chatAttachB64 } },
-            { type: 'text', text: txt || 'Analyze this image for fashion trend signals, design feedback, and market positioning.' }
+            ...chatAttachments.map(a => ({
+                type: 'image',
+                source: { type: 'base64', media_type: a.mime || 'image/jpeg', data: a.b64 }
+            })),
+            { type: 'text', text: txt || 'Analyze these images for fashion trend signals, design feedback, and market positioning.' }
         ];
     } else {
         messageContent = txt;
     }
 
-    const attachB64 = chatAttachB64;
-    removeChatAttach();
-
+    clearAllChatAttach();
     inp.value = ''; inp.style.height = 'auto';
     history.push({ role: 'user', content: messageContent });
-    saveMessage('user', txt || '[image]');
+    saveMessage('user', txt || '[images]');
     incrementMsgCount();
 
     document.getElementById('sendBtn').disabled = true;
@@ -1318,12 +1342,14 @@ async function send() {
     document.getElementById('sendBtn').disabled = false;
 }
 
-function addUserMsg(text, imgSrc) {
+function addUserMsg(text, imgSrcs) {
     const body = document.getElementById('chatBody');
     const d = document.createElement('div');
     d.className = 'msg user';
-    const imgHtml = imgSrc ? `<img src="${imgSrc}" class="msg-image" alt="Attached">` : '';
-    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div>${imgHtml ? `<div style="text-align:right">${imgHtml}</div>` : ''}${text ? `<div class="msg-body">${text}</div>` : ''}`;
+    const imgs = Array.isArray(imgSrcs) && imgSrcs.length > 0
+        ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:6px;">${imgSrcs.map(src => `<img src="${src}" class="msg-image" style="height:80px;width:80px;object-fit:cover;" alt="Attached">`).join('')}</div>`
+        : '';
+    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div>${imgs}${text ? `<div class="msg-body">${text}</div>` : ''}`;
     body.appendChild(d);
     body.scrollTop = body.scrollHeight;
 }
