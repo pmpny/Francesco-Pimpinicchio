@@ -135,5 +135,11 @@ const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
 document.querySelectorAll('.reveal').forEach(el => new IntersectionObserver((e) => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.1}).observe(el));
 </script>
+<script>
+function toggleMobileNav() {
+    document.getElementById('navHamburger').classList.toggle('open');
+    document.getElementById('navMobile').classList.toggle('open');
+}
+</script>
 </body>
 </html>
