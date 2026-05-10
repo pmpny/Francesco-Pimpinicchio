@@ -212,16 +212,25 @@
         .speak-btn { margin-top: 8px; background: none; border: none; font-size: 9px; letter-spacing: 0.14em; color: var(--dim); cursor: pointer; font-family: var(--font-mono); padding: 2px 0; transition: color 0.18s; }
         .speak-btn:hover { color: var(--gray-light); }
 
-        .chat-foot { border-top: 1px solid var(--border); padding: 14px 20px; display: flex; gap: 10px; align-items: flex-end; }
+        .chat-foot { border-top: 1px solid var(--border); padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-foot-row { display: flex; gap: 10px; align-items: flex-end; }
+        .chat-attach-preview { display: none; position: relative; padding: 8px; background: var(--panel-2); border: 1px solid var(--border); }
+        .chat-attach-preview img { max-height: 120px; max-width: 100%; object-fit: contain; display: block; }
+        .chat-attach-remove { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); border: none; color: var(--white); font-size: 14px; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         textarea#chatInput { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 15px; resize: none; outline: none; min-height: 44px; max-height: 120px; line-height: 1.6; transition: border-color 0.18s; }
         textarea#chatInput::placeholder { color: var(--dim); }
         textarea#chatInput:focus { border-color: var(--border-hover); }
+        #attachBtn { width: 44px; height: 44px; background: var(--panel-2); border: 1px solid var(--border); color: var(--gray); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; flex-shrink: 0; }
+        #attachBtn:hover { border-color: var(--accent); color: var(--accent); }
+        #attachBtn.has-image { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
         #micBtn { width: 44px; height: 44px; background: var(--panel-2); border: 1px solid var(--border); color: var(--gray); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; flex-shrink: 0; }
         #micBtn:hover { border-color: var(--border-hover); color: var(--white); }
         #micBtn.recording { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
         #sendBtn { background: var(--white); color: var(--black); border: none; padding: 12px 22px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; cursor: pointer; height: 44px; transition: all 0.18s; white-space: nowrap; }
         #sendBtn:hover { background: var(--accent); color: var(--black); }
         #sendBtn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--white); color: var(--black); }
+        #chatAttachInput { display: none; }
+        .msg-image { max-width: 100%; max-height: 200px; object-fit: contain; display: block; margin-bottom: 8px; border: 1px solid var(--border); }
 
         /* RIGHT COLUMN */
         .right-col { display: flex; flex-direction: column; gap: 16px; }
@@ -259,6 +268,35 @@
         .bs-track { flex: 1; height: 1px; background: var(--border); margin: 0 10px; position: relative; }
         .bs-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--gray); opacity: 0.6; }
         .bs-pct { font-size: 9px; color: var(--gray-light); min-width: 30px; text-align: right; }
+
+        /* MOOD BOARD */
+        .moodboard-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(8,8,8,0.96); backdrop-filter: blur(20px); display: none; overflow-y: auto; padding: 40px; }
+        .moodboard-overlay.show { display: block; }
+        .moodboard-inner { max-width: 900px; margin: 0 auto; }
+        .moodboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+        .moodboard-title { font-family: var(--font-display); font-size: 42px; font-weight: 300; font-style: italic; color: var(--white); line-height: 1; }
+        .moodboard-season { font-size: 9px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-top: 8px; }
+        .moodboard-close { background: none; border: 1px solid var(--border); color: var(--gray); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; padding: 8px 16px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+        .moodboard-close:hover { border-color: var(--white); color: var(--white); }
+        .moodboard-colors { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+        .mb-swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .mb-swatch-block { width: 48px; height: 48px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
+        .mb-swatch-name { font-size: 8px; letter-spacing: 0.1em; color: var(--dim); text-align: center; }
+        .moodboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 28px; }
+        .mb-img-wrap { aspect-ratio: 4/3; overflow: hidden; background: var(--panel-2); position: relative; }
+        .mb-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+        .mb-img-wrap:hover img { transform: scale(1.03); }
+        .mb-img-source { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(8,8,8,0.7); font-size: 8px; color: var(--dim); padding: 4px 8px; }
+        .mb-loading { display: flex; align-items: center; justify-content: center; height: 300px; gap: 12px; font-size: 11px; color: var(--gray); letter-spacing: 0.14em; }
+        .moodboard-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+        .mb-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 24px; cursor: pointer; border: none; transition: all 0.2s; }
+        .mb-btn-primary { background: var(--white); color: var(--black); }
+        .mb-btn-primary:hover { background: var(--accent); }
+        .mb-btn-secondary { background: transparent; color: var(--gray); border: 1px solid var(--border); }
+        .mb-btn-secondary:hover { border-color: var(--white); color: var(--white); }
+        .generate-mb-btn { margin-top: 10px; background: transparent; border: 1px solid var(--accent-border); color: var(--accent); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; padding: 6px 14px; cursor: pointer; text-transform: uppercase; transition: all 0.2s; display: inline-block; }
+        .generate-mb-btn:hover { background: var(--accent-dim); }
+        .generate-mb-btn.locked { border-color: var(--border); color: var(--gray); }
 
         /* PRICING */
         .pricing-wrap { padding: 80px 48px; max-width: 1440px; margin: 0 auto; }
@@ -349,6 +387,27 @@
             <button class="modal-submit" id="signupBtn" onclick="signUp()">Create Account →</button>
             <div class="modal-divider">or</div>
             <button class="modal-submit" style="background:var(--panel-2);color:var(--white);border:1px solid var(--border);" onclick="continueAsGuest()">Continue as Guest</button>
+        </div>
+    </div>
+</div>
+
+<!-- MOOD BOARD OVERLAY -->
+<div class="moodboard-overlay" id="moodboardOverlay">
+    <div class="moodboard-inner">
+        <div class="moodboard-header">
+            <div>
+                <div class="moodboard-title" id="mbTitle">Mood Board</div>
+                <div class="moodboard-season" id="mbSeason">SS27</div>
+            </div>
+            <button class="moodboard-close" onclick="closeMoodboard()">Close ×</button>
+        </div>
+        <div class="moodboard-colors" id="mbColors"></div>
+        <div class="moodboard-grid" id="mbGrid">
+            <div class="mb-loading"><div class="thinking-symbol"></div><span>Generating mood board...</span></div>
+        </div>
+        <div class="moodboard-actions">
+            <button class="mb-btn mb-btn-secondary" onclick="closeMoodboard()">Close</button>
+            <button class="mb-btn mb-btn-primary" onclick="downloadMoodboard()">Download →</button>
         </div>
     </div>
 </div>
@@ -454,9 +513,17 @@
                 </div>
             </div>
             <div class="chat-foot">
-                <textarea id="chatInput" placeholder="Ask about trends... or tap the mic to speak" rows="1" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
-                <button id="micBtn" onclick="toggleMic()" title="Speak">🎤</button>
-                <button id="sendBtn" onclick="send()">Send →</button>
+                <div class="chat-attach-preview" id="chatAttachPreview">
+                    <img id="chatAttachImg" src="" alt="Attached image">
+                    <button class="chat-attach-remove" onclick="removeChatAttach()">×</button>
+                </div>
+                <div class="chat-foot-row">
+                    <textarea id="chatInput" placeholder="Ask about trends, share a sketch, upload a photo..." rows="1" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
+                    <input type="file" id="chatAttachInput" accept="image/*" onchange="onChatAttach(event)">
+                    <button id="attachBtn" onclick="document.getElementById('chatAttachInput').click()" title="Attach image">⬆</button>
+                    <button id="micBtn" onclick="toggleMic()" title="Speak">🎤</button>
+                    <button id="sendBtn" onclick="send()">Send →</button>
+                </div>
             </div>
         </div>
 
@@ -793,6 +860,95 @@ async function loadWeeklyBrief() {
     }
 }
 
+// IMAGE UPLOAD TRACKING
+const IMG_LIMIT_FREE = 5;
+function getUploadMonthKey() { const d = new Date(); return `pmpny_uploads_${d.getFullYear()}_${d.getMonth()}`; }
+function getUploadCount() { return parseInt(localStorage.getItem(getUploadMonthKey()) || '0'); }
+function incrementUploadCount() { localStorage.setItem(getUploadMonthKey(), getUploadCount() + 1); updateUploadCounter(); }
+function updateUploadCounter() {
+    const remaining = Math.max(0, IMG_LIMIT_FREE - getUploadCount());
+    const el = document.getElementById('uploadLimit');
+    if (el) el.textContent = remaining + ' free / mo';
+}
+function checkUploadLimit() {
+    if (getUploadCount() >= IMG_LIMIT_FREE) {
+        document.getElementById('paywallModal').classList.remove('hidden');
+        return false;
+    }
+    return true;
+}
+
+// MOOD BOARD
+let currentMoodboardData = null;
+
+async function generateMoodboard(query, colors, season, title) {
+    document.getElementById('moodboardOverlay').classList.add('show');
+    document.getElementById('mbTitle').textContent = title || query;
+    document.getElementById('mbSeason').textContent = season || 'SS27';
+    const colorsEl = document.getElementById('mbColors');
+    colorsEl.innerHTML = '';
+    if (colors && colors.length) {
+        colors.forEach(c => {
+            colorsEl.innerHTML += `<div class="mb-swatch"><div class="mb-swatch-block" style="background:${c.hex}"></div><div class="mb-swatch-name">${c.name}</div></div>`;
+        });
+    }
+    document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1"><div class="thinking-symbol"></div><span style="margin-left:10px">Generating mood board...</span></div>`;
+    try {
+        const res = await fetch('/api/moodboard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, colors, season, title })
+        });
+        const data = await res.json();
+        currentMoodboardData = data;
+        const grid = document.getElementById('mbGrid');
+        if (!data.images || data.images.length === 0) {
+            grid.innerHTML = `<div class="mb-loading" style="grid-column:1/-1">No images found. Try again.</div>`;
+            return;
+        }
+        grid.innerHTML = data.images.map(img => `
+            <div class="mb-img-wrap">
+                <img src="${img.url}" alt="${img.title}" onerror="this.parentElement.style.display='none'">
+                <div class="mb-img-source">${img.source}</div>
+            </div>`).join('');
+    } catch (e) {
+        document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1">Error generating mood board.</div>`;
+    }
+}
+
+function closeMoodboard() { document.getElementById('moodboardOverlay').classList.remove('show'); }
+
+function downloadMoodboard() {
+    const data = currentMoodboardData;
+    if (!data) return;
+    const w = window.open('', '_blank');
+    w.document.write(`<html><head><title>PMPNY Mood Board</title>
+    <style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}
+    h1{font-size:36px;font-style:italic;font-weight:300;margin-bottom:4px;}
+    .season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}
+    .grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}
+    .footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}
+    </style></head><body>
+    <h1>${data.title}</h1>
+    <div class="season">${data.season} · PMPNY Intelligence</div>
+    <div class="grid">${data.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div>
+    <div class="footer">pmpny.com/ai · Generated by PMPNY Intelligence</div>
+    </body></html>`);
+    w.document.close();
+    setTimeout(() => w.print(), 600);
+}
+
+function extractMoodboardData(text) {
+    const colors = [];
+    const hexMatches = [...text.matchAll(/([A-Za-z\s]{3,20})\s*#([0-9A-Fa-f]{6})/g)];
+    hexMatches.slice(0, 5).forEach(m => {
+        colors.push({ name: m[1].trim(), hex: '#' + m[2] });
+    });
+    const query = text.split('\n').filter(l => l.trim())[0]?.replace(/[*#·]/g, '').trim().substring(0, 60) || 'fashion trends SS27';
+    return { colors, query };
+}
+
 // INIT
 window.addEventListener('load', () => {
     setTimeout(() => { document.querySelectorAll('.signal-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 500);
@@ -1031,6 +1187,34 @@ async function typeText(el, text, body, speed = 20) {
 // CHAT
 const history = [];
 
+// CHAT IMAGE ATTACHMENT
+let chatAttachB64 = null;
+let chatAttachMime = null;
+
+function onChatAttach(e) {
+    if (!checkUploadLimit()) return;
+    const file = e.target.files[0];
+    if (!file) return;
+    chatAttachMime = file.type;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        chatAttachB64 = ev.target.result.split(',')[1];
+        document.getElementById('chatAttachImg').src = ev.target.result;
+        document.getElementById('chatAttachPreview').style.display = 'block';
+        document.getElementById('attachBtn').classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+}
+
+function removeChatAttach() {
+    chatAttachB64 = null;
+    chatAttachMime = null;
+    document.getElementById('chatAttachPreview').style.display = 'none';
+    document.getElementById('chatAttachImg').src = '';
+    document.getElementById('attachBtn').classList.remove('has-image');
+}
+
 function isConversational(text) {
     const t = text.toLowerCase().trim();
     const conversational = ['ciao', 'hello', 'hi', 'hey', 'come stai', 'how are you', 'grazie', 'thanks', 'thank you', 'ok', 'okay', 'buongiorno', 'buonasera', 'good morning', 'good evening', 'bene', 'good', 'perfetto', 'great'];
@@ -1045,10 +1229,25 @@ async function send() {
     // Check daily limit
     if (!checkLimit()) return;
 
-    addUserMsg(txt);
+    addUserMsg(txt, chatAttachB64 ? document.getElementById('chatAttachImg').src : null);
+    
+    // Build message content
+    let messageContent;
+    if (chatAttachB64) {
+        messageContent = [
+            { type: 'image', source: { type: 'base64', media_type: chatAttachMime || 'image/jpeg', data: chatAttachB64 } },
+            { type: 'text', text: txt || 'Analyze this image for fashion trend signals, design feedback, and market positioning.' }
+        ];
+    } else {
+        messageContent = txt;
+    }
+
+    const attachB64 = chatAttachB64;
+    removeChatAttach();
+
     inp.value = ''; inp.style.height = 'auto';
-    history.push({ role: 'user', content: txt });
-    saveMessage('user', txt);
+    history.push({ role: 'user', content: messageContent });
+    saveMessage('user', txt || '[image]');
     incrementMsgCount();
 
     document.getElementById('sendBtn').disabled = true;
@@ -1091,12 +1290,20 @@ async function send() {
         // Progressive display
         await displayProgressively(responseContainer, reply);
 
-        // Add speak button
+        // Add speak button and mood board button
         const speakBtn = document.createElement('button');
         speakBtn.className = 'speak-btn';
         speakBtn.textContent = 'Listen →';
         speakBtn.onclick = () => speakMsg(speakBtn);
         msgEl.appendChild(speakBtn);
+
+        // Generate mood board button (Plus feature)
+        const mbData = extractMoodboardData(reply);
+        const mbBtn = document.createElement('button');
+        mbBtn.className = 'generate-mb-btn';
+        mbBtn.textContent = 'Generate Mood Board →';
+        mbBtn.onclick = () => generateMoodboard(mbData.query, mbData.colors, 'SS27', mbData.query);
+        msgEl.appendChild(mbBtn);
 
         history.push({ role: 'assistant', content: reply });
         saveMessage('assistant', reply);
@@ -1111,11 +1318,12 @@ async function send() {
     document.getElementById('sendBtn').disabled = false;
 }
 
-function addUserMsg(text) {
+function addUserMsg(text, imgSrc) {
     const body = document.getElementById('chatBody');
     const d = document.createElement('div');
     d.className = 'msg user';
-    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div><div class="msg-body">${text}</div>`;
+    const imgHtml = imgSrc ? `<img src="${imgSrc}" class="msg-image" alt="Attached">` : '';
+    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div>${imgHtml ? `<div style="text-align:right">${imgHtml}</div>` : ''}${text ? `<div class="msg-body">${text}</div>` : ''}`;
     body.appendChild(d);
     body.scrollTop = body.scrollHeight;
 }
@@ -1224,8 +1432,10 @@ function loadImg(file) {
 function clearImg() { imgB64 = null; document.getElementById('imgPreviewWrap').style.display = 'none'; document.getElementById('imgActions').style.display = 'none'; document.getElementById('uploadZone').style.display = 'flex'; document.getElementById('analysisOut').style.display = 'none'; document.getElementById('fileInput').value = ''; }
 async function analyze() {
     if (!imgB64) return;
+    if (!checkUploadLimit()) return;
     const btn = document.getElementById('analyzeBtn');
     btn.disabled = true; btn.textContent = 'Analyzing...';
+    incrementUploadCount();
     try {
         const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageData: imgB64, mediaType: imgMime }) });
         const data = await res.json();
