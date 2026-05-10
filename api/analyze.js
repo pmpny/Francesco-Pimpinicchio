@@ -53,6 +53,8 @@ Direct, specific, useful. Name real brands and real comparables. No emojis. No d
 ## LANGUAGE
 Respond in the same language the user is using.`;
 
+export const config = { api: { bodyParser: { sizeLimit: '20mb' } } };
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
