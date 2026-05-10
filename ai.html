@@ -918,7 +918,10 @@ async function generateMoodboard(query, colors, season, title) {
         grid.innerHTML = data.images.map(img => `
             <div class="mb-img-wrap">
                 <img src="${img.url}" alt="${img.title}" onerror="this.parentElement.style.display='none'">
-                <div class="mb-img-source">${img.source}</div>
+                <div class="mb-img-source">
+                    <a href="${img.photographerUrl}" target="_blank" rel="noopener" style="color:var(--dim);text-decoration:none;">${img.photographer || img.source}</a>
+                    · <a href="https://unsplash.com/?utm_source=pmpny_intelligence&utm_medium=referral" target="_blank" rel="noopener" style="color:var(--dim);text-decoration:none;">Unsplash</a>
+                </div>
             </div>`).join('');
     } catch (e) {
         document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1">Error generating mood board.</div>`;
