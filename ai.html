@@ -1187,7 +1187,32 @@ const history = [];
 // CHAT IMAGE ATTACHMENT — up to 5 images
 let chatAttachments = []; // [{b64, mime, src}]
 
-function onChatAttach(e) {
+// Compress image to max 1024px and 0.7 quality
+function compressImage(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                const MAX = 1024;
+                let w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const compressed = canvas.toDataURL('image/jpeg', 0.75);
+                resolve({ src: compressed, b64: compressed.split(',')[1], mime: 'image/jpeg' });
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function onChatAttach(e) {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
@@ -1195,18 +1220,13 @@ function onChatAttach(e) {
     if (remaining <= 0) { alert('Maximum 5 images per message.'); return; }
 
     const toLoad = files.slice(0, remaining);
-    toLoad.forEach(file => {
-        if (!checkUploadLimit()) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-            const src = ev.target.result;
-            const b64 = src.split(',')[1];
-            chatAttachments.push({ b64, mime: file.type, src });
-            incrementUploadCount();
-            renderChatAttachPreviews();
-        };
-        reader.readAsDataURL(file);
-    });
+    for (const file of toLoad) {
+        if (!checkUploadLimit()) break;
+        const compressed = await compressImage(file);
+        chatAttachments.push(compressed);
+        incrementUploadCount();
+        renderChatAttachPreviews();
+    }
     e.target.value = '';
 }
 
@@ -1450,10 +1470,15 @@ function dLeave() { document.getElementById('uploadZone').classList.remove('over
 function dDrop(e) { e.preventDefault(); dLeave(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) loadImg(f); }
 function onFile(e) { const f = e.target.files[0]; if (f) loadImg(f); }
 function loadImg(file) {
-    imgMime = file.type;
-    const r = new FileReader();
-    r.onload = ev => { imgB64 = ev.target.result.split(',')[1]; document.getElementById('imgPreview').src = ev.target.result; document.getElementById('imgPreviewWrap').style.display = 'block'; document.getElementById('imgActions').style.display = 'flex'; document.getElementById('uploadZone').style.display = 'none'; document.getElementById('analysisOut').style.display = 'none'; };
-    r.readAsDataURL(file);
+    compressImage(file).then(compressed => {
+        imgB64 = compressed.b64;
+        imgMime = compressed.mime;
+        document.getElementById('imgPreview').src = compressed.src;
+        document.getElementById('imgPreviewWrap').style.display = 'block';
+        document.getElementById('imgActions').style.display = 'flex';
+        document.getElementById('uploadZone').style.display = 'none';
+        document.getElementById('analysisOut').style.display = 'none';
+    });
 }
 function clearImg() { imgB64 = null; document.getElementById('imgPreviewWrap').style.display = 'none'; document.getElementById('imgActions').style.display = 'none'; document.getElementById('uploadZone').style.display = 'flex'; document.getElementById('analysisOut').style.display = 'none'; document.getElementById('fileInput').value = ''; }
 async function analyze() {
