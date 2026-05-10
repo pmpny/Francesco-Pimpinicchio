@@ -402,25 +402,57 @@
         <!-- MOOD BOARD -->
         <div class="admin-section" id="section-moodboard">
             <h2 class="section-title">Mood Board Builder</h2>
-            <div class="brief-editor" style="max-width:700px;">
-                <div style="font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:24px;">Describe what you want to visualize. The AI will search for real images matching your concept and build a visual mood board.</div>
-                <div class="form-group full" style="margin-bottom:16px;">
-                    <label class="form-label">Concept / Query</label>
-                    <textarea class="form-input" id="adminMbQuery" placeholder="Ex: SS27 bowler bag in sage green matte nappa leather with chunky gold hardware..." style="min-height:80px;"></textarea>
+            <div style="display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start;">
+
+                <!-- LEFT: Controls -->
+                <div style="display:flex;flex-direction:column;gap:16px;">
+
+                    <!-- Concept -->
+                    <div class="brief-editor" style="padding:24px;">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Collection Concept</label>
+                            <textarea class="form-input" id="adminMbConcept" placeholder="Ex: SS27 bowler bag collection. Structural volume. Sage green matte nappa with chunky gold hardware. Y2K minimalism." style="min-height:90px;"></textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Season</label>
+                            <input type="text" class="form-input" id="adminMbSeason" placeholder="SS27">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Color Story (hex codes)</label>
+                            <input type="text" class="form-input" id="adminMbColors" placeholder="#9CAF88, #F4E4C1, #6B1C23">
+                            <div id="adminMbSwatches" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:20px;">
+                            <label class="form-label">Board Title</label>
+                            <input type="text" class="form-input" id="adminMbTitle" placeholder="The Architecture of Restraint">
+                        </div>
+                        <button class="btn-save" onclick="adminGenerateMbNarrative()" style="width:100%;margin-bottom:8px;">Generate AI Narrative →</button>
+                        <div id="adminMbNarrative" style="display:none;margin-top:12px;padding:14px;background:var(--panel-2);border:1px solid var(--border);font-size:11px;color:var(--off-white);line-height:1.8;font-style:italic;"></div>
+                    </div>
+
+                    <!-- Photo Upload -->
+                    <div class="brief-editor" style="padding:24px;">
+                        <label class="form-label" style="margin-bottom:12px;display:block;">Your Reference Photos (max 12)</label>
+                        <div id="adminMbDropzone" onclick="document.getElementById('adminMbFileInput').click()" ondragover="adminMbDragOver(event)" ondragleave="adminMbDragLeave(event)" ondrop="adminMbDrop(event)" style="border:1px dashed var(--border);padding:32px 16px;text-align:center;cursor:pointer;transition:all 0.2s;">
+                            <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">⬆</div>
+                            <div style="font-size:11px;color:var(--gray);">Drop up to 12 photos or <span style="color:var(--accent);">browse</span></div>
+                            <div style="font-size:9px;color:var(--dim);margin-top:4px;letter-spacing:0.1em;">sketches · bags · editorial refs · hardware</div>
+                        </div>
+                        <input type="file" id="adminMbFileInput" accept="image/*" multiple style="display:none" onchange="adminMbOnFiles(event)">
+                        <div id="adminMbPhotoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;"></div>
+                        <div id="adminMbPhotoCount" style="font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:0.1em;">0 / 12 photos</div>
+                    </div>
+
+                    <!-- Generate -->
+                    <button class="btn-save" onclick="adminBuildFullMoodboard()" style="width:100%;padding:16px;font-size:11px;letter-spacing:0.18em;">Build Mood Board →</button>
                 </div>
-                <div class="form-group full" style="margin-bottom:16px;">
-                    <label class="form-label">Colors (optional — hex codes comma separated)</label>
-                    <input type="text" class="form-input" id="adminMbColors" placeholder="#6B1C23, #9CAF88, #F4E4C1">
-                </div>
-                <div class="form-group full" style="margin-bottom:24px;">
-                    <label class="form-label">Season</label>
-                    <input type="text" class="form-input" id="adminMbSeason" placeholder="SS27" style="max-width:120px;">
-                </div>
-                <button class="btn-save" onclick="adminBuildMoodboard()">Generate Mood Board →</button>
-                <div id="adminMbResult" style="margin-top:28px;display:none;">
-                    <div style="font-size:9px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-bottom:14px;" id="adminMbTitle"></div>
-                    <div id="adminMbGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:16px;"></div>
-                    <button class="btn-secondary" onclick="adminDownloadMoodboard()">Download →</button>
+
+                <!-- RIGHT: Preview -->
+                <div id="adminMbCanvas" style="background:var(--panel);border:1px solid var(--border);min-height:600px;display:flex;align-items:center;justify-content:center;">
+                    <div style="text-align:center;color:var(--dim);">
+                        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;margin-bottom:8px;">Your mood board</div>
+                        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;">will appear here</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -931,39 +963,180 @@ async function loadCurrentBrief() {
 }
 
 // IMAGE ANALYSIS (unlimited)
-// ADMIN MOOD BOARD
+// ADMIN MOOD BOARD — HYBRID SYSTEM
+let adminMbPhotos = []; // compressed user photos
+let adminMbNarrativeText = '';
 let adminMbData = null;
 
-async function adminBuildMoodboard() {
-    const query = document.getElementById('adminMbQuery')?.value.trim();
-    const colorsRaw = document.getElementById('adminMbColors')?.value.trim();
-    const season = document.getElementById('adminMbSeason')?.value.trim() || 'SS27';
-    if (!query) { alert('Please enter a concept.'); return; }
-    const colors = [];
-    if (colorsRaw) { const hexes = colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || []; hexes.forEach(h => colors.push({ hex: h, name: h })); }
-    const result = document.getElementById('adminMbResult');
-    const grid = document.getElementById('adminMbGrid');
-    document.getElementById('adminMbTitle').textContent = query.substring(0, 60) + ' · ' + season;
-    result.style.display = 'block';
-    grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray);font-size:11px;letter-spacing:0.1em;">Generating mood board...</div>';
+function adminMbDragOver(e) { e.preventDefault(); document.getElementById('adminMbDropzone').style.borderColor = 'var(--accent)'; }
+function adminMbDragLeave() { document.getElementById('adminMbDropzone').style.borderColor = ''; }
+function adminMbDrop(e) { e.preventDefault(); adminMbDragLeave(); adminMbOnFiles({ target: { files: e.dataTransfer.files } }); }
+
+async function adminMbOnFiles(e) {
+    const files = Array.from(e.target.files || []);
+    const remaining = 12 - adminMbPhotos.length;
+    if (remaining <= 0) { alert('Maximum 12 photos.'); return; }
+    for (const file of files.slice(0, remaining)) {
+        const compressed = await compressImage(file);
+        adminMbPhotos.push(compressed);
+    }
+    renderAdminMbPhotoGrid();
+    document.getElementById('adminMbFileInput').value = '';
+}
+
+function renderAdminMbPhotoGrid() {
+    const grid = document.getElementById('adminMbPhotoGrid');
+    const count = document.getElementById('adminMbPhotoCount');
+    count.textContent = `${adminMbPhotos.length} / 12 photos`;
+    grid.innerHTML = adminMbPhotos.map((p, i) => `
+        <div style="position:relative;aspect-ratio:1;overflow:hidden;">
+            <img src="${p.src}" style="width:100%;height:100%;object-fit:cover;">
+            <button onclick="adminMbRemovePhoto(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:11px;width:18px;height:18px;cursor:pointer;">×</button>
+        </div>`).join('');
+
+    // Preview swatches from color input
+    const colorsRaw = document.getElementById('adminMbColors').value;
+    const hexes = colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || [];
+    document.getElementById('adminMbSwatches').innerHTML = hexes.map(h =>
+        `<div style="width:24px;height:24px;background:${h};border:1px solid rgba(255,255,255,0.1);border-radius:2px;" title="${h}"></div>`
+    ).join('');
+}
+
+function adminMbRemovePhoto(idx) {
+    adminMbPhotos.splice(idx, 1);
+    renderAdminMbPhotoGrid();
+}
+
+async function adminGenerateMbNarrative() {
+    const concept = document.getElementById('adminMbConcept').value.trim();
+    const season = document.getElementById('adminMbSeason').value.trim() || 'SS27';
+    if (!concept) { alert('Enter a concept first.'); return; }
+
+    const narrativeEl = document.getElementById('adminMbNarrative');
+    narrativeEl.style.display = 'block';
+    narrativeEl.textContent = 'Generating narrative...';
+
     try {
-        const res = await fetch('/api/moodboard', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, colors, season, title: query }) });
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                messages: [{
+                    role: 'user',
+                    content: `Write a short, evocative mood board narrative (3-4 sentences max) for this collection concept: "${concept}" Season: ${season}. 
+                    Write it as a creative director would — poetic, specific, no fluff. No bullet points. Just flowing prose that captures the mood, the woman, the moment.`
+                }]
+            })
+        });
         const data = await res.json();
-        adminMbData = data;
-        if (!data.images?.length) { grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray);">No images found. Try a different query.</div>'; return; }
-        grid.innerHTML = data.images.map(img => `
-            <div style="aspect-ratio:4/3;overflow:hidden;background:var(--panel-2);position:relative;">
-                <img src="${img.url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
-                <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(8,8,8,0.7);font-size:8px;color:var(--dim);padding:3px 6px;">${img.source}</div>
-            </div>`).join('');
-    } catch(e) { grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray);">Error. Try again.</div>'; }
+        adminMbNarrativeText = data.content?.[0]?.text || '';
+        narrativeEl.textContent = adminMbNarrativeText;
+    } catch(e) {
+        narrativeEl.textContent = 'Error generating narrative.';
+    }
+}
+
+function adminBuildFullMoodboard() {
+    const concept = document.getElementById('adminMbConcept').value.trim();
+    const season = document.getElementById('adminMbSeason').value.trim() || 'SS27';
+    const title = document.getElementById('adminMbTitle').value.trim() || concept.substring(0, 40);
+    const colorsRaw = document.getElementById('adminMbColors').value;
+    const hexes = colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || [];
+
+    if (!concept && adminMbPhotos.length === 0) {
+        alert('Add a concept or upload photos first.');
+        return;
+    }
+
+    const canvas = document.getElementById('adminMbCanvas');
+
+    // Build the mood board HTML
+    const swatchesHtml = hexes.map(h => `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:36px;height:36px;background:${h};border:1px solid rgba(255,255,255,0.1);"></div>
+            <div style="font-size:8px;color:var(--dim);letter-spacing:0.08em;">${h}</div>
+        </div>`).join('');
+
+    // Photo grid — different layouts based on count
+    const photos = adminMbPhotos;
+    let photoGrid = '';
+    if (photos.length > 0) {
+        const cols = photos.length <= 3 ? photos.length : photos.length <= 6 ? 3 : 4;
+        photoGrid = `
+            <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:3px;margin-bottom:16px;">
+                ${photos.map(p => `<div style="aspect-ratio:3/4;overflow:hidden;"><img src="${p.src}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>`).join('')}
+            </div>`;
+    }
+
+    canvas.innerHTML = `
+        <div style="width:100%;padding:32px;" id="adminMbExport">
+            <!-- Header -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.07);padding-bottom:20px;">
+                <div>
+                    <div style="font-size:8px;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">PMPNY Intelligence · Mood Board</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;font-style:italic;color:var(--white);line-height:1;">${title || 'Untitled'}</div>
+                    <div style="font-size:9px;color:var(--gray);letter-spacing:0.2em;margin-top:6px;">${season}</div>
+                </div>
+                ${hexes.length > 0 ? `<div style="display:flex;gap:8px;align-items:flex-start;">${swatchesHtml}</div>` : ''}
+            </div>
+
+            <!-- Photos -->
+            ${photoGrid}
+
+            <!-- Narrative -->
+            ${adminMbNarrativeText ? `
+            <div style="padding:16px;border-left:2px solid var(--accent);margin-bottom:16px;">
+                <div style="font-size:8px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">Creative Direction</div>
+                <div style="font-size:12px;color:var(--off-white);line-height:1.9;font-style:italic;">${adminMbNarrativeText}</div>
+            </div>` : ''}
+
+            <!-- Concept -->
+            ${concept ? `
+            <div style="padding:16px;background:var(--panel-2);border:1px solid var(--border);">
+                <div style="font-size:8px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">Concept</div>
+                <div style="font-size:12px;color:var(--off-white);line-height:1.8;">${concept}</div>
+            </div>` : ''}
+
+            <!-- Footer -->
+            <div style="margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:8px;color:var(--dim);letter-spacing:0.1em;">PMPNY Design Studio · pmpny.com</div>
+                <div style="font-size:8px;color:var(--dim);letter-spacing:0.1em;">${new Date().toLocaleDateString('en-US', {month:'long',year:'numeric'})}</div>
+            </div>
+        </div>
+        <div style="padding:0 32px 20px;display:flex;gap:12px;">
+            <button class="btn-save" onclick="adminDownloadMoodboard()" style="flex:1;">Download PDF →</button>
+            <button class="btn-secondary" onclick="adminResetMoodboard()">Reset</button>
+        </div>`;
 }
 
 function adminDownloadMoodboard() {
-    if (!adminMbData) return;
+    const exportEl = document.getElementById('adminMbExport');
+    if (!exportEl) return;
     const w = window.open('', '_blank');
-    w.document.write(`<html><head><title>PMPNY Mood Board</title><style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}h1{font-size:32px;font-style:italic;font-weight:300;margin-bottom:4px;}.season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}.footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}</style></head><body><h1>${adminMbData.title}</h1><div class="season">${adminMbData.season} · PMPNY Intelligence</div><div class="grid">${adminMbData.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div><div class="footer">pmpny.com/ai · PMPNY Design Studio</div></body></html>`);
-    w.document.close(); setTimeout(() => w.print(), 600);
+    w.document.write(`<!DOCTYPE html><html><head><title>PMPNY Mood Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#080808; color:#f4f4ee; font-family:'DM Mono',monospace; padding:40px; }
+    @media print { body { padding:20px; } }
+    </style></head><body>
+    ${exportEl.innerHTML}
+    </body></html>`);
+    w.document.close();
+    setTimeout(() => w.print(), 800);
+}
+
+function adminResetMoodboard() {
+    adminMbPhotos = [];
+    adminMbNarrativeText = '';
+    document.getElementById('adminMbPhotoGrid').innerHTML = '';
+    document.getElementById('adminMbPhotoCount').textContent = '0 / 12 photos';
+    document.getElementById('adminMbNarrative').style.display = 'none';
+    document.getElementById('adminMbCanvas').innerHTML = `
+        <div style="text-align:center;color:var(--dim);">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;margin-bottom:8px;">Your mood board</div>
+            <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;">will appear here</div>
+        </div>`;
 }
 
 // ADMIN IMAGE ANALYSIS (unlimited)
