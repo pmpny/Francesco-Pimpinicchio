@@ -281,13 +281,10 @@
                         </div>
                     </div>
                     <div class="admin-chat-foot">
-                        <div class="admin-attach-preview" id="adminAttachPreview">
-                            <img id="adminAttachImg" src="" alt="Attached">
-                            <button class="admin-attach-remove" onclick="removeAdminAttach()">×</button>
-                        </div>
+                        <div class="admin-attach-preview" id="adminAttachPreview"></div>
                         <div class="admin-chat-foot-row">
                             <textarea class="admin-chat-input" id="adminChatInput" placeholder="Ask anything, share a sketch, upload a photo..." rows="1" onkeydown="adminOnKey(event)" oninput="adminGrow(this)"></textarea>
-                            <input type="file" id="adminAttachInput" accept="image/*" style="display:none" onchange="onAdminAttach(event)">
+                            <input type="file" id="adminAttachInput" accept="image/*" multiple style="display:none" onchange="onAdminAttach(event)">
                             <button id="adminAttachBtn" onclick="document.getElementById('adminAttachInput').click()" title="Attach image">⬆</button>
                             <button class="admin-send" id="adminSendBtn" onclick="adminSend()">Send →</button>
                         </div>
@@ -476,31 +473,67 @@ async function loadDashboard() {
     } catch(e) { console.log('Stats error:', e); }
 }
 
-// ADMIN IMAGE ATTACHMENT
-let adminAttachB64 = null;
-let adminAttachMime = null;
+// ADMIN IMAGE ATTACHMENT — with compression, up to 5 images
+let adminAttachments = [];
 
-function onAdminAttach(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    adminAttachMime = file.type;
-    const reader = new FileReader();
-    reader.onload = ev => {
-        adminAttachB64 = ev.target.result.split(',')[1];
-        document.getElementById('adminAttachImg').src = ev.target.result;
-        document.getElementById('adminAttachPreview').style.display = 'block';
-        document.getElementById('adminAttachBtn').classList.add('has-image');
-    };
-    reader.readAsDataURL(file);
+function compressImage(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                const MAX = 1024;
+                let w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const compressed = canvas.toDataURL('image/jpeg', 0.75);
+                resolve({ src: compressed, b64: compressed.split(',')[1], mime: 'image/jpeg' });
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function onAdminAttach(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    const remaining = 5 - adminAttachments.length;
+    if (remaining <= 0) { alert('Maximum 5 images per message.'); return; }
+    for (const file of files.slice(0, remaining)) {
+        const compressed = await compressImage(file);
+        adminAttachments.push(compressed);
+        renderAdminAttachPreviews();
+    }
     e.target.value = '';
 }
 
-function removeAdminAttach() {
-    adminAttachB64 = null;
-    adminAttachMime = null;
-    document.getElementById('adminAttachPreview').style.display = 'none';
-    document.getElementById('adminAttachImg').src = '';
-    document.getElementById('adminAttachBtn').classList.remove('has-image');
+function renderAdminAttachPreviews() {
+    const container = document.getElementById('adminAttachPreview');
+    if (adminAttachments.length === 0) {
+        container.style.display = 'none';
+        document.getElementById('adminAttachBtn').classList.remove('has-image');
+        return;
+    }
+    container.style.display = 'block';
+    document.getElementById('adminAttachBtn').classList.add('has-image');
+    container.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;">` +
+        adminAttachments.map((a, i) => `
+            <div style="position:relative;display:inline-block;">
+                <img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);">
+                <button onclick="removeAdminAttach(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:12px;width:18px;height:18px;cursor:pointer;">×</button>
+            </div>`).join('') + `</div>`;
+}
+
+function removeAdminAttach(idx) {
+    if (idx === undefined) { adminAttachments = []; }
+    else { adminAttachments.splice(idx, 1); }
+    renderAdminAttachPreviews();
 }
 
 // ADMIN CHAT — full visual rendering same as pmpny.com/ai
@@ -601,24 +634,28 @@ async function adminDisplayResponse(container, text) {
 async function adminSend() {
     const inp = document.getElementById('adminChatInput');
     const txt = inp.value.trim();
-    if (!txt) return;
+    if (!txt && adminAttachments.length === 0) return;
 
     const body = document.getElementById('adminChatBody');
-    const imgSrc = adminAttachB64 ? document.getElementById('adminAttachImg').src : null;
-    
+
     const userMsg = document.createElement('div');
     userMsg.className = 'amsg user';
-    const imgHtml = imgSrc ? `<img src="${imgSrc}" style="max-height:120px;max-width:100%;object-fit:contain;display:block;margin-bottom:6px;border:1px solid var(--border);" alt="Attached">` : '';
+    const imgHtml = adminAttachments.length > 0
+        ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">${adminAttachments.map(a => `<img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);">`).join('')}</div>`
+        : '';
     userMsg.innerHTML = `<div class="amsg-label">FRANCESCO</div>${imgHtml}${txt ? `<div class="amsg-body">${txt}</div>` : ''}`;
     body.appendChild(userMsg);
     body.scrollTop = body.scrollHeight;
 
-    // Build message
+    // Build message with compressed images
     let messageContent;
-    if (adminAttachB64) {
+    if (adminAttachments.length > 0) {
         messageContent = [
-            { type: 'image', source: { type: 'base64', media_type: adminAttachMime || 'image/jpeg', data: adminAttachB64 } },
-            { type: 'text', text: txt || 'Analyze this image for fashion trend signals, design feedback, and market positioning.' }
+            ...adminAttachments.map(a => ({
+                type: 'image',
+                source: { type: 'base64', media_type: a.mime, data: a.b64 }
+            })),
+            { type: 'text', text: txt || 'Analyze these images for fashion trend signals, design feedback, and market positioning.' }
         ];
     } else {
         messageContent = txt;
@@ -670,53 +707,56 @@ async function adminSend() {
 function adminOnKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); adminSend(); } }
 function adminGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
 
-// ADMIN HISTORY
+// ADMIN HISTORY — stored in localStorage (no RLS issues)
 let adminConvId = null;
+let adminConversations = JSON.parse(localStorage.getItem('pmpny_admin_convs') || '[]');
 
-async function loadAdminHistory() {
-    const { data } = await sb.from('conversations')
-        .select('*')
-        .eq('user_id', 'admin')
-        .order('created_at', { ascending: false })
-        .limit(30);
+function loadAdminHistory() {
     const list = document.getElementById('adminHistoryList');
-    if (!data || data.length === 0) {
+    if (!adminConversations.length) {
         list.innerHTML = '<div style="padding:16px;font-size:11px;color:var(--dim);text-align:center;">No history yet</div>';
         return;
     }
-    list.innerHTML = data.map(c => `
+    list.innerHTML = adminConversations.slice().reverse().map(c => `
         <div onclick="loadAdminConversation('${c.id}')" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.18s;" onmouseover="this.style.background='var(--panel-2)'" onmouseout="this.style.background='transparent'">
             <div style="font-size:11px;color:var(--off-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;">${c.title}</div>
             <div style="font-size:9px;color:var(--dim);letter-spacing:0.08em;">${new Date(c.created_at).toLocaleDateString()}</div>
         </div>`).join('');
 }
 
-async function loadAdminConversation(convId) {
+function loadAdminConversation(convId) {
+    const conv = adminConversations.find(c => c.id === convId);
+    if (!conv) return;
     adminConvId = convId;
-    const { data } = await sb.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
-    if (!data) return;
     const body = document.getElementById('adminChatBody');
     body.innerHTML = '';
     adminHistory.length = 0;
-    data.forEach(msg => {
+    conv.messages.forEach(msg => {
         adminHistory.push({ role: msg.role, content: msg.content });
         const d = document.createElement('div');
         d.className = `amsg ${msg.role === 'user' ? 'user' : 'ai'}`;
-        d.innerHTML = `<div class="amsg-label">${msg.role === 'user' ? 'FRANCESCO' : 'PMPNY INTELLIGENCE'}</div><div class="amsg-body">${msg.content.replace(/\n/g,'<br>')}</div>`;
+        d.innerHTML = `<div class="amsg-label">${msg.role === 'user' ? 'FRANCESCO' : 'PMPNY INTELLIGENCE'}</div><div class="amsg-body">${(typeof msg.content === 'string' ? msg.content : '[image]').replace(/\n/g,'<br>')}</div>`;
         body.appendChild(d);
     });
     body.scrollTop = body.scrollHeight;
 }
 
-async function saveAdminMessage(role, content) {
+function saveAdminMessage(role, content) {
+    const text = typeof content === 'string' ? content : '[image + message]';
     if (!adminConvId) {
-        const title = (typeof content === 'string' ? content : 'Image + message').substring(0, 50);
-        const { data } = await sb.from('conversations').insert({ user_id: 'admin', title }).select().single();
-        if (data) { adminConvId = data.id; loadAdminHistory(); }
+        adminConvId = Date.now().toString();
+        adminConversations.push({
+            id: adminConvId,
+            title: text.substring(0, 50),
+            created_at: new Date().toISOString(),
+            messages: []
+        });
     }
-    if (adminConvId) {
-        const text = typeof content === 'string' ? content : JSON.stringify(content).substring(0, 200);
-        await sb.from('messages').insert({ conversation_id: adminConvId, user_id: 'admin', role, content: text });
+    const conv = adminConversations.find(c => c.id === adminConvId);
+    if (conv) {
+        conv.messages.push({ role, content: text });
+        localStorage.setItem('pmpny_admin_convs', JSON.stringify(adminConversations));
+        loadAdminHistory();
     }
 }
 
