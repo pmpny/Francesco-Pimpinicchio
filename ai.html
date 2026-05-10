@@ -577,6 +577,18 @@
                     </div>
                 </div>
             </div>
+
+            <!-- MOOD BOARD BUILDER -->
+            <div class="panel">
+                <div class="panel-head"><span>Mood Board Builder</span><span style="font-size:9px;color:var(--accent);letter-spacing:0.1em;">PLUS</span></div>
+                <div style="padding:14px 18px;">
+                    <div style="font-size:11px;color:var(--gray);line-height:1.6;margin-bottom:12px;">Describe what you want to visualize — a trend, a collection concept, a silhouette.</div>
+                    <textarea id="mbQuery" placeholder="Ex: SS27 bowler bag in sage green matte leather with gold hardware..." style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:12px;padding:10px 12px;resize:none;outline:none;min-height:72px;line-height:1.6;margin-bottom:8px;box-sizing:border-box;"></textarea>
+                    <input type="text" id="mbColorsInput" placeholder="Colors (optional): #6B1C23, #9CAF88" style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:12px;padding:10px 12px;outline:none;margin-bottom:8px;box-sizing:border-box;">
+                    <button onclick="buildMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:opacity 0.2s;">Generate Mood Board →</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -934,6 +946,21 @@ function downloadMoodboard() {
     </body></html>`);
     w.document.close();
     setTimeout(() => w.print(), 600);
+}
+
+function buildMoodboard() {
+    const query = document.getElementById('mbQuery')?.value.trim();
+    const colorsRaw = document.getElementById('mbColorsInput')?.value.trim();
+    if (!query) { alert('Please describe what you want to visualize.'); return; }
+
+    // Parse colors from input
+    const colors = [];
+    if (colorsRaw) {
+        const hexes = colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || [];
+        hexes.forEach(h => colors.push({ hex: h, name: h }));
+    }
+
+    generateMoodboard(query, colors, 'SS27', query.substring(0, 40));
 }
 
 function extractMoodboardData(text) {
@@ -1334,20 +1361,18 @@ async function send() {
         // Progressive display
         await displayProgressively(responseContainer, reply);
 
-        // Add speak button and mood board button
+        // Add speak button and edit button
+        const btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:12px;align-items:center;margin-top:8px;';
+
         const speakBtn = document.createElement('button');
         speakBtn.className = 'speak-btn';
+        speakBtn.style.marginTop = '0';
         speakBtn.textContent = 'Listen →';
         speakBtn.onclick = () => speakMsg(speakBtn);
-        msgEl.appendChild(speakBtn);
+        btnRow.appendChild(speakBtn);
 
-        // Generate mood board button (Plus feature)
-        const mbData = extractMoodboardData(reply);
-        const mbBtn = document.createElement('button');
-        mbBtn.className = 'generate-mb-btn';
-        mbBtn.textContent = 'Generate Mood Board →';
-        mbBtn.onclick = () => generateMoodboard(mbData.query, mbData.colors, 'SS27', mbData.query);
-        msgEl.appendChild(mbBtn);
+        msgEl.appendChild(btnRow);
 
         history.push({ role: 'assistant', content: reply });
         saveMessage('assistant', reply);
@@ -1369,9 +1394,32 @@ function addUserMsg(text, imgSrcs) {
     const imgs = Array.isArray(imgSrcs) && imgSrcs.length > 0
         ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:6px;">${imgSrcs.map(src => `<img src="${src}" class="msg-image" style="height:80px;width:80px;object-fit:cover;" alt="Attached">`).join('')}</div>`
         : '';
-    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div>${imgs}${text ? `<div class="msg-body">${text}</div>` : ''}`;
+    const msgIdx = document.querySelectorAll('.msg.user').length;
+    d.innerHTML = `
+        <div class="msg-label" style="text-align:right">YOU</div>
+        ${imgs}
+        ${text ? `<div class="msg-body" id="userMsg-${msgIdx}">${text}</div>` : ''}
+        <div style="text-align:right;margin-top:4px;">
+            <button onclick="editUserMsg(this, ${msgIdx})" style="background:none;border:none;font-size:9px;letter-spacing:0.12em;color:var(--dim);cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;padding:2px 0;" title="Edit message">Edit</button>
+        </div>`;
     body.appendChild(d);
     body.scrollTop = body.scrollHeight;
+}
+
+function editUserMsg(btn, idx) {
+    const msgBody = document.getElementById(`userMsg-${idx}`);
+    if (!msgBody) return;
+    const currentText = msgBody.textContent;
+    const inp = document.getElementById('chatInput');
+    inp.value = currentText;
+    inp.focus();
+    grow(inp);
+    // Remove the last AI response to allow resend
+    btn.closest('.msg').nextElementSibling?.remove();
+    btn.closest('.msg').remove();
+    // Pop last two history entries (user + assistant)
+    if (history.length >= 2) history.splice(-2, 2);
+    else if (history.length >= 1) history.splice(-1, 1);
 }
 
 function addMsg(role, text) {
