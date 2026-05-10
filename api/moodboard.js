@@ -11,52 +11,55 @@ export default async function handler(req, res) {
   const { query, colors, season, title } = req.body;
   if (!query) return res.status(400).json({ error: 'No query provided' });
 
-  const API_KEY = process.env.GOOGLE_API_KEY;
-  const CX = process.env.GOOGLE_CX;
+  const ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+  if (!ACCESS_KEY) return res.status(500).json({ error: 'Missing UNSPLASH_ACCESS_KEY' });
 
   try {
-    if (!API_KEY || !CX) {
-      return res.status(500).json({ error: 'Missing API credentials', details: 'GOOGLE_API_KEY or GOOGLE_CX not set' });
-    }
-
     const queries = [
-      `${query} fashion bag 2027`,
-      `luxury handbag ${query} runway`,
+      `${query} fashion`,
+      `luxury bag accessories ${season || 'SS27'}`,
+      `fashion editorial accessories`,
     ];
 
     const imageResults = [];
+    const seen = new Set();
 
     for (const q of queries) {
-      const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=4&imgSize=medium&safe=active`;
-      const response = await fetch(url);
+      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=4&orientation=portrait&content_filter=high`;
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Client-ID ${ACCESS_KEY}`,
+          'Accept-Version': 'v1'
+        }
+      });
       const data = await response.json();
 
-      if (data.error) {
-        console.error('Google API error:', data.error);
-        return res.status(400).json({ error: 'Google API error', details: data.error.message });
-      }
-
-      if (data.items) {
-        data.items.forEach(item => {
-          imageResults.push({
-            url: item.link,
-            title: item.title,
-            source: item.displayLink,
-          });
+      if (data.results) {
+        data.results.forEach(photo => {
+          if (!seen.has(photo.id)) {
+            seen.add(photo.id);
+            imageResults.push({
+              url: photo.urls.regular,
+              title: photo.alt_description || query,
+              source: 'Unsplash',
+              photographer: photo.user.name,
+              photographerUrl: `${photo.user.links.html}?utm_source=pmpny_intelligence&utm_medium=referral`,
+              downloadUrl: photo.links.download_location
+            });
+          }
         });
       }
     }
 
-    // Deduplicate by domain
-    const seen = new Set();
-    const unique = imageResults.filter(img => {
-      if (seen.has(img.source)) return false;
-      seen.add(img.source);
-      return true;
-    }).slice(0, 8);
+    // Trigger Unsplash download events (required by API guidelines)
+    imageResults.slice(0, 8).forEach(img => {
+      if (img.downloadUrl) {
+        fetch(`${img.downloadUrl}?client_id=${ACCESS_KEY}`).catch(() => {});
+      }
+    });
 
     return res.status(200).json({
-      images: unique,
+      images: imageResults.slice(0, 8),
       title: title || query,
       season: season || 'SS27',
       colors: colors || []
@@ -64,6 +67,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Moodboard error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 }
