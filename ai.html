@@ -17,28 +17,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --black: #080808;
-            --white: #f4f4ee;
-            --off-white: #e0e0d8;
-            --gray: #888880;
-            --gray-light: #b0b0a8;
-            --dim: #444440;
-            --panel: #141412;
-            --panel-2: #1e1e1a;
-            --accent: #ccff00;
-            --accent-dim: rgba(204,255,0,0.07);
-            --accent-border: rgba(204,255,0,0.2);
-            --border: rgba(255,255,255,0.07);
-            --border-hover: rgba(255,255,255,0.18);
+            --black: #080808; --white: #f4f4ee; --off-white: #e0e0d8;
+            --gray: #888880; --gray-light: #b0b0a8; --dim: #444440;
+            --panel: #141412; --panel-2: #1e1e1a;
+            --accent: #ccff00; --accent-dim: rgba(204,255,0,0.07); --accent-border: rgba(204,255,0,0.2);
+            --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.18);
             --font-display: 'Cormorant Garamond', Georgia, serif;
             --font-mono: 'DM Mono', 'Courier New', monospace;
         }
-
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; line-height: 1.65; min-height: 100vh; overflow-x: hidden; }
-
-        /* NAV */
         nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(8,8,8,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
         .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
         .nav-logo-text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
@@ -52,8 +41,6 @@
         .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
         .nav-btn.primary { background: var(--white); color: var(--black); border-color: var(--white); }
         .nav-btn.primary:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
-
-        /* AUTH MODAL */
         .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(8,8,8,0.92); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.hidden { display: none; }
         .modal { background: var(--panel); border: 1px solid var(--border); padding: 48px; width: 100%; max-width: 420px; position: relative; }
@@ -78,8 +65,6 @@
         .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--dim); font-size: 18px; cursor: pointer; }
         .modal-close:hover { color: var(--white); }
         .modal-divider { text-align: center; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin: 4px 0; }
-
-        /* PAYWALL MODAL */
         .paywall-modal { background: var(--panel); border: 1px solid var(--accent-border); padding: 48px; width: 100%; max-width: 480px; position: relative; }
         .paywall-eyebrow { font-size: 9px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
         .paywall-title { font-family: var(--font-display); font-size: 36px; font-weight: 300; line-height: 1.05; margin-bottom: 12px; }
@@ -97,8 +82,6 @@
         .paywall-skip:hover { color: var(--gray); border-color: var(--border-hover); }
         .msg-counter { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); }
         .msg-counter.warning { color: #ff9944; }
-
-        /* HERO */
         .hero { min-height: 100vh; padding: 140px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; overflow: hidden; }
         .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 70% at 5% 50%, rgba(204,255,0,0.025) 0%, transparent 70%); pointer-events: none; }
         .hero-left { position: relative; z-index: 1; }
@@ -113,7 +96,6 @@
         .btn-primary:hover { background: var(--accent); color: var(--black); }
         .btn-ghost { background: transparent; color: var(--gray); border: 1px solid var(--border); }
         .btn-ghost:hover { border-color: var(--border-hover); color: var(--white); }
-
         .hero-signals { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
         .signal-card { background: var(--panel); border: 1px solid var(--border); padding: 16px 20px; position: relative; overflow: hidden; }
         .signal-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); opacity: 0.4; }
@@ -122,8 +104,6 @@
         .signal-track { height: 1px; background: var(--border); position: relative; margin-bottom: 6px; }
         .signal-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); opacity: 0.6; transition: width 2.5s cubic-bezier(0.16,1,0.3,1); width: 0%; }
         .signal-pct { font-size: 9px; color: var(--gray-light); text-align: right; letter-spacing: 0.1em; }
-
-        /* CHAT SECTION */
         .section { padding: 0 48px 80px; max-width: 1440px; margin: 0 auto; }
         #chat { padding-top: 24px; }
         .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 0 22px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
@@ -131,8 +111,6 @@
         .app-bar-right { display: flex; align-items: center; gap: 16px; }
         .tier-pill { font-size: 9px; letter-spacing: 0.18em; padding: 5px 12px; background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
         .interface { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
-
-        /* HISTORY */
         .history-panel { background: var(--panel); border: 1px solid var(--border); }
         .panel-head { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: 0.22em; color: var(--gray); text-transform: uppercase; }
         .history-list { max-height: 200px; overflow-y: auto; }
@@ -146,8 +124,6 @@
         .history-empty { padding: 20px 18px; font-size: 11px; color: var(--dim); text-align: center; }
         .new-chat-btn { width: 100%; padding: 11px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: transparent; border: 1px solid var(--border); color: var(--gray); cursor: pointer; transition: all 0.18s; }
         .new-chat-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-        /* CHAT */
         .chat-panel { background: var(--panel); border: 1px solid var(--border); display: flex; flex-direction: column; height: 640px; }
         .chat-top { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .chat-status { display: flex; align-items: center; gap: 8px; font-size: 9px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
@@ -165,12 +141,9 @@
         .voice-status { padding: 6px 20px; font-size: 9px; letter-spacing: 0.18em; color: var(--accent); display: none; align-items: center; gap: 8px; text-transform: uppercase; }
         .voice-status.show { display: flex; }
         .vs-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 0.8s ease infinite; }
-
         .chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
         .chat-body::-webkit-scrollbar { width: 3px; }
         .chat-body::-webkit-scrollbar-thumb { background: var(--border); }
-
-        /* USER MESSAGE */
         .msg { max-width: 88%; animation: slideUp 0.28s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .msg.user { align-self: flex-end; }
@@ -179,28 +152,18 @@
         .msg.user .msg-label { text-align: right; }
         .msg-body { padding: 13px 17px; font-size: 13px; line-height: 1.75; }
         .msg.user .msg-body { background: var(--white); color: var(--black); }
-
-        /* AI RESPONSE — VISUAL CARDS */
         .ai-response { display: flex; flex-direction: column; gap: 4px; }
         .ai-plain { background: var(--panel-2); border: 1px solid var(--border); padding: 18px 20px; font-size: 13px; line-height: 1.9; color: var(--off-white); }
-
-        /* SECTION CARDS — unified single card */
         .section-card { border: 1px solid rgba(255,255,255,0.07); background: #1e1e1a; margin-bottom: 4px; overflow: hidden; padding: 0; }
         .section-title-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px 0 18px; }
-        .section-title-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 300; font-style: italic; color: #b0b0a8; letter-spacing: 0.01em; flex-shrink: 0; text-transform: none; }
+        .section-title-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 300; font-style: italic; color: #b0b0a8; letter-spacing: 0.01em; flex-shrink: 0; }
         .section-title-line { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
         .section-body { padding: 8px 18px 16px 18px; font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9; color: #e0e0d8; }
-
-        /* COLOR SWATCHES INLINE */
         .color-swatch-inline { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; margin: 0 3px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 6px 2px 3px; border-radius: 2px; }
         .color-dot { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.2); display: inline-block; flex-shrink: 0; }
         .hex-text { font-family: var(--font-mono); font-size: 10px; color: var(--gray-light); letter-spacing: 0.06em; }
-
-        /* STREAMING CURSOR */
         .streaming-cursor { display: inline-block; width: 2px; height: 14px; background: var(--accent); animation: cursor-blink 0.7s ease infinite; vertical-align: middle; margin-left: 2px; }
         @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        /* THINKING INDICATOR */
         .thinking-indicator { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--panel-2); border: 1px solid var(--border); width: fit-content; }
         .thinking-symbol { width: 18px; height: 18px; position: relative; }
         .thinking-symbol::before { content: ''; position: absolute; inset: 0; border: 1.5px solid var(--accent); transform: rotate(45deg); animation: think-rotate 2s linear infinite; }
@@ -208,15 +171,11 @@
         @keyframes think-rotate { 0% { transform: rotate(45deg); } 100% { transform: rotate(405deg); } }
         @keyframes think-pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(0.8); } 50% { opacity: 1; transform: rotate(45deg) scale(1); } }
         .thinking-text { font-size: 10px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
-
         .speak-btn { margin-top: 8px; background: none; border: none; font-size: 9px; letter-spacing: 0.14em; color: var(--dim); cursor: pointer; font-family: var(--font-mono); padding: 2px 0; transition: color 0.18s; }
         .speak-btn:hover { color: var(--gray-light); }
-
         .chat-foot { border-top: 1px solid var(--border); padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
         .chat-foot-row { display: flex; gap: 10px; align-items: flex-end; }
         .chat-attach-preview { display: none; position: relative; padding: 8px; background: var(--panel-2); border: 1px solid var(--border); }
-        .chat-attach-preview img { max-height: 120px; max-width: 100%; object-fit: contain; display: block; }
-        .chat-attach-remove { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); border: none; color: var(--white); font-size: 14px; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         textarea#chatInput { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 15px; resize: none; outline: none; min-height: 44px; max-height: 120px; line-height: 1.6; transition: border-color 0.18s; }
         textarea#chatInput::placeholder { color: var(--dim); }
         textarea#chatInput:focus { border-color: var(--border-hover); }
@@ -231,8 +190,6 @@
         #sendBtn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--white); color: var(--black); }
         #chatAttachInput { display: none; }
         .msg-image { max-width: 100%; max-height: 200px; object-fit: contain; display: block; margin-bottom: 8px; border: 1px solid var(--border); }
-
-        /* RIGHT COLUMN */
         .right-col { display: flex; flex-direction: column; gap: 16px; }
         .panel { background: var(--panel); border: 1px solid var(--border); }
         .upload-zone { margin: 14px; padding: 28px 16px; border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; cursor: pointer; transition: all 0.2s; }
@@ -253,8 +210,6 @@
         .analysis-out { display: none; padding: 0 18px 18px; animation: slideUp 0.3s ease; }
         .analysis-label { font-size: 8px; letter-spacing: 0.24em; color: var(--gray); text-transform: uppercase; margin-bottom: 8px; }
         .analysis-text { font-size: 12px; color: var(--off-white); line-height: 1.8; white-space: pre-line; }
-
-        /* WEEKLY BRIEF */
         .brief-body { padding: 18px; }
         .brief-week { font-size: 8px; letter-spacing: 0.24em; color: var(--gray); text-transform: uppercase; margin-bottom: 10px; }
         .brief-title { font-family: var(--font-display); font-size: 20px; font-weight: 300; font-style: italic; line-height: 1.15; margin-bottom: 16px; color: var(--white); }
@@ -268,8 +223,6 @@
         .bs-track { flex: 1; height: 1px; background: var(--border); margin: 0 10px; position: relative; }
         .bs-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--gray); opacity: 0.6; }
         .bs-pct { font-size: 9px; color: var(--gray-light); min-width: 30px; text-align: right; }
-
-        /* MOOD BOARD */
         .moodboard-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(8,8,8,0.96); backdrop-filter: blur(20px); display: none; overflow-y: auto; padding: 40px; }
         .moodboard-overlay.show { display: block; }
         .moodboard-inner { max-width: 900px; margin: 0 auto; }
@@ -294,19 +247,12 @@
         .mb-btn-primary:hover { background: var(--accent); }
         .mb-btn-secondary { background: transparent; color: var(--gray); border: 1px solid var(--border); }
         .mb-btn-secondary:hover { border-color: var(--white); color: var(--white); }
-        .generate-mb-btn { margin-top: 10px; background: transparent; border: 1px solid var(--accent-border); color: var(--accent); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; padding: 6px 14px; cursor: pointer; text-transform: uppercase; transition: all 0.2s; display: inline-block; }
-        .generate-mb-btn:hover { background: var(--accent-dim); }
-        .generate-mb-btn.locked { border-color: var(--border); color: var(--gray); }
-
-        /* PWA INSTALL BANNER */
         .pwa-banner { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--accent-border); padding: 14px 20px; display: none; align-items: center; gap: 14px; z-index: 300; max-width: 340px; width: calc(100% - 40px); }
         .pwa-banner.show { display: flex; }
         .pwa-banner-text { font-size: 11px; color: var(--off-white); line-height: 1.5; flex: 1; }
         .pwa-banner-text span { display: block; font-size: 9px; color: var(--gray); letter-spacing: 0.1em; margin-top: 2px; }
         .pwa-install-btn { background: var(--accent); color: var(--black); border: none; padding: 8px 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
         .pwa-dismiss { background: none; border: none; color: var(--dim); font-size: 18px; cursor: pointer; padding: 0 4px; }
-
-        /* PRICING */
         .pricing-wrap { padding: 80px 48px; max-width: 1440px; margin: 0 auto; }
         .section-eye { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
         .section-eye::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gray); }
@@ -328,13 +274,11 @@
         .pc-features li.off { color: var(--dim); }
         .pc-features li.off::before { content: '—'; color: var(--dim); }
         .pc-cta { display: block; text-align: center; text-decoration: none; }
-
         footer { border-top: 1px solid var(--border); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; }
         .foot-copy { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
         .foot-links { display: flex; gap: 28px; }
         .foot-links a { font-size: 10px; letter-spacing: 0.14em; color: var(--gray); text-decoration: none; transition: color 0.18s; text-transform: uppercase; }
         .foot-links a:hover { color: var(--white); }
-
         @media (max-width: 1024px) {
             nav { padding: 14px 24px; }
             .hero { padding: 120px 24px 60px; grid-template-columns: 1fr; gap: 48px; }
@@ -366,10 +310,7 @@
 <div class="modal-overlay" id="authModal">
     <div class="modal">
         <button class="modal-close" onclick="closeModal()">×</button>
-        <div class="modal-logo">
-            <span class="modal-logo-text">PMPNY</span>
-            <span class="modal-badge">INTELLIGENCE</span>
-        </div>
+        <div class="modal-logo"><span class="modal-logo-text">PMPNY</span><span class="modal-badge">INTELLIGENCE</span></div>
         <h2>Your trend<br><em>intelligence.</em></h2>
         <p>Sign in to save your chat history and unlock your personalized trend analysis.</p>
         <div class="modal-tabs">
@@ -435,18 +376,9 @@
         <h2 class="paywall-title">Upgrade for<br><em>unlimited access.</em></h2>
         <p class="paywall-desc">You've used your 20 free messages today. Upgrade to Plus for unlimited trend intelligence, mood boards, and visual palettes.</p>
         <div class="paywall-plans">
-            <div class="paywall-plan">
-                <span class="paywall-plan-name">Spark</span>
-                <span class="paywall-plan-price">Free <span>/ forever</span></span>
-            </div>
-            <div class="paywall-plan featured">
-                <span class="paywall-plan-name">Plus</span>
-                <span class="paywall-plan-price">$9 <span>/ mo</span></span>
-            </div>
-            <div class="paywall-plan">
-                <span class="paywall-plan-name">Studio</span>
-                <span class="paywall-plan-price">$50 <span>/ mo</span></span>
-            </div>
+            <div class="paywall-plan"><span class="paywall-plan-name">Spark</span><span class="paywall-plan-price">Free <span>/ forever</span></span></div>
+            <div class="paywall-plan featured"><span class="paywall-plan-name">Plus</span><span class="paywall-plan-price">$9 <span>/ mo</span></span></div>
+            <div class="paywall-plan"><span class="paywall-plan-name">Studio</span><span class="paywall-plan-price">$50 <span>/ mo</span></span></div>
         </div>
         <button class="paywall-cta" onclick="handleUpgrade()">Get Plus — $9/mo →</button>
         <button class="paywall-skip" onclick="closePaywall()">Maybe tomorrow</button>
@@ -471,6 +403,11 @@
         <a href="contact.html" class="nav-btn primary">Start a Project</a>
     </div>
 </nav>
+
+<!-- RECONNECT BANNER — shows when tab hidden during active request -->
+<div id="reconnectBanner" style="display:none;padding:10px 16px;background:rgba(255,68,68,0.1);border-bottom:1px solid rgba(255,68,68,0.25);font-size:11px;color:#ff6666;text-align:center;letter-spacing:0.08em;position:fixed;top:61px;left:0;right:0;z-index:199;">
+    Returning to send your request...
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -538,7 +475,6 @@
                 </div>
             </div>
         </div>
-
         <div class="right-col">
             <div class="history-panel panel">
                 <div class="panel-head">
@@ -549,7 +485,6 @@
                     <div class="history-empty">Sign in to save history</div>
                 </div>
             </div>
-
             <div class="panel">
                 <div class="panel-head"><span>Visual Analysis</span><span id="uploadLimit">5 free / mo</span></div>
                 <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event)">
@@ -569,7 +504,6 @@
                     <button class="speak-btn" onclick="speakAnalysis()" style="margin-top:10px">Listen →</button>
                 </div>
             </div>
-
             <div class="panel">
                 <div class="panel-head"><span>Biweekly Brief</span><span id="briefSeasonLabel">SS27</span></div>
                 <div class="brief-body">
@@ -592,8 +526,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- MOOD BOARD BUILDER -->
             <div class="panel">
                 <div class="panel-head"><span>Mood Board Builder</span><span style="font-size:9px;color:var(--accent);letter-spacing:0.1em;">PLUS</span></div>
                 <div style="padding:14px 18px;">
@@ -608,7 +540,6 @@
                     <button onclick="buildHybridMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Build Mood Board →</button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -624,14 +555,9 @@
             <div class="pc-price">Free <span>forever</span></div>
             <div class="pc-desc">Everything you need to start making smarter design decisions.</div>
             <ul class="pc-features">
-                <li>Weekly visual trend brief</li>
-                <li>20 AI messages per day</li>
-                <li>Voice input & text-to-speech</li>
-                <li>5 image uploads per month</li>
-                <li>Chat history (sign in required)</li>
-                <li class="off">Mood board generation</li>
-                <li class="off">Visual color palettes</li>
-                <li class="off">PDF & mood board export</li>
+                <li>Weekly visual trend brief</li><li>20 AI messages per day</li><li>Voice input & text-to-speech</li>
+                <li>5 image uploads per month</li><li>Chat history (sign in required)</li>
+                <li class="off">Mood board generation</li><li class="off">Visual color palettes</li><li class="off">PDF & mood board export</li>
             </ul>
             <button onclick="showModal()" class="btn btn-primary pc-cta">Start Free →</button>
         </div>
@@ -640,13 +566,8 @@
             <div class="pc-price"><sup>$</sup>9 <span>/ mo</span></div>
             <div class="pc-desc">Unlimited access for the serious working designer.</div>
             <ul class="pc-features">
-                <li>Everything in Spark</li>
-                <li>Unlimited AI messages</li>
-                <li>Unlimited image uploads</li>
-                <li>Mood board generation</li>
-                <li>Visual color palettes</li>
-                <li>Full brief archive + search</li>
-                <li>Export as PDF</li>
+                <li>Everything in Spark</li><li>Unlimited AI messages</li><li>Unlimited image uploads</li>
+                <li>Mood board generation</li><li>Visual color palettes</li><li>Full brief archive + search</li><li>Export as PDF</li>
             </ul>
             <button onclick="handleUpgrade()" class="btn btn-primary pc-cta">Get Plus →</button>
         </div>
@@ -655,11 +576,8 @@
             <div class="pc-price"><sup>$</sup>50 <span>/ mo</span></div>
             <div class="pc-desc">Francesco's expert eyes on your work. Async. Quarterly.</div>
             <ul class="pc-features">
-                <li>Everything in Plus</li>
-                <li>Quarterly trend analysis on your work</li>
-                <li>Written feedback PDF via email</li>
-                <li>Early access to new features</li>
-                <li>Direct studio intelligence</li>
+                <li>Everything in Plus</li><li>Quarterly trend analysis on your work</li>
+                <li>Written feedback PDF via email</li><li>Early access to new features</li><li>Direct studio intelligence</li>
             </ul>
             <button onclick="handleUpgrade('studio')" class="btn btn-primary pc-cta">Get Studio →</button>
         </div>
@@ -669,68 +587,40 @@
 <footer>
     <div class="foot-copy">© 2026 PMPNY Intelligence — A PMPNY Design Studio Product</div>
     <div class="foot-links">
-        <a href="index.html">Portfolio</a>
-        <a href="studio.html">Studio</a>
-        <a href="https://pimpinicchio.com">Shop</a>
-        <a href="contact.html">Contact</a>
+        <a href="index.html">Portfolio</a><a href="studio.html">Studio</a>
+        <a href="https://pimpinicchio.com">Shop</a><a href="contact.html">Contact</a>
     </div>
 </footer>
 
 <script>
-// PWA INSTALL
+// PWA
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (!localStorage.getItem('pwa_dismissed')) {
-        setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 3000);
-    }
+    e.preventDefault(); deferredPrompt = e;
+    if (!localStorage.getItem('pwa_dismissed')) setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 3000);
 });
 document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    await deferredPrompt.userChoice;
     deferredPrompt = null;
     document.getElementById('pwaBanner').classList.remove('show');
 });
-function dismissPWA() {
-    document.getElementById('pwaBanner').classList.remove('show');
-    localStorage.setItem('pwa_dismissed', '1');
-}
-
-// SERVICE WORKER — PWA
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-}
+function dismissPWA() { document.getElementById('pwaBanner').classList.remove('show'); localStorage.setItem('pwa_dismissed','1'); }
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
 
 // SUPABASE
 const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let currentUser = null;
-let currentConvId = null;
-let isGuest = false;
+let currentUser = null, currentConvId = null, isGuest = false;
 const FREE_LIMIT = 20;
 
-// AUTH
 sb.auth.onAuthStateChange((event, session) => {
-    currentUser = session?.user || null;
-    updateAuthUI();
-    if (currentUser) {
-        loadHistory();
-        closeModal();
-        if (window.location.hash.includes('access_token')) {
-            window.history.replaceState({}, document.title, '/ai');
-        }
-    }
+    currentUser = session?.user || null; updateAuthUI();
+    if (currentUser) { loadHistory(); closeModal(); if (window.location.hash.includes('access_token')) window.history.replaceState({}, document.title, '/ai'); }
 });
-
-async function signInWithGoogle() {
-    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pmpny.com/ai' } });
-    if (error) console.error(error);
-}
-
+async function signInWithGoogle() { await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pmpny.com/ai' } }); }
 async function signIn() {
     const email = document.getElementById('signinEmail').value.trim();
     const pass = document.getElementById('signinPassword').value;
@@ -741,7 +631,6 @@ async function signIn() {
     const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Sign In →'; }
 }
-
 async function signUp() {
     const email = document.getElementById('signupEmail').value.trim();
     const pass = document.getElementById('signupPassword').value;
@@ -755,31 +644,18 @@ async function signUp() {
     if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Create Account →'; }
     else { err.style.display = 'none'; suc.style.display = 'block'; btn.textContent = 'Check your email'; }
 }
-
 async function signOut() {
-    await sb.auth.signOut();
-    currentUser = null; currentConvId = null; isGuest = false;
-    updateAuthUI();
+    await sb.auth.signOut(); currentUser = null; currentConvId = null; isGuest = false; updateAuthUI();
     document.getElementById('historyList').innerHTML = '<div class="history-empty">Sign in to save history</div>';
 }
-
 function continueAsGuest() { isGuest = true; closeModal(); updateAuthUI(); }
-
 function updateAuthUI() {
     const btn = document.getElementById('authNavBtn');
     const emailEl = document.getElementById('navUserEmail');
-    if (currentUser) {
-        emailEl.textContent = currentUser.email.split('@')[0];
-        btn.textContent = 'Sign Out';
-        btn.onclick = signOut;
-    } else {
-        emailEl.textContent = '';
-        btn.textContent = 'Sign In';
-        btn.onclick = showModal;
-    }
+    if (currentUser) { emailEl.textContent = currentUser.email.split('@')[0]; btn.textContent = 'Sign Out'; btn.onclick = signOut; }
+    else { emailEl.textContent = ''; btn.textContent = 'Sign In'; btn.onclick = showModal; }
     updateMsgCounter();
 }
-
 function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
 function showModal() { document.getElementById('authModal').classList.remove('hidden'); }
 function closeModal() { document.getElementById('authModal').classList.add('hidden'); }
@@ -788,18 +664,11 @@ async function handleUpgrade(plan = 'plus') {
     const btn = event?.target;
     if (btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
     try {
-        const res = await fetch('/api/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ plan, email: currentUser?.email || '' })
-        });
+        const res = await fetch('/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ plan, email: currentUser?.email || '' }) });
         const data = await res.json();
         if (data.url) window.location.href = data.url;
-        else { alert('Something went wrong. Please try again.'); if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; } }
-    } catch(e) {
-        alert('Something went wrong. Please try again.');
-        if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; }
-    }
+        else { alert('Something went wrong.'); if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; } }
+    } catch(e) { alert('Something went wrong.'); if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; } }
 }
 function switchTab(tab) {
     document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
@@ -808,46 +677,35 @@ function switchTab(tab) {
     document.getElementById('signupForm').style.display = tab === 'signup' ? 'flex' : 'none';
 }
 
-// MESSAGE COUNTER
+// COUNTER
 function getTodayKey() { return 'pmpny_msgs_' + new Date().toISOString().split('T')[0]; }
 function getMsgCount() { return parseInt(localStorage.getItem(getTodayKey()) || '0'); }
 function incrementMsgCount() { localStorage.setItem(getTodayKey(), getMsgCount() + 1); updateMsgCounter(); }
 function updateMsgCounter() {
-    const count = getMsgCount();
-    const remaining = Math.max(0, FREE_LIMIT - count);
+    const remaining = Math.max(0, FREE_LIMIT - getMsgCount());
     const el = document.getElementById('msgCounter');
-    if (remaining <= 5) { el.className = 'msg-counter warning'; el.textContent = remaining + ' messages left today'; }
-    else if (remaining <= 0) { el.className = 'msg-counter warning'; el.textContent = 'Daily limit reached'; }
-    else { el.className = 'msg-counter'; el.textContent = remaining + ' messages left today'; }
+    el.className = remaining <= 5 ? 'msg-counter warning' : 'msg-counter';
+    el.textContent = remaining + ' messages left today';
 }
-function checkLimit() {
-    if (getMsgCount() >= FREE_LIMIT) {
-        document.getElementById('paywallModal').classList.remove('hidden');
-        return false;
-    }
-    return true;
-}
+function checkLimit() { if (getMsgCount() >= FREE_LIMIT) { document.getElementById('paywallModal').classList.remove('hidden'); return false; } return true; }
 
 // HISTORY
 async function loadHistory() {
     if (!currentUser) return;
     const { data } = await sb.from('conversations').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(20);
     const list = document.getElementById('historyList');
-    if (!data || data.length === 0) { list.innerHTML = '<div class="history-empty">No conversations yet</div>'; return; }
+    if (!data?.length) { list.innerHTML = '<div class="history-empty">No conversations yet</div>'; return; }
     list.innerHTML = data.map(c => `<div class="history-item" onclick="loadConversation('${c.id}')"><div class="history-item-title">${c.title}</div><div class="history-item-date">${new Date(c.created_at).toLocaleDateString()}</div></div>`).join('');
 }
-
 async function loadConversation(convId) {
     if (!currentUser) return;
     currentConvId = convId;
     const { data } = await sb.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
     if (!data) return;
     const body = document.getElementById('chatBody');
-    body.innerHTML = '';
-    history.length = 0;
+    body.innerHTML = ''; history.length = 0;
     data.forEach(msg => { history.push({ role: msg.role, content: msg.content }); addMsg(msg.role === 'user' ? 'user' : 'ai', msg.content); });
 }
-
 async function saveMessage(role, content) {
     if (!currentUser) return;
     if (!currentConvId) {
@@ -857,554 +715,238 @@ async function saveMessage(role, content) {
     }
     if (currentConvId) await sb.from('messages').insert({ conversation_id: currentConvId, user_id: currentUser.id, role, content });
 }
-
 function newChat() {
     currentConvId = null; history.length = 0;
     document.getElementById('chatBody').innerHTML = `<div class="msg ai"><div class="msg-label">PMPNY Intelligence</div><div class="ai-response"><div class="ai-plain">New conversation started. What trends are you researching?</div></div></div>`;
 }
 
-// WEEKLY BRIEF — load from Supabase
+// WEEKLY BRIEF
 async function loadWeeklyBrief() {
     try {
         const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
         if (!data) return;
-
         const weekEl = document.querySelector('.brief-week');
         const titleEl = document.querySelector('.brief-title');
         if (weekEl) weekEl.textContent = data.week_label;
         if (titleEl) titleEl.textContent = data.title;
-
-        // Note — I'm seeing...
         const noteEl = document.getElementById('briefNote');
         if (noteEl && data.note) { noteEl.textContent = data.note; noteEl.style.display = 'block'; }
-
-        // Images
         const imagesEl = document.getElementById('briefImages');
-        if (imagesEl && data.images?.length) {
-            imagesEl.style.display = 'grid';
-            imagesEl.innerHTML = data.images.map(url => `<img src="${url}" alt="Brief inspiration" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">`).join('');
-        }
-
-        // Swatches
+        if (imagesEl && data.images?.length) { imagesEl.style.display = 'grid'; imagesEl.innerHTML = data.images.map(url => `<img src="${url}" alt="Brief inspiration" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">`).join(''); }
         const swatchesEl = document.querySelector('.swatches');
-        if (swatchesEl && data.colors?.length) {
-            swatchesEl.innerHTML = data.colors.map(c => `
-                <div class="swatch-wrap">
-                    <div class="swatch" style="background:${c.hex}"></div>
-                    <div class="swatch-name">${c.name}</div>
-                </div>`).join('');
-        }
-
-        // Signals
+        if (swatchesEl && data.colors?.length) swatchesEl.innerHTML = data.colors.map(c => `<div class="swatch-wrap"><div class="swatch" style="background:${c.hex}"></div><div class="swatch-name">${c.name}</div></div>`).join('');
         const signalsEl = document.querySelector('.brief-signals');
-        if (signalsEl && data.signals?.length) {
-            signalsEl.innerHTML = data.signals.map(s => `
-                <div class="bs">
-                    <span class="bs-name">${s.name}</span>
-                    <div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div>
-                    <span class="bs-pct">↑${s.pct}%</span>
-                </div>`).join('');
-        }
-
-        // Season label
+        if (signalsEl && data.signals?.length) signalsEl.innerHTML = data.signals.map(s => `<div class="bs"><span class="bs-name">${s.name}</span><div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div><span class="bs-pct">↑${s.pct}%</span></div>`).join('');
         const seasonEl = document.getElementById('briefSeasonLabel');
         if (seasonEl && data.season) seasonEl.textContent = data.season;
-
-    } catch (err) {
-        console.log('Brief load error:', err);
-    }
+    } catch(err) {}
 }
 
-// IMAGE UPLOAD TRACKING
+// UPLOAD
 const IMG_LIMIT_FREE = 5;
 function getUploadMonthKey() { const d = new Date(); return `pmpny_uploads_${d.getFullYear()}_${d.getMonth()}`; }
 function getUploadCount() { return parseInt(localStorage.getItem(getUploadMonthKey()) || '0'); }
 function incrementUploadCount() { localStorage.setItem(getUploadMonthKey(), getUploadCount() + 1); updateUploadCounter(); }
-function updateUploadCounter() {
-    const remaining = Math.max(0, IMG_LIMIT_FREE - getUploadCount());
-    const el = document.getElementById('uploadLimit');
-    if (el) el.textContent = remaining + ' free / mo';
-}
-function checkUploadLimit() {
-    if (getUploadCount() >= IMG_LIMIT_FREE) {
-        document.getElementById('paywallModal').classList.remove('hidden');
-        return false;
-    }
-    return true;
-}
+function updateUploadCounter() { const el = document.getElementById('uploadLimit'); if (el) el.textContent = Math.max(0, IMG_LIMIT_FREE - getUploadCount()) + ' free / mo'; }
+function checkUploadLimit() { if (getUploadCount() >= IMG_LIMIT_FREE) { document.getElementById('paywallModal').classList.remove('hidden'); return false; } return true; }
 
 // MOOD BOARD
 let currentMoodboardData = null;
-
 async function generateMoodboard(query, colors, season, title) {
     document.getElementById('moodboardOverlay').classList.add('show');
     document.getElementById('mbTitle').textContent = title || query;
     document.getElementById('mbSeason').textContent = season || 'SS27';
     const colorsEl = document.getElementById('mbColors');
     colorsEl.innerHTML = '';
-    if (colors && colors.length) {
-        colors.forEach(c => {
-            colorsEl.innerHTML += `<div class="mb-swatch"><div class="mb-swatch-block" style="background:${c.hex}"></div><div class="mb-swatch-name">${c.name}</div></div>`;
-        });
-    }
-    document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1"><div class="thinking-symbol"></div><span style="margin-left:10px">Generating mood board...</span></div>`;
+    if (colors?.length) colors.forEach(c => { colorsEl.innerHTML += `<div class="mb-swatch"><div class="mb-swatch-block" style="background:${c.hex}"></div><div class="mb-swatch-name">${c.name}</div></div>`; });
+    document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1"><div class="thinking-symbol"></div><span style="margin-left:10px">Generating...</span></div>`;
     try {
-        const res = await fetch('/api/moodboard', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, colors, season, title })
-        });
+        const res = await fetch('/api/moodboard', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query, colors, season, title }) });
         const data = await res.json();
         currentMoodboardData = data;
         const grid = document.getElementById('mbGrid');
-        if (!data.images || data.images.length === 0) {
-            grid.innerHTML = `<div class="mb-loading" style="grid-column:1/-1">No images found. Try again.</div>`;
-            return;
-        }
-        grid.innerHTML = data.images.map(img => `
-            <div class="mb-img-wrap">
-                <img src="${img.url}" alt="${img.title}" onerror="this.parentElement.style.display='none'">
-                <div class="mb-img-source">
-                    <a href="${img.photographerUrl}" target="_blank" rel="noopener" style="color:var(--dim);text-decoration:none;">${img.photographer || img.source}</a>
-                    · <a href="https://unsplash.com/?utm_source=pmpny_intelligence&utm_medium=referral" target="_blank" rel="noopener" style="color:var(--dim);text-decoration:none;">Unsplash</a>
-                </div>
-            </div>`).join('');
-    } catch (e) {
-        document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1">Error generating mood board.</div>`;
-    }
+        if (!data.images?.length) { grid.innerHTML = `<div class="mb-loading" style="grid-column:1/-1">No images found.</div>`; return; }
+        grid.innerHTML = data.images.map(img => `<div class="mb-img-wrap"><img src="${img.url}" alt="${img.title}" onerror="this.parentElement.style.display='none'"><div class="mb-img-source"><a href="${img.photographerUrl}" target="_blank" style="color:var(--dim);text-decoration:none;">${img.photographer||img.source}</a> · <a href="https://unsplash.com/?utm_source=pmpny_intelligence&utm_medium=referral" target="_blank" style="color:var(--dim);text-decoration:none;">Unsplash</a></div></div>`).join('');
+    } catch(e) { document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1">Error. Try again.</div>`; }
 }
-
 function closeMoodboard() { document.getElementById('moodboardOverlay').classList.remove('show'); }
-
 function downloadMoodboard() {
-    const data = currentMoodboardData;
-    if (!data) return;
-    const w = window.open('', '_blank');
-    w.document.write(`<html><head><title>PMPNY Mood Board</title>
-    <style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}
-    h1{font-size:36px;font-style:italic;font-weight:300;margin-bottom:4px;}
-    .season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}
-    .grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}
-    .footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}
-    </style></head><body>
-    <h1>${data.title}</h1>
-    <div class="season">${data.season} · PMPNY Intelligence</div>
-    <div class="grid">${data.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div>
-    <div class="footer">pmpny.com/ai · Generated by PMPNY Intelligence</div>
-    </body></html>`);
-    w.document.close();
-    setTimeout(() => w.print(), 600);
+    const data = currentMoodboardData; if (!data) return;
+    const w = window.open('','_blank');
+    w.document.write(`<html><head><title>PMPNY Mood Board</title><style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}h1{font-size:36px;font-style:italic;font-weight:300;margin-bottom:4px;}.season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}.footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}</style></head><body><h1>${data.title}</h1><div class="season">${data.season} · PMPNY Intelligence</div><div class="grid">${data.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div><div class="footer">pmpny.com/ai</div></body></html>`);
+    w.document.close(); setTimeout(()=>w.print(),600);
 }
 
 // HYBRID MOOD BOARD
 let mbPhotos = [];
-
 async function onMbPhotos(e) {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files||[]);
     const remaining = 12 - mbPhotos.length;
-    for (const file of files.slice(0, remaining)) {
-        const compressed = await compressImage(file);
-        mbPhotos.push(compressed);
-    }
+    for (const file of files.slice(0, remaining)) mbPhotos.push(await compressImage(file));
     renderMbPhotoGrid();
     document.getElementById('mbPhotoInput').value = '';
 }
-
 function renderMbPhotoGrid() {
-    const grid = document.getElementById('mbPhotoGrid');
-    if (!grid) return;
-    grid.innerHTML = mbPhotos.map((p, i) => `
-        <div style="position:relative;aspect-ratio:1;overflow:hidden;">
-            <img src="${p.src}" style="width:100%;height:100%;object-fit:cover;">
-            <button onclick="mbRemovePhoto(${i})" style="position:absolute;top:1px;right:1px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:10px;width:16px;height:16px;cursor:pointer;">×</button>
-        </div>`).join('');
+    const grid = document.getElementById('mbPhotoGrid'); if (!grid) return;
+    grid.innerHTML = mbPhotos.map((p,i) => `<div style="position:relative;aspect-ratio:1;overflow:hidden;"><img src="${p.src}" style="width:100%;height:100%;object-fit:cover;"><button onclick="mbRemovePhoto(${i})" style="position:absolute;top:1px;right:1px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:10px;width:16px;height:16px;cursor:pointer;">×</button></div>`).join('');
 }
-
-function mbRemovePhoto(idx) { mbPhotos.splice(idx, 1); renderMbPhotoGrid(); }
-
+function mbRemovePhoto(idx) { mbPhotos.splice(idx,1); renderMbPhotoGrid(); }
 async function buildHybridMoodboard() {
     const concept = document.getElementById('mbConcept')?.value.trim();
     const colorsRaw = document.getElementById('mbColorsInput')?.value.trim();
     if (!concept && mbPhotos.length === 0) { alert('Add a concept or photos first.'); return; }
-
-    const hexes = colorsRaw ? (colorsRaw.match(/#[0-9A-Fa-f]{6}/g) || []) : [];
-
-    // Get AI narrative
+    const hexes = colorsRaw ? (colorsRaw.match(/#[0-9A-Fa-f]{6}/g)||[]) : [];
     let narrative = '';
     if (concept) {
         try {
-            const res = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: [{ role: 'user', content: `Write a 3-sentence mood board narrative for: "${concept}". Poetic, specific, creative director voice. No bullets.` }]
-                })
-            });
+            const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ messages:[{ role:'user', content:`Write a 3-sentence mood board narrative for: "${concept}". Poetic, creative director voice. No bullets.` }] }) });
             const data = await res.json();
             narrative = data.content?.[0]?.text || '';
         } catch(e) {}
     }
-
-    // Open mood board overlay
     document.getElementById('moodboardOverlay').classList.add('show');
-    document.getElementById('mbTitle').textContent = concept?.substring(0, 40) || 'Mood Board';
+    document.getElementById('mbTitle').textContent = concept?.substring(0,40) || 'Mood Board';
     document.getElementById('mbSeason').textContent = 'SS27';
-
-    // Colors
-    const colorsEl = document.getElementById('mbColors');
-    colorsEl.innerHTML = hexes.map(h => `
-        <div class="mb-swatch">
-            <div class="mb-swatch-block" style="background:${h}"></div>
-            <div class="mb-swatch-name">${h}</div>
-        </div>`).join('');
-
-    // Photos grid
+    document.getElementById('mbColors').innerHTML = hexes.map(h => `<div class="mb-swatch"><div class="mb-swatch-block" style="background:${h}"></div><div class="mb-swatch-name">${h}</div></div>`).join('');
     const grid = document.getElementById('mbGrid');
     if (mbPhotos.length > 0) {
         const cols = mbPhotos.length <= 3 ? mbPhotos.length : mbPhotos.length <= 6 ? 3 : 4;
         grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        grid.innerHTML = mbPhotos.map(p => `
-            <div class="mb-img-wrap">
-                <img src="${p.src}" alt="Reference">
-            </div>`).join('');
-    } else {
-        grid.innerHTML = '<div class="mb-loading" style="grid-column:1/-1">No photos added — add reference images for a richer mood board.</div>';
-    }
-
-    // Narrative
+        grid.innerHTML = mbPhotos.map(p => `<div class="mb-img-wrap"><img src="${p.src}" alt="Reference"></div>`).join('');
+    } else grid.innerHTML = '<div class="mb-loading" style="grid-column:1/-1">No photos added.</div>';
     if (narrative) {
         let narDiv = document.getElementById('mbNarrative');
-        if (!narDiv) {
-            narDiv = document.createElement('div');
-            narDiv.id = 'mbNarrative';
-            narDiv.style.cssText = 'padding:16px;border-left:2px solid var(--accent);margin-top:16px;font-size:12px;color:var(--off-white);line-height:1.9;font-style:italic;';
-            document.querySelector('.moodboard-inner').insertBefore(narDiv, document.querySelector('.moodboard-actions'));
-        }
+        if (!narDiv) { narDiv = document.createElement('div'); narDiv.id = 'mbNarrative'; narDiv.style.cssText = 'padding:16px;border-left:2px solid var(--accent);margin-top:16px;font-size:12px;color:var(--off-white);line-height:1.9;font-style:italic;'; document.querySelector('.moodboard-inner').insertBefore(narDiv, document.querySelector('.moodboard-actions')); }
         narDiv.textContent = narrative;
     }
 }
-
 function buildMoodboard() { buildHybridMoodboard(); }
-
-function extractMoodboardData(text) {
-    const colors = [];
-    const hexMatches = [...text.matchAll(/([A-Za-z\s]{3,20})\s*#([0-9A-Fa-f]{6})/g)];
-    hexMatches.slice(0, 5).forEach(m => {
-        colors.push({ name: m[1].trim(), hex: '#' + m[2] });
-    });
-    const query = text.split('\n').filter(l => l.trim())[0]?.replace(/[*#·]/g, '').trim().substring(0, 60) || 'fashion trends SS27';
-    return { colors, query };
-}
 
 // INIT
 window.addEventListener('load', () => {
     setTimeout(() => { document.querySelectorAll('.signal-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 500);
-    updateMsgCounter();
+    updateMsgCounter(); updateUploadCounter();
     loadWeeklyBrief();
     setTimeout(() => { sb.auth.getSession().then(({ data }) => { if (!data.session && !isGuest) showModal(); }); }, 2000);
 });
 
-// PARSE & RENDER AI RESPONSE
-const SECTION_LABELS = { 'COLOR': 'Color', 'SILHOUETTE': 'Silhouette', 'MATERIAL': 'Material', 'HARDWARE': 'Hardware', 'MARKET SIGNAL': 'Market Signal', 'PREDICTION': 'Prediction' };
-
+// TEXT PROCESSING
 function processText(text) {
-    // Convert markdown links [text](url) to HTML
-    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
-        (_, label, url) => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${label}</a>`);
-    // Convert bare https URLs to links
-    text = text.replace(/(?<![">])(https?:\/\/[^\s<>")\]]+)/g,
-        (url) => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${url}</a>`);
-    // Convert bare domains like versace.com, net-a-porter.com
-    text = text.replace(/(?<![/"@=a-zA-Z])([a-zA-Z0-9][a-zA-Z0-9-]*\.(com|net|org|io|co|it|fr|uk|de|es)(?:\/[^\s<>")\]]*)?)/g,
-        (match) => {
-            if (text.indexOf('href="') > -1 && text.indexOf(match) > text.indexOf('href="')) return match;
-            return `<a href="https://${match}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">${match}</a>`;
-        });
-    // Hex colors to swatches
-    text = text.replace(/#([0-9A-Fa-f]{6})\b/g,
-        (match) => `<span class="color-swatch-inline"><span class="color-dot" style="background:${match}"></span><span class="hex-text">${match}</span></span>`);
-    // Highlight prices
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, (_,l,u) => `<a href="${u}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${l}</a>`);
+    text = text.replace(/(?<![">])(https?:\/\/[^\s<>")\]]+)/g, u => `<a href="${u}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${u}</a>`);
+    text = text.replace(/(?<![/"@=a-zA-Z])([a-zA-Z0-9][a-zA-Z0-9-]*\.(com|net|org|io|co|it|fr|uk|de|es)(?:\/[^\s<>")\]]*)?)/g, m => `<a href="https://${m}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${m}</a>`);
+    text = text.replace(/#([0-9A-Fa-f]{6})\b/g, m => `<span class="color-swatch-inline"><span class="color-dot" style="background:${m}"></span><span class="hex-text">${m}</span></span>`);
     text = text.replace(/(\$[\d,]+)/g, '<strong style="color:var(--off-white)">$1</strong>');
-    // Bold markdown
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Bullet points · 
     text = text.replace(/^· /gm, '<span style="color:var(--accent);margin-right:6px;">·</span>');
     return text;
 }
 
-function processColorSwatches(text) {
-    return processText(text);
-}
-
-function renderConversational(text) {
-    const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
-    if (paragraphs.length <= 1) {
-        const div = document.createElement('div');
-        div.className = 'ai-plain';
-        div.innerHTML = processText(text.replace(/\n/g, '<br>'));
-        return [div];
-    }
-    return paragraphs.map(para => {
-        const div = document.createElement('div');
-        div.className = 'ai-plain';
-        div.style.marginBottom = '3px';
-        div.innerHTML = processText(para.replace(/\n/g, '<br>'));
-        return div;
-    });
-}
-
-function renderAIResponse(text) {
-    const container = document.createElement('div');
-    container.className = 'ai-response';
-
-    // Check if response has SECTION markers
-    if (!text.includes('SECTION:')) {
-        const plain = document.createElement('div');
-        plain.className = 'ai-plain';
-        plain.innerHTML = processColorSwatches(text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
-        container.appendChild(plain);
-        return container;
-    }
-
-    // Parse sections
-    const parts = text.split(/SECTION:\s*/);
-    parts.forEach((part, i) => {
-        if (i === 0) {
-            // Text before first section
-            const trimmed = part.trim();
-            if (trimmed) {
-                const plain = document.createElement('div');
-                plain.className = 'ai-plain';
-                plain.innerHTML = processColorSwatches(trimmed.replace(/\n/g, '<br>'));
-                container.appendChild(plain);
-            }
-            return;
-        }
-
-        const lines = part.trim().split('\n');
-        const sectionKey = lines[0].trim().replace(/\s+/g, ' ');
-        const content = lines.slice(1).join('\n').trim();
-
-        if (!content) return;
-
-        const card = document.createElement('div');
-        card.className = 'section-card';
-
-        const header = document.createElement('div');
-        header.className = 'section-header';
-
-        const label = document.createElement('span');
-        label.className = 'section-label-text';
-        label.textContent = SECTION_LABELS[sectionKey] || sectionKey;
-
-        const line = document.createElement('div');
-        line.className = 'section-line';
-
-        header.appendChild(label);
-        header.appendChild(line);
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'section-content';
-        contentDiv.innerHTML = processColorSwatches(content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
-
-        card.appendChild(header);
-        card.appendChild(contentDiv);
-        container.appendChild(card);
-    });
-
-    return container;
-}
-
-// PROGRESSIVE DISPLAY
+// PROGRESSIVE DISPLAY — universal section card detection
 async function displayProgressively(container, text) {
     const body = document.getElementById('chatBody');
-
-    // Remove thinking indicator
     const existing = container.querySelector('.thinking-indicator');
     if (existing) existing.remove();
-
-    // Normalize markdown headers → plain uppercase titles
-    text = text.replace(/^#{1,3}\s+(.+)$/gm, (_, title) => title.toUpperCase());
-    // Normalize **BOLD TITLES** on their own line
-    text = text.replace(/^\*\*([^*\n]+)\*\*\s*$/gm, (_, title) => title.toUpperCase());
-    // Normalize ---  dividers → blank line
+    text = text.replace(/^#{1,3}\s+(.+)$/gm, (_,t) => t.toUpperCase());
+    text = text.replace(/^\*\*([^*\n]+)\*\*\s*$/gm, (_,t) => t.toUpperCase());
     text = text.replace(/^---+\s*$/gm, '');
-
-    // Detect if ANY line looks like a section title:
-    // - All caps line (2+ words or 1 word 3+ chars) standing alone
-    // - Numbered title like "1. THE EXOSKELETON TOTE"
-    const isTitleLine = (line) => {
+    const isTitleLine = line => {
         const t = line.trim();
         if (!t) return false;
-        // Numbered section: "1. TITLE" or "1. The Title"
         if (/^\d+\.\s+[A-Z]/.test(t) && t.length < 60) return true;
-        // ALL CAPS line standing alone, min 3 chars
         if (/^[A-Z][A-Z\s\-\/&+]{2,}$/.test(t) && t.length < 60) return true;
         return false;
     };
-
-    // Split text into blocks: [plain text] [title] [content] [title] [content] ...
     const lines = text.split('\n');
     const blocks = [];
-    let currentBlock = { type: 'plain', lines: [] };
-
+    let cur = { type:'plain', lines:[] };
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const nextLine = lines[i + 1] || '';
-        const prevLine = lines[i - 1] || '';
-
-        // Check if this line is a title (surrounded by blank lines or start/end)
-        const lineIsTitle = isTitleLine(line) &&
-            (prevLine.trim() === '' || i === 0) &&
-            (nextLine.trim() === '' || nextLine.trim() !== '');
-
-        if (lineIsTitle) {
-            // Save current block
-            if (currentBlock.lines.join('\n').trim()) {
-                blocks.push(currentBlock);
-            }
-            currentBlock = { type: 'section', title: line.trim(), lines: [] };
-        } else {
-            currentBlock.lines.push(line);
-        }
+        const isTitle = isTitleLine(lines[i]) && (lines[i-1]?.trim()==='' || i===0);
+        if (isTitle) { if (cur.lines.join('\n').trim()) blocks.push(cur); cur = { type:'section', title:lines[i].trim(), lines:[] }; }
+        else cur.lines.push(lines[i]);
     }
-    if (currentBlock.lines.join('\n').trim() || currentBlock.type === 'section') {
-        blocks.push(currentBlock);
-    }
-
-    // If no sections found, render as plain paragraphs
-    const hasSections = blocks.some(b => b.type === 'section');
-
+    if (cur.lines.join('\n').trim() || cur.type==='section') blocks.push(cur);
+    const hasSections = blocks.some(b => b.type==='section');
     if (!hasSections) {
         const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
         for (let i = 0; i < paragraphs.length; i++) {
             const div = document.createElement('div');
             div.className = 'ai-plain';
             if (i > 0) div.style.marginTop = '4px';
-            div.style.opacity = '0';
-            div.style.transition = 'opacity 0.25s ease';
+            div.style.cssText += ';opacity:0;transition:opacity 0.25s ease;';
             container.appendChild(div);
-            await new Promise(r => setTimeout(r, 30));
+            await new Promise(r => setTimeout(r,30));
             div.style.opacity = '1';
             await typeText(div, paragraphs[i], body);
-            if (i < paragraphs.length - 1) await new Promise(r => setTimeout(r, 60));
+            if (i < paragraphs.length-1) await new Promise(r => setTimeout(r,60));
         }
         return;
     }
-
-    // Render blocks
     for (const block of blocks) {
-        if (block.type === 'plain') {
+        if (block.type==='plain') {
             const content = block.lines.join('\n').trim();
             if (!content) continue;
             const div = document.createElement('div');
             div.className = 'ai-plain';
-            div.style.opacity = '0';
-            div.style.transition = 'opacity 0.25s ease';
+            div.style.cssText = 'opacity:0;transition:opacity 0.25s ease;';
             container.appendChild(div);
-            await new Promise(r => setTimeout(r, 30));
+            await new Promise(r => setTimeout(r,30));
             div.style.opacity = '1';
             await typeText(div, content, body);
-            await new Promise(r => setTimeout(r, 40));
-
-        } else if (block.type === 'section') {
+            await new Promise(r => setTimeout(r,40));
+        } else {
             const content = block.lines.join('\n').trim();
             if (!content) continue;
-
-            // Format title: capitalize nicely
-            const rawTitle = block.title.replace(/^\d+\.\s+/, '');
-            const titleFormatted = rawTitle.charAt(0) + rawTitle.slice(1).toLowerCase()
-                .replace(/\b(ss|fw|ai|dna|pmpny|uv)\b/gi, s => s.toUpperCase());
-
+            const rawTitle = block.title.replace(/^\d+\.\s+/,'');
+            const tf = rawTitle.charAt(0) + rawTitle.slice(1).toLowerCase().replace(/\b(ss|fw|ai|dna|pmpny|uv)\b/gi, s => s.toUpperCase());
             const card = document.createElement('div');
             card.className = 'section-card';
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(8px)';
-            card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-
-            const titleRow = document.createElement('div');
-            titleRow.className = 'section-title-row';
-
-            const titleText = document.createElement('span');
-            titleText.className = 'section-title-text';
-            titleText.textContent = titleFormatted;
-
-            const titleLine = document.createElement('div');
-            titleLine.className = 'section-title-line';
-
-            titleRow.appendChild(titleText);
-            titleRow.appendChild(titleLine);
-
-            const bodyDiv = document.createElement('div');
-            bodyDiv.className = 'section-body';
-
-            card.appendChild(titleRow);
-            card.appendChild(bodyDiv);
+            card.style.cssText = 'opacity:0;transform:translateY(8px);transition:opacity 0.3s ease,transform 0.3s ease;';
+            const tr = document.createElement('div'); tr.className = 'section-title-row';
+            const tt = document.createElement('span'); tt.className = 'section-title-text'; tt.textContent = tf;
+            const tl = document.createElement('div'); tl.className = 'section-title-line';
+            tr.appendChild(tt); tr.appendChild(tl);
+            const bd = document.createElement('div'); bd.className = 'section-body';
+            card.appendChild(tr); card.appendChild(bd);
             container.appendChild(card);
-
-            await new Promise(r => setTimeout(r, 50));
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
+            await new Promise(r => setTimeout(r,50));
+            card.style.opacity='1'; card.style.transform='translateY(0)';
             body.scrollTop = body.scrollHeight;
-
-            await typeText(bodyDiv, content, body, 16);
-            bodyDiv.innerHTML = processText(content.replace(/\n/g, '<br>'));
-            await new Promise(r => setTimeout(r, 60));
+            await typeText(bd, content, body, 16);
+            bd.innerHTML = processText(content.replace(/\n/g,'<br>'));
+            await new Promise(r => setTimeout(r,60));
         }
     }
 }
-
 async function typeText(el, text, body, speed = 20) {
-    // Get the final fully-processed HTML (with swatches, links, prices)
     const finalHTML = processText(text);
-
-    // Type plain words for animation effect
-    const words = text.replace(/\n\n/g, ' ¶ ').replace(/\n/g, ' ').split(' ').filter(w => w !== '');
+    const words = text.replace(/\n\n/g,' ¶ ').replace(/\n/g,' ').split(' ').filter(w=>w!=='');
     let shown = '';
-
-    for (let i = 0; i < words.length; i++) {
-        const w = words[i];
-        if (w === '¶') {
-            shown += '\n\n';
-        } else {
-            shown += (shown.length > 0 ? ' ' : '') + w;
-        }
-        // Show plain text with cursor during typing
-        el.innerHTML = shown.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>') + '<span class="streaming-cursor"></span>';
+    for (const w of words) {
+        shown += w==='¶' ? '\n\n' : (shown.length>0?' ':'')+w;
+        el.innerHTML = shown.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')+'<span class="streaming-cursor"></span>';
         body.scrollTop = body.scrollHeight;
-        await new Promise(r => setTimeout(r, speed));
+        await new Promise(r => setTimeout(r,speed));
     }
-
-    // At the end, show fully processed HTML with swatches, links, prices
     el.innerHTML = finalHTML;
     body.scrollTop = body.scrollHeight;
 }
 
-// CHAT
-const history = [];
-
-// CHAT IMAGE ATTACHMENT — up to 5 images
-let chatAttachments = []; // [{b64, mime, src}]
-
-// Compress image to max 1024px and 0.7 quality
+// IMAGE COMPRESSION
 function compressImage(file) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         const reader = new FileReader();
         reader.onload = ev => {
             const img = new Image();
             img.onload = () => {
                 const MAX = 1024;
                 let w = img.width, h = img.height;
-                if (w > MAX || h > MAX) {
-                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-                    else { w = Math.round(w * MAX / h); h = MAX; }
-                }
+                if (w>MAX||h>MAX) { if (w>h) { h=Math.round(h*MAX/w); w=MAX; } else { w=Math.round(w*MAX/h); h=MAX; } }
                 const canvas = document.createElement('canvas');
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                const compressed = canvas.toDataURL('image/jpeg', 0.75);
-                resolve({ src: compressed, b64: compressed.split(',')[1], mime: 'image/jpeg' });
+                canvas.width=w; canvas.height=h;
+                canvas.getContext('2d').drawImage(img,0,0,w,h);
+                const compressed = canvas.toDataURL('image/jpeg',0.75);
+                resolve({ src:compressed, b64:compressed.split(',')[1], mime:'image/jpeg' });
             };
             img.src = ev.target.result;
         };
@@ -1412,151 +954,132 @@ function compressImage(file) {
     });
 }
 
+// CHAT ATTACHMENTS
+let chatAttachments = [];
 async function onChatAttach(e) {
     const files = Array.from(e.target.files);
     if (!files.length) return;
-
     const remaining = 5 - chatAttachments.length;
     if (remaining <= 0) { alert('Maximum 5 images per message.'); return; }
-
-    const toLoad = files.slice(0, remaining);
-    for (const file of toLoad) {
+    for (const file of files.slice(0,remaining)) {
         if (!checkUploadLimit()) break;
-        const compressed = await compressImage(file);
-        chatAttachments.push(compressed);
+        chatAttachments.push(await compressImage(file));
         incrementUploadCount();
         renderChatAttachPreviews();
     }
     e.target.value = '';
 }
-
 function renderChatAttachPreviews() {
     const container = document.getElementById('chatAttachPreview');
-    if (chatAttachments.length === 0) {
-        container.style.display = 'none';
-        document.getElementById('attachBtn').classList.remove('has-image');
-        return;
-    }
-    container.style.display = 'block';
+    if (!chatAttachments.length) { container.style.display='none'; document.getElementById('attachBtn').classList.remove('has-image'); return; }
+    container.style.display='block';
     document.getElementById('attachBtn').classList.add('has-image');
-    container.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;">` +
-        chatAttachments.map((a, i) => `
-            <div style="position:relative;display:inline-block;">
-                <img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);" alt="Attachment ${i+1}">
-                <button onclick="removeChatAttach(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:12px;width:18px;height:18px;cursor:pointer;line-height:1;">×</button>
-            </div>`).join('') +
-        `</div>`;
+    container.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;">` + chatAttachments.map((a,i) => `<div style="position:relative;"><img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);"><button onclick="removeChatAttach(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:12px;width:18px;height:18px;cursor:pointer;">×</button></div>`).join('') + `</div>`;
 }
-
-function removeChatAttach(idx) {
-    chatAttachments.splice(idx, 1);
-    renderChatAttachPreviews();
-}
-
-function clearAllChatAttach() {
-    chatAttachments = [];
-    renderChatAttachPreviews();
-}
-
+function removeChatAttach(idx) { chatAttachments.splice(idx,1); renderChatAttachPreviews(); }
+function clearAllChatAttach() { chatAttachments=[]; renderChatAttachPreviews(); }
 function isConversational(text) {
     const t = text.toLowerCase().trim();
-    const conversational = ['ciao', 'hello', 'hi', 'hey', 'come stai', 'how are you', 'grazie', 'thanks', 'thank you', 'ok', 'okay', 'buongiorno', 'buonasera', 'good morning', 'good evening', 'bene', 'good', 'perfetto', 'great'];
-    return conversational.some(w => t.startsWith(w) || t === w) || t.length < 20;
+    return ['ciao','hello','hi','hey','grazie','thanks','thank you','ok','okay','buongiorno','buonasera','bene','good','perfetto'].some(w => t.startsWith(w)||t===w) || t.length<20;
 }
+
+// CHAT — page visibility + AbortController
+const history = [];
+let pendingFetch = null;
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        const banner = document.getElementById('reconnectBanner');
+        if (banner) banner.style.display = 'none';
+    }
+});
 
 async function send() {
     const inp = document.getElementById('chatInput');
     const txt = inp.value.trim();
     if (!txt) return;
-
-    // Check daily limit
     if (!checkLimit()) return;
-
     addUserMsg(txt, chatAttachments.map(a => a.src));
-
-    // Build message content with multiple images
     let messageContent;
     if (chatAttachments.length > 0) {
         messageContent = [
-            ...chatAttachments.map(a => ({
-                type: 'image',
-                source: { type: 'base64', media_type: a.mime || 'image/jpeg', data: a.b64 }
-            })),
-            { type: 'text', text: txt || 'Analyze these images for fashion trend signals, design feedback, and market positioning.' }
+            ...chatAttachments.map(a => ({ type:'image', source:{ type:'base64', media_type:a.mime||'image/jpeg', data:a.b64 } })),
+            { type:'text', text:txt||'Analyze these images.' }
         ];
-    } else {
-        messageContent = txt;
-    }
-
+    } else messageContent = txt;
     clearAllChatAttach();
-    inp.value = ''; inp.style.height = 'auto';
-    history.push({ role: 'user', content: messageContent });
-    saveMessage('user', txt || '[images]');
+    inp.value=''; inp.style.height='auto';
+    history.push({ role:'user', content:messageContent });
+    saveMessage('user', txt||'[images]');
     incrementMsgCount();
-
     document.getElementById('sendBtn').disabled = true;
-
-    // Create AI message container IMMEDIATELY
     const body = document.getElementById('chatBody');
     const msgEl = document.createElement('div');
     msgEl.className = 'msg ai';
     msgEl.innerHTML = '<div class="msg-label">PMPNY Intelligence</div>';
     const responseContainer = document.createElement('div');
     responseContainer.className = 'ai-response';
-
-    // Show thinking indicator RIGHT AWAY with smart text
-    const thinkingText = isConversational(txt) ? 'Thinking' : 'Analyzing trends';
     const thinking = document.createElement('div');
     thinking.className = 'thinking-indicator';
-    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text" id="thinkingText">${thinkingText}</span>`;
+    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text" id="thinkingText">${isConversational(txt)?'Thinking':'Analyzing trends'}</span>`;
     responseContainer.appendChild(thinking);
     msgEl.appendChild(responseContainer);
     body.appendChild(msgEl);
     body.scrollTop = body.scrollHeight;
-
-    // Cycle through messages while waiting
-    const messages = isConversational(txt)
-        ? ['Thinking', 'Processing', 'Almost there']
-        : ['Analyzing trends', 'Searching signals', 'Scanning runway', 'Reading market data', 'Almost there'];
+    const messages = isConversational(txt) ? ['Thinking','Processing','Almost there'] : ['Analyzing trends','Searching signals','Scanning runway','Reading market data','Almost there'];
     let msgIdx = 0;
     const cycleInterval = setInterval(() => {
-        msgIdx = (msgIdx + 1) % messages.length;
+        msgIdx = (msgIdx+1) % messages.length;
         const el = document.getElementById('thinkingText');
         if (el) el.textContent = messages[msgIdx];
     }, 1800);
-
     try {
-        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
+        // PAGE VISIBILITY — wait if tab hidden
+        if (document.hidden) {
+            const banner = document.getElementById('reconnectBanner');
+            if (banner) banner.style.display = 'block';
+            await new Promise(resolve => {
+                const check = setInterval(() => { if (!document.hidden) { clearInterval(check); resolve(); } }, 500);
+            });
+            if (banner) banner.style.display = 'none';
+        }
+        // ABORT CONTROLLER — 2 min timeout
+        const controller = new AbortController();
+        pendingFetch = controller;
+        const timeoutId = setTimeout(() => controller.abort(), 120000);
+        const res = await fetch('/api/chat', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ messages: history }),
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        pendingFetch = null;
         const data = await res.json();
         const reply = data.content?.[0]?.text || 'Sorry, something went wrong.';
         clearInterval(cycleInterval);
-
-        // Progressive display
         await displayProgressively(responseContainer, reply);
-
-        // Add speak button and edit button
         const btnRow = document.createElement('div');
         btnRow.style.cssText = 'display:flex;gap:12px;align-items:center;margin-top:8px;';
-
         const speakBtn = document.createElement('button');
-        speakBtn.className = 'speak-btn';
-        speakBtn.style.marginTop = '0';
+        speakBtn.className = 'speak-btn'; speakBtn.style.marginTop = '0';
         speakBtn.textContent = 'Listen →';
         speakBtn.onclick = () => speakMsg(speakBtn);
         btnRow.appendChild(speakBtn);
-
         msgEl.appendChild(btnRow);
-
-        history.push({ role: 'assistant', content: reply });
+        history.push({ role:'assistant', content:reply });
         saveMessage('assistant', reply);
-
         if (document.getElementById('autoSpeak').checked) speakMsg(speakBtn);
-
-    } catch (e) {
+    } catch(e) {
         clearInterval(cycleInterval);
-        responseContainer.innerHTML = '<div class="ai-plain">Connection error. Please try again.</div>';
+        pendingFetch = null;
+        const banner = document.getElementById('reconnectBanner');
+        if (banner) banner.style.display = 'none';
+        if (e.name === 'AbortError') {
+            responseContainer.innerHTML = '<div class="ai-plain" style="color:#ff9944;">Request timed out. Please try again.</div>';
+        } else {
+            responseContainer.innerHTML = '<div class="ai-plain" style="color:#ff9944;">Connection error. Please try again.</div>';
+        }
     }
-
     document.getElementById('sendBtn').disabled = false;
 }
 
@@ -1565,164 +1088,116 @@ function addUserMsg(text, imgSrcs) {
     const d = document.createElement('div');
     d.className = 'msg user';
     const imgs = Array.isArray(imgSrcs) && imgSrcs.length > 0
-        ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:6px;">${imgSrcs.map(src => `<img src="${src}" class="msg-image" style="height:80px;width:80px;object-fit:cover;" alt="Attached">`).join('')}</div>`
+        ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:6px;">${imgSrcs.map(src=>`<img src="${src}" class="msg-image" style="height:80px;width:80px;object-fit:cover;" alt="Attached">`).join('')}</div>`
         : '';
     const msgIdx = document.querySelectorAll('.msg.user').length;
-    d.innerHTML = `
-        <div class="msg-label" style="text-align:right">YOU</div>
-        ${imgs}
-        ${text ? `<div class="msg-body" id="userMsg-${msgIdx}">${text}</div>` : ''}
+    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div>${imgs}${text?`<div class="msg-body" id="userMsg-${msgIdx}">${text}</div>`:''}
         <div style="text-align:right;margin-top:4px;">
-            <button onclick="editUserMsg(this, ${msgIdx})" style="background:none;border:none;font-size:9px;letter-spacing:0.12em;color:var(--dim);cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;padding:2px 0;" title="Edit message">Edit</button>
+            <button onclick="editUserMsg(this,${msgIdx})" style="background:none;border:none;font-size:9px;letter-spacing:0.12em;color:var(--dim);cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;opacity:0;transition:opacity 0.18s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">Edit</button>
         </div>`;
-    body.appendChild(d);
-    body.scrollTop = body.scrollHeight;
+    body.appendChild(d); body.scrollTop = body.scrollHeight;
 }
-
 function editUserMsg(btn, idx) {
     const msgBody = document.getElementById(`userMsg-${idx}`);
     if (!msgBody) return;
-    const currentText = msgBody.textContent;
     const inp = document.getElementById('chatInput');
-    inp.value = currentText;
-    inp.focus();
-    grow(inp);
-    // Remove the last AI response to allow resend
+    inp.value = msgBody.textContent; inp.focus(); grow(inp);
     btn.closest('.msg').nextElementSibling?.remove();
     btn.closest('.msg').remove();
-    // Pop last two history entries (user + assistant)
-    if (history.length >= 2) history.splice(-2, 2);
-    else if (history.length >= 1) history.splice(-1, 1);
+    if (history.length >= 2) history.splice(-2,2); else if (history.length >= 1) history.splice(-1,1);
 }
-
 function addMsg(role, text) {
     const body = document.getElementById('chatBody');
-    const d = document.createElement('div');
-    d.className = `msg ${role}`;
-    if (role === 'user') {
+    const d = document.createElement('div'); d.className = `msg ${role}`;
+    if (role==='user') {
         d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div><div class="msg-body">${text}</div>`;
     } else {
-        const label = document.createElement('div');
-        label.className = 'msg-label';
-        label.textContent = 'PMPNY INTELLIGENCE';
+        const label = document.createElement('div'); label.className='msg-label'; label.textContent='PMPNY INTELLIGENCE';
         d.appendChild(label);
-        d.appendChild(renderAIResponse(text));
-        const btn = document.createElement('button');
-        btn.className = 'speak-btn';
-        btn.textContent = 'Listen →';
-        btn.onclick = () => speakMsg(btn);
+        const resp = document.createElement('div'); resp.className='ai-response';
+        const plain = document.createElement('div'); plain.className='ai-plain';
+        plain.innerHTML = processText(text.replace(/\n/g,'<br>'));
+        resp.appendChild(plain); d.appendChild(resp);
+        const btn = document.createElement('button'); btn.className='speak-btn'; btn.textContent='Listen →'; btn.onclick=()=>speakMsg(btn);
         d.appendChild(btn);
     }
-    body.appendChild(d);
-    body.scrollTop = body.scrollHeight;
-    return d;
+    body.appendChild(d); body.scrollTop=body.scrollHeight; return d;
 }
-
-function qp(text) { document.getElementById('chatInput').value = text; send(); }
-function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
-function grow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function qp(text) { document.getElementById('chatInput').value=text; send(); }
+function onKey(e) { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); send(); } }
+function grow(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
 
 // VOICE
-let recognition = null, isRecording = false;
+let recognition=null, isRecording=false;
 function initRec() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
     if (!SR) return null;
-    const r = new SR(); r.continuous = false; r.interimResults = true; r.lang = '';
-    r.onstart = () => { isRecording = true; document.getElementById('micBtn').classList.add('recording'); document.getElementById('micBtn').textContent = '⏹'; showVS('Listening...'); };
-    r.onresult = (e) => { let t = ''; for (let i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript; document.getElementById('chatInput').value = t; };
-    r.onend = () => { isRecording = false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').textContent = '🎤'; hideVS(); const txt = document.getElementById('chatInput').value.trim(); if (txt) setTimeout(() => send(), 300); };
-    r.onerror = () => { isRecording = false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').textContent = '🎤'; hideVS(); };
+    const r=new SR(); r.continuous=false; r.interimResults=true; r.lang='';
+    r.onstart=()=>{ isRecording=true; document.getElementById('micBtn').classList.add('recording'); document.getElementById('micBtn').textContent='⏹'; showVS('Listening...'); };
+    r.onresult=e=>{ let t=''; for(let i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript; document.getElementById('chatInput').value=t; };
+    r.onend=()=>{ isRecording=false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').textContent='🎤'; hideVS(); const txt=document.getElementById('chatInput').value.trim(); if(txt) setTimeout(()=>send(),300); };
+    r.onerror=()=>{ isRecording=false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').textContent='🎤'; hideVS(); };
     return r;
 }
 function toggleMic() {
-    if (!recognition) recognition = initRec();
+    if (!recognition) recognition=initRec();
     if (!recognition) { alert('Voice not supported. Try Chrome or Safari.'); return; }
     if (isRecording) recognition.stop(); else recognition.start();
 }
-function showVS(t) { document.getElementById('vsText').textContent = t; document.getElementById('voiceStatus').classList.add('show'); }
+function showVS(t) { document.getElementById('vsText').textContent=t; document.getElementById('voiceStatus').classList.add('show'); }
 function hideVS() { document.getElementById('voiceStatus').classList.remove('show'); }
 function getBestVoice() {
-    const voices = window.speechSynthesis.getVoices();
-    // Priority: American English male voices
-    const preferred = [
-        'Google US English', 'Microsoft Guy Online', 'Alex',
-        'Fred', 'Google US English Male', 'en-US-Neural2-D',
-        'en-US-Standard-B', 'en-US-Standard-D'
-    ];
-    for (const name of preferred) {
-        const v = voices.find(v => v.name === name);
-        if (v) return v;
-    }
-    // Fallback: any en-US voice
-    const usVoice = voices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('male'));
-    if (usVoice) return usVoice;
-    const anyUS = voices.find(v => v.lang === 'en-US');
-    if (anyUS) return anyUS;
-    // Last resort: any English
-    return voices.find(v => v.lang.startsWith('en')) || null;
+    const voices=window.speechSynthesis.getVoices();
+    for (const name of ['Google US English','Microsoft Guy Online','Alex','Fred']) { const v=voices.find(v=>v.name===name); if(v) return v; }
+    return voices.find(v=>v.lang==='en-US') || voices.find(v=>v.lang.startsWith('en')) || null;
 }
-
 function speakMsg(btn) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const msg = btn.closest('.msg');
-    const text = Array.from(msg.querySelectorAll('.ai-plain, .section-content')).map(el => el.innerText).join('. ');
+    const msg=btn.closest('.msg');
+    const text=Array.from(msg.querySelectorAll('.ai-plain,.section-body')).map(el=>el.innerText).join('. ');
     if (!text) return;
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = 0.88;
-    utt.lang = 'en-US';
-    const voice = getBestVoice();
-    if (voice) utt.voice = voice;
-    btn.textContent = 'Stop →';
-    utt.onend = () => { btn.textContent = 'Listen →'; btn.onclick = () => speakMsg(btn); };
-    btn.onclick = () => { window.speechSynthesis.cancel(); btn.textContent = 'Listen →'; btn.onclick = () => speakMsg(btn); };
+    const utt=new SpeechSynthesisUtterance(text); utt.rate=0.88; utt.lang='en-US';
+    const voice=getBestVoice(); if(voice) utt.voice=voice;
+    btn.textContent='Stop →';
+    utt.onend=()=>{ btn.textContent='Listen →'; btn.onclick=()=>speakMsg(btn); };
+    btn.onclick=()=>{ window.speechSynthesis.cancel(); btn.textContent='Listen →'; btn.onclick=()=>speakMsg(btn); };
     window.speechSynthesis.speak(utt);
 }
-function speakAnalysis() {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(document.getElementById('analysisText').innerText));
-}
+function speakAnalysis() { if(!window.speechSynthesis) return; window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(document.getElementById('analysisText').innerText)); }
 
-// IMAGE
-let imgB64 = null, imgMime = null;
+// IMAGE ANALYSIS
+let imgB64=null, imgMime=null;
 function dOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('over'); }
 function dLeave() { document.getElementById('uploadZone').classList.remove('over'); }
-function dDrop(e) { e.preventDefault(); dLeave(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) loadImg(f); }
-function onFile(e) { const f = e.target.files[0]; if (f) loadImg(f); }
+function dDrop(e) { e.preventDefault(); dLeave(); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) loadImg(f); }
+function onFile(e) { const f=e.target.files[0]; if(f) loadImg(f); }
 function loadImg(file) {
-    compressImage(file).then(compressed => {
-        imgB64 = compressed.b64;
-        imgMime = compressed.mime;
-        document.getElementById('imgPreview').src = compressed.src;
-        document.getElementById('imgPreviewWrap').style.display = 'block';
-        document.getElementById('imgActions').style.display = 'flex';
-        document.getElementById('uploadZone').style.display = 'none';
-        document.getElementById('analysisOut').style.display = 'none';
+    compressImage(file).then(c => {
+        imgB64=c.b64; imgMime=c.mime;
+        document.getElementById('imgPreview').src=c.src;
+        document.getElementById('imgPreviewWrap').style.display='block';
+        document.getElementById('imgActions').style.display='flex';
+        document.getElementById('uploadZone').style.display='none';
+        document.getElementById('analysisOut').style.display='none';
     });
 }
-function clearImg() { imgB64 = null; document.getElementById('imgPreviewWrap').style.display = 'none'; document.getElementById('imgActions').style.display = 'none'; document.getElementById('uploadZone').style.display = 'flex'; document.getElementById('analysisOut').style.display = 'none'; document.getElementById('fileInput').value = ''; }
+function clearImg() { imgB64=null; document.getElementById('imgPreviewWrap').style.display='none'; document.getElementById('imgActions').style.display='none'; document.getElementById('uploadZone').style.display='flex'; document.getElementById('analysisOut').style.display='none'; document.getElementById('fileInput').value=''; }
 async function analyze() {
-    if (!imgB64) return;
-    if (!checkUploadLimit()) return;
-    const btn = document.getElementById('analyzeBtn');
-    btn.disabled = true; btn.textContent = 'Analyzing...';
+    if(!imgB64) return; if(!checkUploadLimit()) return;
+    const btn=document.getElementById('analyzeBtn'); btn.disabled=true; btn.textContent='Analyzing...';
     incrementUploadCount();
     try {
-        const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageData: imgB64, mediaType: imgMime }) });
-        const data = await res.json();
-        const text = data.content?.[0]?.text || 'Analysis failed.';
-        document.getElementById('analysisText').textContent = text;
-        document.getElementById('analysisOut').style.display = 'block';
-        if (document.getElementById('autoSpeak').checked) speakAnalysis();
-    } catch (e) {
-        document.getElementById('analysisText').textContent = 'Analysis error. Please try again.';
-        document.getElementById('analysisOut').style.display = 'block';
-    }
-    btn.disabled = false; btn.textContent = 'Analyze →';
+        const res=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageData:imgB64,mediaType:imgMime})});
+        const data=await res.json();
+        document.getElementById('analysisText').textContent=data.content?.[0]?.text||'Analysis failed.';
+        document.getElementById('analysisOut').style.display='block';
+        if(document.getElementById('autoSpeak').checked) speakAnalysis();
+    } catch(e) { document.getElementById('analysisText').textContent='Analysis error.'; document.getElementById('analysisOut').style.display='block'; }
+    btn.disabled=false; btn.textContent='Analyze →';
 }
 
-document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); });
+document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t=document.querySelector(a.getAttribute('href')); if(t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); } }); });
 </script>
 </body>
 </html>
