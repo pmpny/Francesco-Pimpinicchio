@@ -993,6 +993,28 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
+// URL AUTO-DETECTION
+function extractURL(text) {
+    const httpMatch = text.match(/https?:\/\/[^\s]+/);
+    if (httpMatch) return httpMatch[0].replace(/[.,;!?]$/, '');
+    const domainMatch = text.match(/(?:^|\s)([a-zA-Z0-9][a-zA-Z0-9-]*\.(?:com|net|org|io|co|it|fr|uk|de|es|store|shop|nyc)(?:\/[^\s]*)?)/i);
+    if (domainMatch) return domainMatch[1].replace(/[.,;!?]$/, '');
+    return null;
+}
+async function fetchSiteForChat(url) {
+    try {
+        const res = await fetch('/api/fetch-site', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }),
+            signal: AbortSignal.timeout(12000)
+        });
+        const data = await res.json();
+        if (data.error) return null;
+        return data;
+    } catch(e) { return null; }
+}
+
 async function send() {
     const inp = document.getElementById('chatInput');
     const txt = inp.value.trim();
@@ -1032,6 +1054,25 @@ async function send() {
         const el = document.getElementById('thinkingText');
         if (el) el.textContent = messages[msgIdx];
     }, 1800);
+
+    // AUTO URL FETCH — detect URL and silently enrich message
+    const detectedURL = extractURL(txt);
+    if (detectedURL) {
+        const thinkEl = document.getElementById('thinkingText');
+        if (thinkEl) thinkEl.textContent = 'Reading site...';
+        const siteData = await fetchSiteForChat(detectedURL);
+        if (siteData?.content) {
+            const siteContext = `\n\n[WEBSITE CONTENT FROM ${detectedURL}]\nTitle: ${siteData.title || ''}\nDescription: ${siteData.description || ''}\n\n${siteData.content.substring(0, 4000)}\n[END WEBSITE CONTENT]`;
+            if (typeof messageContent === 'string') {
+                messageContent = messageContent + siteContext;
+            } else {
+                const textPart = messageContent.find(p => p.type === 'text');
+                if (textPart) textPart.text += siteContext;
+            }
+            history[history.length - 1].content = messageContent;
+        }
+    }
+
     try {
         // PAGE VISIBILITY — wait if tab hidden
         if (document.hidden) {
@@ -1040,7 +1081,8 @@ async function send() {
             await new Promise(resolve => {
                 const check = setInterval(() => { if (!document.hidden) { clearInterval(check); resolve(); } }, 500);
             });
-            if (banner) banner.style.display = 'none';
+            const banner2 = document.getElementById('reconnectBanner');
+            if (banner2) banner2.style.display = 'none';
         }
         // ABORT CONTROLLER — 2 min timeout
         const controller = new AbortController();
