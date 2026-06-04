@@ -13,7 +13,6 @@ export default async function handler(req, res) {
 
     const prompt = buildPrompt(brandName, category, url, context, siteContent);
 
-    // Try Gemini first (best for visual analysis), fall back to Claude
     if (GEMINI_KEY && photos?.length > 0) {
         try {
             const report = await callGemini(GEMINI_KEY, prompt, photos);
@@ -23,7 +22,6 @@ export default async function handler(req, res) {
         }
     }
 
-    // Claude fallback (or primary if no photos)
     if (ANTHROPIC_KEY) {
         try {
             const report = await callClaude(ANTHROPIC_KEY, prompt, photos);
@@ -44,22 +42,31 @@ Analyze this brand completely and honestly. Do not flatter. Give a direct, comme
 BRAND: ${brandName || 'Unknown'}
 CATEGORY: ${category || 'Fashion Accessories'}
 ${url ? `WEBSITE: ${url}` : ''}
-${context ? `ADDITIONAL CONTEXT:\n${context}` : ''}
-${siteContent ? `\nWEBSITE CONTENT:\n${siteContent.substring(0, 3000)}` : ''}
+
+${siteContent ? `VERIFIED BRAND FACTS — SOURCED FROM OFFICIAL WEBSITE:
+The following information is confirmed fact. Do not contradict or override it with visual guesses.
+Use images only to assess: silhouette quality, hardware execution, design consistency, and visual impact.
+Do NOT guess materials from visual appearance — trust the website data below.
+---
+${siteContent.substring(0, 4000)}
+---
+END VERIFIED FACTS` : ''}
+
+${context ? `ADDITIONAL CONTEXT (CONFIRMED FACT):\n${context}` : ''}
 
 Your analysis must cover these sections — use ALL CAPS for each heading:
 
 BRAND READ
-2-3 sentences: what this brand is, what's working, what's not.
+2-3 sentences: what this brand is, what is working, what is not.
 
 DESIGN SIGNATURE
-What makes the product visually distinctive. Be specific — materials, hardware, shape language, color codes. What would make this recognizable from across a room?
+What makes the product visually distinctive. Be specific — hardware, shape language, color codes. What makes it recognizable from across a room?
 
 MARKET POSITION
-Where this sits vs competitors. Name specific competitors. Price positioning. Who is the actual customer.
+Where this sits vs competitors. Name specific competitors. Correct price positioning based on verified prices above. Who is the actual customer.
 
 COLOR INTELLIGENCE
-Current palette assessment. What's working, what's missing for SS27/FW27 commercial viability.
+Current palette assessment. What is working, what is missing for SS27/FW27 commercial viability.
 
 COLLECTION GAPS
 What silhouettes, categories, or price points are missing that the market demands right now.
@@ -68,28 +75,27 @@ FLAGS
 What to avoid — saturating trends, positioning mistakes, messaging issues. Be direct.
 
 OPPORTUNITIES
-3 concrete commercial opportunities specific to this brand. Not generic — specific.
+3 concrete commercial opportunities specific to this brand.
 
 ACTION PLAN
-4 prioritized steps. What to do first, second, third, fourth. Each with commercial rationale.
+4 prioritized steps with commercial rationale.
 
 VERDICT
-One honest paragraph: realistic commercial outcome if this designer executes well. Be truthful about limitations and potential.`;
+One honest paragraph: realistic commercial outcome if this designer executes well.`;
 }
 
 async function callGemini(apiKey, prompt, photos) {
     const parts = [{ text: prompt }];
-    
+
     if (photos?.length > 0) {
-        parts.push({ text: `\nAnalyze these ${photos.length} product images carefully. Note actual materials, hardware, silhouettes, colors, construction. Do not invent details you cannot see.` });
+        parts.push({ text: `Now analyze these ${photos.length} product photos. Use them to assess silhouette quality, hardware execution, color accuracy, design consistency, and visual impact ONLY. Do not use images to determine material or pricing — those are confirmed in the text above.` });
         for (const photo of photos.slice(0, 8)) {
             parts.push({ inlineData: { mimeType: photo.mime || 'image/jpeg', data: photo.b64 } });
         }
     }
 
-    // Try models in order of preference
     const models = ['gemini-3.1-pro-preview', 'gemini-3.5-flash', 'gemini-3.1-flash-lite'];
-    
+
     for (const model of models) {
         try {
             const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
@@ -114,11 +120,11 @@ async function callGemini(apiKey, prompt, photos) {
 
 async function callClaude(apiKey, prompt, photos) {
     let content;
-    
+
     if (photos?.length > 0) {
         content = [
             ...photos.slice(0, 5).map(p => ({ type: 'image', source: { type: 'base64', media_type: p.mime || 'image/jpeg', data: p.b64 } })),
-            { type: 'text', text: prompt + '\n\nAnalyze the uploaded product images carefully. Note actual materials, hardware, silhouettes, colors, construction quality.' }
+            { type: 'text', text: prompt + '\n\nUse images to assess silhouette, hardware, and design consistency only. Trust the verified facts in the prompt for material and pricing.' }
         ];
     } else {
         content = prompt;
