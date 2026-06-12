@@ -12,20 +12,18 @@ export default async function handler(req, res) {
 
     try {
         const fetchUrl = url.startsWith('http') ? url : `https://${url}`;
+        const baseUrl = new URL(fetchUrl).origin;
 
-        const response = await fetch(fetchUrl, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; PMPNYBot/1.0)',
-                'Accept': 'text/html,application/xhtml+xml',
-            },
-            signal: AbortSignal.timeout(15000)
-        });
+        // Fetch HTML + Shopify data in parallel
+        const [htmlResult, shopifyResult] = await Promise.allSettled([
+            fetchHTML(fetchUrl),
+            fetchShopifyData(baseUrl)
+        ]);
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const html = htmlResult.status === 'fulfilled' ? htmlResult.value : '';
+        const shopifyData = shopifyResult.status === 'fulfilled' ? shopifyResult.value : null;
 
-        const html = await response.text();
-
-        // Extract text content — strip HTML tags
+        // Extract text from HTML
         let text = html
             .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
             .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -33,59 +31,87 @@ export default async function handler(req, res) {
             .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
             .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
             .replace(/<[^>]+>/g, ' ')
-            .replace(/&nbsp;/g, ' ')
-            .replace(/&amp;/g, '&')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"')
-            .replace(/\s+/g, ' ')
-            .trim();
+            .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+            .replace(/\s+/g, ' ').trim();
 
-        // Extract title
         const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
         const title = titleMatch ? titleMatch[1].trim() : '';
 
-        // Extract meta description
         const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i);
         const description = descMatch ? descMatch[1].trim() : '';
 
-        // Extract product names / headings
-        const headings = [];
-        const h1Matches = html.matchAll(/<h[123][^>]*>([^<]+)<\/h[123]>/gi);
-        for (const m of h1Matches) {
-            const txt = m[1].replace(/<[^>]+>/g, '').trim();
-            if (txt.length > 3 && txt.length < 120) headings.push(txt);
+        // Build final content — HTML text + Shopify product data
+        let finalContent = text.split(' ').slice(0, 2000).join(' ');
+        let productSummary = '';
+
+        if (shopifyData?.products?.length > 0) {
+            const products = shopifyData.products.slice(0, 20);
+            productSummary = '\n\n--- PRODUCT CATALOG (from store data) ---\n';
+            products.forEach(p => {
+                const price = p.variants?.[0]?.price;
+                const comparePrice = p.variants?.[0]?.compare_at_price;
+                const tags = p.tags ? (Array.isArray(p.tags) ? p.tags.join(', ') : p.tags) : '';
+                const desc = p.body_html
+                    ? p.body_html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 300)
+                    : '';
+                productSummary += `\nProduct: ${p.title}`;
+                if (price) productSummary += ` | Price: $${price}`;
+                if (comparePrice) productSummary += ` | Was: $${comparePrice}`;
+                if (p.product_type) productSummary += ` | Type: ${p.product_type}`;
+                if (tags) productSummary += ` | Tags: ${tags}`;
+                if (desc) productSummary += `\nDescription: ${desc}`;
+
+                // Variants (sizes, colors)
+                if (p.variants?.length > 1) {
+                    const variantTitles = [...new Set(p.variants.map(v => v.title).filter(t => t !== 'Default Title'))];
+                    if (variantTitles.length > 0) productSummary += `\nVariants: ${variantTitles.join(', ')}`;
+                }
+                productSummary += '\n';
+            });
+            productSummary += '--- END PRODUCT CATALOG ---';
         }
 
-        // Extract prices (CHF, $, €)
-        const prices = [...new Set(text.match(/(?:CHF|USD|\$|€)\s*[\d,]+(?:\.\d{2})?/gi) || [])];
-
-        // Extract image URLs (just paths, not full content)
-        const imgMatches = html.matchAll(/src=["']([^"']+\.(?:jpg|jpeg|png|webp)(?:\?[^"']*)?)/gi);
-        const images = [];
-        for (const m of imgMatches) {
-            const imgUrl = m[1].startsWith('http') ? m[1] : new URL(m[1], fetchUrl).href;
-            if (!imgUrl.includes('icon') && !imgUrl.includes('logo') && images.length < 20) {
-                images.push(imgUrl);
-            }
-        }
-
-        // Limit text to ~3000 words
-        const words = text.split(' ');
-        const truncated = words.slice(0, 3000).join(' ');
+        finalContent = finalContent + productSummary;
 
         return res.status(200).json({
-            content: truncated,
+            content: finalContent,
             title,
             description,
-            headings: headings.slice(0, 30),
-            prices,
-            imageUrls: images,
-            wordCount: words.length,
-            url: fetchUrl
+            wordCount: finalContent.split(' ').length,
+            url: fetchUrl,
+            hasShopifyData: !!shopifyData?.products?.length,
+            productCount: shopifyData?.products?.length || 0
         });
 
     } catch(error) {
         return res.status(500).json({ error: `Could not fetch site: ${error.message}` });
+    }
+}
+
+async function fetchHTML(url) {
+    const response = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PMPNYBot/1.0)' },
+        signal: AbortSignal.timeout(10000)
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.text();
+}
+
+async function fetchShopifyData(baseUrl) {
+    try {
+        // Shopify exposes products publicly at /products.json
+        const res = await fetch(`${baseUrl}/products.json?limit=20`, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PMPNYBot/1.0)' },
+            signal: AbortSignal.timeout(8000)
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        // Verify it's actually Shopify data
+        if (!data.products || !Array.isArray(data.products)) return null;
+        return data;
+    } catch(e) {
+        return null; // Not Shopify or not accessible
     }
 }
