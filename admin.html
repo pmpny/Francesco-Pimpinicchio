@@ -353,6 +353,21 @@
         <!-- BRAND ANALYSIS — GEMINI -->
         <div class="admin-section" id="section-brandanalysis">
             <h2 class="section-title">Brand Analysis</h2>
+
+            <!-- BRAND DNA PRESET -->
+            <div class="brief-editor" style="padding:24px;margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <label class="form-label" style="margin:0;">Brand DNA — Saved Facts</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <span id="dnaSaveStatus" style="font-size:9px;color:var(--accent);display:none;">&#10003; Saved</span>
+                        <button onclick="saveBrandDNA()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;background:transparent;border:1px solid var(--accent-border);color:var(--accent);padding:5px 12px;cursor:pointer;text-transform:uppercase;">Save</button>
+                        <button onclick="clearBrandDNA()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;background:transparent;border:1px solid var(--border);color:var(--gray);padding:5px 12px;cursor:pointer;text-transform:uppercase;">Clear</button>
+                    </div>
+                </div>
+                <textarea class="form-input" id="brandDNA" style="min-height:100px;width:100%;font-size:11px;line-height:1.7;" placeholder="Material: 100% Pinatex (bio pineapple leaf leather) NOT animal leather. Prices: $245-$345 USD. Brand: LGBTQ+ owned. Italian-trained founder (Versace, Gucci, Westwood). Positioning: Vegan luxury armor. Press: Harpers Bazaar, Elle, Glamour, Cosmopolitan, LOfficiel, Grazia."></textarea>
+                <p style="font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:0.08em;">Saved once — auto-included in every analysis. Prices, materials, positioning, press.</p>
+            </div>
+
             <div style="display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start;">
                 <!-- Controls -->
                 <div style="display:flex;flex-direction:column;gap:16px;">
@@ -374,8 +389,8 @@
                             <input type="text" class="form-input" id="brandCategory" placeholder="Handbags / Accessories">
                         </div>
                         <div class="form-group" style="margin-bottom:16px;">
-                            <label class="form-label">Additional Context</label>
-                            <textarea class="form-input" id="brandContext" style="min-height:70px;" placeholder="Any extra info — materials, target customer, price points..."></textarea>
+                            <label class="form-label">Additional Context <span style="color:var(--dim);font-size:9px;">(per-analysis)</span></label>
+                            <textarea class="form-input" id="brandContext" style="min-height:60px;" placeholder="Season focus, competitor comparison, specific questions..."></textarea>
                         </div>
                         <div class="form-group" style="margin-bottom:20px;">
                             <label class="form-label">Upload Product Photos (max 8)</label>
@@ -467,6 +482,7 @@ function adminLogin() {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('adminLayout').classList.add('show');
         loadDashboard(); loadCurrentBrief(); loadAdminHistory();
+    setTimeout(loadBrandDNA, 100);
     } else {
         const e = document.getElementById('loginError');
         e.textContent = 'Incorrect password.'; e.style.display = 'block';
@@ -481,6 +497,7 @@ if (sessionStorage.getItem('pmpny_admin') === '1') {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('adminLayout').classList.add('show');
     loadDashboard();
+    setTimeout(loadBrandDNA, 100);
 }
 
 // PAGE VISIBILITY — pause/resume on tab switch
@@ -972,6 +989,23 @@ async function adminAnalyze() {
 let brandPhotos = [];
 let fetchedSiteContent = '';
 
+// Load saved DNA on page load
+function loadBrandDNA() {
+    const saved = localStorage.getItem('pmpny_brand_dna');
+    if (saved) document.getElementById('brandDNA').value = saved;
+}
+function saveBrandDNA() {
+    const val = document.getElementById('brandDNA').value.trim();
+    localStorage.setItem('pmpny_brand_dna', val);
+    const status = document.getElementById('dnaSaveStatus');
+    status.style.display = 'inline';
+    setTimeout(() => { status.style.display = 'none'; }, 2000);
+}
+function clearBrandDNA() {
+    document.getElementById('brandDNA').value = '';
+    localStorage.removeItem('pmpny_brand_dna');
+}
+
 async function onBrandPhotos(e) {
     const files = Array.from(e.target.files);
     const remaining = 8 - brandPhotos.length;
@@ -1020,7 +1054,12 @@ async function fetchBrandSite() {
 async function runBrandAnalysis() {
     const brandName = document.getElementById('brandName').value.trim();
     const category = document.getElementById('brandCategory').value.trim() || 'Fashion Accessories';
-    const context = document.getElementById('brandContext').value.trim();
+    const perAnalysisContext = document.getElementById('brandContext').value.trim();
+    const dnaFacts = document.getElementById('brandDNA').value.trim();
+    // Combine saved DNA + per-analysis context
+    const context = [dnaFacts, perAnalysisContext].filter(Boolean).join('
+
+');
     const url = document.getElementById('brandUrl').value.trim();
 
     if (!brandName && !fetchedSiteContent && brandPhotos.length === 0) {
