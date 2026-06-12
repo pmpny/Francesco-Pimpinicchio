@@ -1057,9 +1057,7 @@ async function runBrandAnalysis() {
     const perAnalysisContext = document.getElementById('brandContext').value.trim();
     const dnaFacts = document.getElementById('brandDNA').value.trim();
     // Combine saved DNA + per-analysis context
-    const context = [dnaFacts, perAnalysisContext].filter(Boolean).join('
-
-');
+    const context = [dnaFacts, perAnalysisContext].filter(Boolean).join('\n\n');
     const url = document.getElementById('brandUrl').value.trim();
 
     if (!brandName && !fetchedSiteContent && brandPhotos.length === 0) {
