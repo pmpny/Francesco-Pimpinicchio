@@ -443,7 +443,7 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero-left">
-        <div class="eyebrow">PMPNY Intelligence — SS27</div>
+        <div class="eyebrow">PMPNY Intelligence — Trend Platform</div>
         <h1>Trend intel<br>for <em>every</em><br>designer.</h1>
         <p class="hero-desc">AI-powered fashion trend intelligence. Colors, silhouettes, materials — from runway to resale. Speak it, type it, or upload a photo. Built for independent designers worldwide.</p>
         <div class="hero-ctas">
@@ -451,12 +451,12 @@
             <a href="#pricing" class="btn btn-ghost">See Plans</a>
         </div>
     </div>
-    <div class="hero-signals">
-        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Structural Volume</div><div class="signal-track"><div class="signal-fill" data-w="84"></div></div><div class="signal-pct">↑ 84%</div></div>
-        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Warm Neutral Tones</div><div class="signal-track"><div class="signal-fill" data-w="63"></div></div><div class="signal-pct">↑ 63%</div></div>
-        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Hardware Detailing</div><div class="signal-track"><div class="signal-fill" data-w="71"></div></div><div class="signal-pct">↑ 71%</div></div>
-        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Bio Material Adoption</div><div class="signal-track"><div class="signal-fill" data-w="58"></div></div><div class="signal-pct">↑ 58%</div></div>
-        <div class="signal-card"><div class="signal-meta">SS27 Signal</div><div class="signal-name">Chain Hardware</div><div class="signal-track"><div class="signal-fill" data-w="47"></div></div><div class="signal-pct">↑ 47%</div></div>
+    <div class="hero-signals" id="heroSignals">
+        <div class="signal-card"><div class="signal-meta" id="hsMeta0">SS26 Signal</div><div class="signal-name" id="hsName0">Structural Volume</div><div class="signal-track"><div class="signal-fill" id="hsFill0" data-w="84"></div></div><div class="signal-pct" id="hsPct0">↑ 84%</div></div>
+        <div class="signal-card"><div class="signal-meta" id="hsMeta1">SS26 Signal</div><div class="signal-name" id="hsName1">Warm Neutral Tones</div><div class="signal-track"><div class="signal-fill" id="hsFill1" data-w="63"></div></div><div class="signal-pct" id="hsPct1">↑ 63%</div></div>
+        <div class="signal-card"><div class="signal-meta" id="hsMeta2">SS26 Signal</div><div class="signal-name" id="hsName2">Hardware Detailing</div><div class="signal-track"><div class="signal-fill" id="hsFill2" data-w="71"></div></div><div class="signal-pct" id="hsPct2">↑ 71%</div></div>
+        <div class="signal-card"><div class="signal-meta" id="hsMeta3">SS26 Signal</div><div class="signal-name" id="hsName3">Bio Material Adoption</div><div class="signal-track"><div class="signal-fill" id="hsFill3" data-w="58"></div></div><div class="signal-pct" id="hsPct3">↑ 58%</div></div>
+        <div class="signal-card"><div class="signal-meta" id="hsMeta4">SS26 Signal</div><div class="signal-name" id="hsName4">Chain Hardware</div><div class="signal-track"><div class="signal-fill" id="hsFill4" data-w="47"></div></div><div class="signal-pct" id="hsPct4">↑ 47%</div></div>
     </div>
 </section>
 
@@ -561,44 +561,14 @@
     </div>
 </div>
 
-<!-- PRICING -->
-<div class="pricing-wrap" id="pricing">
-    <div class="section-eye">Pricing</div>
-    <h2 class="pricing-h">Intelligence for<br>every <em>budget.</em></h2>
-    <p class="pricing-sub">Start free. Upgrade when you're ready. No contracts.</p>
-    <div class="pricing-grid">
-        <div class="pc">
-            <div class="pc-label">Spark</div>
-            <div class="pc-price">Free <span>forever</span></div>
-            <div class="pc-desc">Everything you need to start making smarter design decisions.</div>
-            <ul class="pc-features">
-                <li>Weekly visual trend brief</li><li>20 AI messages per day</li><li>Voice input & text-to-speech</li>
-                <li>5 image uploads per month</li><li>Chat history (sign in required)</li>
-                <li class="off">Mood board generation</li><li class="off">Visual color palettes</li><li class="off">PDF & mood board export</li>
-            </ul>
-            <button onclick="showModal()" class="btn btn-primary pc-cta">Start Free →</button>
-        </div>
-        <div class="pc featured">
-            <div class="pc-label">Plus <span class="badge">POPULAR</span></div>
-            <div class="pc-price"><sup>$</sup>9 <span>/ mo</span></div>
-            <div class="pc-desc">Unlimited access for the serious working designer.</div>
-            <ul class="pc-features">
-                <li>Everything in Spark</li><li>Unlimited AI messages</li><li>Unlimited image uploads</li>
-                <li>Mood board generation</li><li>Visual color palettes</li><li>Full brief archive + search</li><li>Export as PDF</li>
-            </ul>
-            <button onclick="handleUpgrade()" class="btn btn-primary pc-cta">Get Plus →</button>
-        </div>
-        <div class="pc">
-            <div class="pc-label">Studio</div>
-            <div class="pc-price"><sup>$</sup>50 <span>/ mo</span></div>
-            <div class="pc-desc">Francesco's expert eyes on your work. Async. Quarterly.</div>
-            <ul class="pc-features">
-                <li>Everything in Plus</li><li>Quarterly trend analysis on your work</li>
-                <li>Written feedback PDF via email</li><li>Early access to new features</li><li>Direct studio intelligence</li>
-            </ul>
-            <button onclick="handleUpgrade('studio')" class="btn btn-primary pc-cta">Get Studio →</button>
-        </div>
+<!-- PRICING — minimal -->
+<div style="padding:32px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Spark — Free</span>
+        <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Plus — $9/mo</span>
+        <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Studio — $50/mo</span>
     </div>
+    <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">See plans →</button>
 </div>
 
 <footer>
@@ -756,6 +726,20 @@ async function loadWeeklyBrief() {
         if (signalsEl && data.signals?.length) signalsEl.innerHTML = data.signals.map(s => `<div class="bs"><span class="bs-name">${s.name}</span><div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div><span class="bs-pct">↑${s.pct}%</span></div>`).join('');
         const seasonEl = document.getElementById('briefSeasonLabel');
         if (seasonEl && data.season) seasonEl.textContent = data.season;
+
+        // Update hero signals
+        if (data.signals?.length) {
+            data.signals.slice(0, 5).forEach((s, i) => {
+                const meta = document.getElementById('hsMeta' + i);
+                const name = document.getElementById('hsName' + i);
+                const fill = document.getElementById('hsFill' + i);
+                const pct = document.getElementById('hsPct' + i);
+                if (meta) meta.textContent = (data.season || 'SS26') + ' Signal';
+                if (name) name.textContent = s.name;
+                if (fill) { fill.dataset.w = s.pct; fill.style.width = s.pct + '%'; }
+                if (pct) pct.textContent = '↑ ' + s.pct + '%';
+            });
+        }
     } catch(err) {}
 }
 
@@ -1256,6 +1240,9 @@ async function analyze() {
     btn.disabled=false; btn.textContent='Analyze →';
 }
 
+function showPaywall() {
+    document.getElementById('paywallModal').classList.remove('hidden');
+}
 document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t=document.querySelector(a.getAttribute('href')); if(t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); } }); });
 </script>
 </body>
