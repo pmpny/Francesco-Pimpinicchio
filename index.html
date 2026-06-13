@@ -199,12 +199,12 @@
   <div class="intel-visual reveal reveal-delay-2">
     <div class="intel-grid-vis"></div>
     <div class="intel-data">
-      <div class="ibar-row"><div class="ibar-label"><span>Structural Volume</span><span>↑ 84%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:84%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span>Hardware Detailing</span><span>↑ 71%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:71%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span>Warm Neutral Tones</span><span>↑ 63%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:63%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span>Bio Material Adoption</span><span>↑ 58%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:58%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span>Chain Hardware</span><span>↑ 47%</span></div><div class="ibar-track"><div class="ibar-fill" style="width:47%"></div></div></div>
-      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(204,255,0,0.06);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(204,255,0,0.2);">Sample signal — SS27</div>
+      <div class="ibar-row"><div class="ibar-label"><span id="iName0">Structural Volume</span><span id="iPct0">↑ 84%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill0" style="width:84%"></div></div></div>
+      <div class="ibar-row"><div class="ibar-label"><span id="iName1">Hardware Detailing</span><span id="iPct1">↑ 71%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill1" style="width:71%"></div></div></div>
+      <div class="ibar-row"><div class="ibar-label"><span id="iName2">Warm Neutral Tones</span><span id="iPct2">↑ 63%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill2" style="width:63%"></div></div></div>
+      <div class="ibar-row"><div class="ibar-label"><span id="iName3">Bio Material Adoption</span><span id="iPct3">↑ 58%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill3" style="width:58%"></div></div></div>
+      <div class="ibar-row"><div class="ibar-label"><span id="iName4">Chain Hardware</span><span id="iPct4">↑ 47%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill4" style="width:47%"></div></div></div>
+      <div id="iSeasonLabel" style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(204,255,0,0.06);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(204,255,0,0.2);">Current signals — SS26</div>
     </div>
   </div>
 </div>
@@ -237,6 +237,32 @@
 <script>
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+// Load live signals from Supabase brief
+async function loadHomepageSignals() {
+    try {
+        const res = await fetch('https://lgnzudnxnehkdzsqijyf.supabase.co/rest/v1/weekly_brief?is_active=eq.true&order=published_at.desc&limit=1', {
+            headers: {
+                'apikey': 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-',
+                'Authorization': 'Bearer sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-'
+            }
+        });
+        const data = await res.json();
+        if (!data?.[0]?.signals?.length) return;
+        const brief = data[0];
+        brief.signals.slice(0, 5).forEach((s, i) => {
+            const name = document.getElementById('iName' + i);
+            const pct = document.getElementById('iPct' + i);
+            const fill = document.getElementById('iFill' + i);
+            if (name) name.textContent = s.name;
+            if (pct) pct.textContent = '↑ ' + s.pct + '%';
+            if (fill) fill.style.width = s.pct + '%';
+        });
+        const label = document.getElementById('iSeasonLabel');
+        if (label && brief.season) label.textContent = 'Current signals — ' + brief.season;
+    } catch(e) {}
+}
+window.addEventListener('load', loadHomepageSignals);
 document.querySelectorAll('.reveal').forEach(el => new IntersectionObserver((entries) => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.1}).observe(el));
 function toggleMobileNav() {
     var btn = document.getElementById('navHamburger');
