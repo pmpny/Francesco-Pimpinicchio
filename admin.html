@@ -231,10 +231,11 @@
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
                 <button class="btn-save" onclick="showSection('chat', document.querySelector('[onclick*=chat]'))">Open AI Chat →</button>
                 <button class="btn-save" onclick="showSection('brief', document.querySelector('[onclick*=brief]'))">Update Weekly Brief →</button>
+                <button class="btn-save" onclick="generateBriefNow()" id="genBriefBtn">Generate Brief Now →</button>
                 <button class="btn-save" onclick="showSection('brandanalysis', document.querySelector('[onclick*=brandanalysis]'))">Brand Analysis →</button>
-                <button class="btn-save" onclick="showSection('upload', document.querySelector('[onclick*=upload]'))">Analyze Image →</button>
                 <a href="ai.html" class="btn-secondary">View Platform →</a>
             </div>
+            <div id="genBriefStatus" style="display:none;margin-top:12px;font-size:11px;padding:10px 14px;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);"></div>
         </div>
         <!-- ADMIN CHAT -->
         <div class="admin-section" id="section-chat">
@@ -905,6 +906,30 @@ function adminNewChat() {
     document.getElementById('adminChatBody').innerHTML = `<div class="amsg ai"><div class="amsg-label">PMPNY Intelligence</div><div class="amsg-body">New conversation. What are you researching?</div></div>`;
 }
 const adminHistory = [];
+
+// GENERATE BRIEF
+async function generateBriefNow() {
+    const btn = document.getElementById('genBriefBtn');
+    const status = document.getElementById('genBriefStatus');
+    btn.disabled = true; btn.textContent = 'Generating...';
+    status.style.display = 'block';
+    status.textContent = 'AI is researching current trends...';
+    try {
+        const res = await fetch('/api/generate-brief', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ secret: 'PMPny92-' })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '✓ Brief generated for ' + (data.brief?.season || 'current season') + ' — "' + (data.brief?.title || '') + '"';
+        setTimeout(() => loadCurrentBrief(), 1000);
+    } catch(e) {
+        status.style.color = 'var(--red)';
+        status.textContent = 'Error: ' + e.message;
+    }
+    btn.disabled = false; btn.textContent = 'Generate Brief Now →';
+}
 
 // BRIEF
 function addSignalRow() {
