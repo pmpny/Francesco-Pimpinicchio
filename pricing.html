@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pricing — PMPNY Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+:root { --accent: #ccff00; --accent-dim: rgba(204,255,0,0.07); --accent-border: rgba(204,255,0,0.2); }
+.pricing-hero { padding: 140px 3rem 80px; border-bottom: 1px solid var(--faint); }
+.pricing-eyebrow { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+.pricing-h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(3rem, 6vw, 6rem); line-height: 0.95; color: var(--off-white); margin-bottom: 20px; }
+.pricing-h1 em { font-style: italic; color: rgba(237,233,224,0.45); }
+.pricing-sub { font-size: 13px; color: var(--muted); max-width: 480px; line-height: 1.85; }
+.plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--faint); margin: 0; }
+.plan { padding: 48px 36px; background: var(--bg); position: relative; }
+.plan.featured { background: var(--bg2); }
+.plan-badge { position: absolute; top: 24px; right: 24px; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; background: var(--accent); color: var(--bg); padding: 3px 8px; }
+.plan-name { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+.plan-price { font-family: var(--serif); font-size: 64px; font-weight: 300; line-height: 1; color: var(--off-white); margin-bottom: 6px; }
+.plan-price sup { font-size: 24px; vertical-align: super; }
+.plan-price span { font-family: var(--mono); font-size: 14px; color: var(--muted); }
+.plan-desc { font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 36px; min-height: 60px; }
+.plan-divider { height: 1px; background: var(--faint); margin-bottom: 28px; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+.plan-features li { font-size: 12px; color: var(--off-white); display: flex; align-items: flex-start; gap: 12px; line-height: 1.5; }
+.plan-features li .check { color: var(--accent); font-size: 10px; flex-shrink: 0; margin-top: 2px; }
+.plan-features li.off { color: var(--muted); }
+.plan-features li.off .check { color: var(--muted); content: '—'; }
+.plan-cta { display: block; text-align: center; padding: 14px 28px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; width: 100%; }
+.plan-cta.primary { background: var(--off-white); color: var(--bg); }
+.plan-cta.primary:hover { background: var(--accent); }
+.plan-cta.ghost { background: transparent; color: var(--muted); border: 1px solid var(--faint); }
+.plan-cta.ghost:hover { border-color: var(--off-white); color: var(--off-white); }
+/* FAQ */
+.faq-section { padding: 80px 3rem; border-top: 1px solid var(--faint); max-width: 760px; margin: 0 auto; }
+.faq-title { font-family: var(--serif); font-size: 2.4rem; font-weight: 300; color: var(--off-white); margin-bottom: 48px; }
+.faq-item { border-bottom: 1px solid var(--faint); padding: 24px 0; }
+.faq-q { font-size: 13px; color: var(--off-white); margin-bottom: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.faq-q span { color: var(--muted); font-size: 16px; transition: transform 0.2s; }
+.faq-a { font-size: 12px; color: var(--muted); line-height: 1.9; display: none; }
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .faq-q span { transform: rotate(45deg); }
+/* CTA bottom */
+.pricing-cta-section { padding: 80px 3rem; border-top: 1px solid var(--faint); text-align: center; }
+.pricing-cta-h { font-family: var(--serif); font-size: clamp(2rem, 4vw, 4rem); font-weight: 300; color: var(--off-white); margin-bottom: 12px; }
+.pricing-cta-h em { font-style: italic; color: rgba(237,233,224,0.45); }
+.pricing-cta-sub { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
+.pricing-cta-btn { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; background: var(--off-white); color: var(--bg); text-decoration: none; padding: 16px 40px; transition: background 0.2s; }
+.pricing-cta-btn:hover { background: var(--accent); }
+@media(max-width: 768px) {
+    .pricing-hero { padding: 100px 1.5rem 48px; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .plan { padding: 36px 24px; }
+    .faq-section { padding: 48px 1.5rem; }
+    .pricing-cta-section { padding: 48px 1.5rem; }
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+    <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
+    <ul class="nav-links">
+        <li><a href="studio.html">Studio</a></li>
+        <li><a href="work.html">Work</a></li>
+        <li><a href="https://pimpinicchio.com" target="_blank">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="ai.html" class="active">AI</a></li>
+    </ul>
+    <a href="ai.html" class="nav-cta">Start Free</a>
+    <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="navMobile">
+    <a href="studio.html">Studio</a>
+    <a href="work.html">Work</a>
+    <a href="https://pimpinicchio.com" target="_blank">Shop</a>
+    <a href="contact.html">Contact</a>
+    <a href="ai.html">AI Intelligence →</a>
+</div>
+
+<!-- HERO -->
+<div class="pricing-hero">
+    <div class="pricing-eyebrow">PMPNY Intelligence — Pricing</div>
+    <h1 class="pricing-h1">Intelligence for<br>every <em>budget.</em></h1>
+    <p class="pricing-sub">Start free. No credit card required. Upgrade when you need more — no contracts, cancel anytime.</p>
+</div>
+
+<!-- PLANS -->
+<div class="plans-grid">
+    <!-- SPARK -->
+    <div class="plan">
+        <div class="plan-name">Spark</div>
+        <div class="plan-price">Free <span>forever</span></div>
+        <p class="plan-desc">Everything you need to start making smarter design decisions today.</p>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+            <li><span class="check">✓</span>20 AI messages per day</li>
+            <li><span class="check">✓</span>Ask about trends, colors, silhouettes, materials</li>
+            <li><span class="check">✓</span>Upload images for analysis (5/month)</li>
+            <li><span class="check">✓</span>Voice input in any language</li>
+            <li><span class="check">✓</span>Auto-read any brand website or Shopify store</li>
+            <li><span class="check">✓</span>Monthly trend brief with signals & colors</li>
+            <li><span class="check">✓</span>Chat history (sign in required)</li>
+            <li class="off"><span class="check">—</span>Unlimited messages</li>
+            <li class="off"><span class="check">—</span>Unlimited image uploads</li>
+            <li class="off"><span class="check">—</span>Mood board builder</li>
+            <li class="off"><span class="check">—</span>Export as PDF</li>
+        </ul>
+        <a href="ai.html" class="plan-cta ghost">Start Free →</a>
+    </div>
+    <!-- PLUS -->
+    <div class="plan featured">
+        <div class="plan-badge">Popular</div>
+        <div class="plan-name">Plus</div>
+        <div class="plan-price"><sup>$</sup>9 <span>/ mo</span></div>
+        <p class="plan-desc">Unlimited access for the serious working designer. No daily caps, no limits.</p>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+            <li><span class="check">✓</span>Everything in Spark</li>
+            <li><span class="check">✓</span>Unlimited AI messages</li>
+            <li><span class="check">✓</span>Unlimited image uploads</li>
+            <li><span class="check">✓</span>Mood board builder</li>
+            <li><span class="check">✓</span>Visual color palettes</li>
+            <li><span class="check">✓</span>Full brief archive & search</li>
+            <li><span class="check">✓</span>Export conversations as PDF</li>
+            <li><span class="check">✓</span>Priority response speed</li>
+        </ul>
+        <button onclick="window.location.href='ai.html'" class="plan-cta primary">Get Plus — $9/mo →</button>
+    </div>
+    <!-- STUDIO -->
+    <div class="plan">
+        <div class="plan-name">Studio</div>
+        <div class="plan-price"><sup>$</sup>50 <span>/ mo</span></div>
+        <p class="plan-desc">Francesco's expert eyes on your work. Strategic feedback, quarterly. Built for designers who are serious about growing.</p>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+            <li><span class="check">✓</span>Everything in Plus</li>
+            <li><span class="check">✓</span>Quarterly trend analysis on your collection</li>
+            <li><span class="check">✓</span>Written PDF feedback delivered by email</li>
+            <li><span class="check">✓</span>Direct studio intelligence access</li>
+            <li><span class="check">✓</span>Early access to new features</li>
+            <li><span class="check">✓</span>Italian manufacturing & sourcing guidance</li>
+        </ul>
+        <button onclick="window.location.href='ai.html'" class="plan-cta ghost">Get Studio — $50/mo →</button>
+    </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+    <h2 class="faq-title">Questions.</h2>
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Do I need a credit card to start? <span>+</span></div>
+        <div class="faq-a">No. Spark is free forever — no card required. You only need payment details when you upgrade to Plus or Studio.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What does the AI actually do? <span>+</span></div>
+        <div class="faq-a">PMPNY Intelligence analyzes fashion trends, reads brand websites and Shopify stores automatically, analyzes product images, and gives you actionable commercial direction — colors, silhouettes, market position, collection gaps. Think of it as a senior creative director available 24/7.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span>+</span></div>
+        <div class="faq-a">Yes. No contracts, no minimum commitment. Cancel from your account settings and you keep access until the end of your billing period.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What's the difference between Plus and Studio? <span>+</span></div>
+        <div class="faq-a">Plus gives you unlimited access to the AI platform. Studio adds Francesco's personal attention — quarterly reviews of your actual collection with written strategic feedback delivered as a PDF. It's the difference between using the tool and having a studio partner.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can the AI analyze my competitor's website? <span>+</span></div>
+        <div class="faq-a">Yes. Paste any URL in the chat and the AI reads it automatically — including Shopify stores, which return full product data including prices, materials, and descriptions. Works on any plan.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">How accurate are the trend signals? <span>+</span></div>
+        <div class="faq-a">Trend signals are generated monthly by Claude based on runway data, resale market signals, and street style trends. They reflect current commercial momentum — what's selling, what's rising, what's peaking. Updated automatically every month.</div>
+    </div>
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="pricing-cta-section">
+    <h2 class="pricing-cta-h">Start designing<br>with <em>intelligence.</em></h2>
+    <p class="pricing-cta-sub">20 free messages daily. No card required.</p>
+    <a href="ai.html" class="pricing-cta-btn">Start Free →</a>
+</div>
+
+<footer>
+    <div class="footer-logo">PMPNY Design Studio<div style="font-size:9px;margin-top:4px;color:rgba(107,104,96,0.6);">Long Island City, New York</div></div>
+    <div class="footer-links">
+        <a href="studio.html">Studio</a>
+        <a href="work.html">Work</a>
+        <a href="https://pimpinicchio.com">Shop</a>
+        <a href="ai.html">AI</a>
+        <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-right">© 2026 PMPNY Design Studio<br><span style="font-size:9px;">Francesco Pimpinicchio</span></div>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
+function toggleMobileNav() {
+    document.getElementById('navHamburger').classList.toggle('open');
+    document.getElementById('navMobile').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+    var nav = document.getElementById('navMobile');
+    var btn = document.getElementById('navHamburger');
+    if (nav && nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
+        nav.classList.remove('open'); btn.classList.remove('open');
+    }
+});
+</script>
+</body>
+</html>
