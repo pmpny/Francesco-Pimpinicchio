@@ -276,7 +276,7 @@
         .pc-cta { display: block; text-align: center; text-decoration: none; }
         footer { border-top: 1px solid var(--border); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; }
         .foot-copy { font-size: 9px; color: var(--dim); letter-spacing: 0.08em; white-space: nowrap; }
-        .foot-links { display: flex; gap: 14px; flex-shrink: 0; }
+        .foot-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
         .foot-links a { font-size: 9px; letter-spacing: 0.1em; color: var(--gray); text-decoration: none; transition: color 0.18s; text-transform: uppercase; white-space: nowrap; }
         .foot-links a:hover { color: var(--white); }
         @media (max-width: 640px) {
@@ -303,7 +303,7 @@
             .interface { grid-template-columns: 1fr; }
             .chat-panel { height: 560px; }
             .pricing-grid { grid-template-columns: 1fr; }
-            footer { flex-direction: row !important; flex-wrap: nowrap !important; gap: 10px !important; padding: 14px 16px !important; overflow-x: auto; }
+            footer { flex-direction: column; gap: 16px; text-align: center; padding: 28px 24px; }
             .right-col { display: none; }
         }
         @media (max-width: 640px) {
@@ -593,15 +593,15 @@
 
 <!-- PRICING — minimal -->
 <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;">
-    <span style="font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);">Free · $9/mo · $50/mo</span>
+    <span style="font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);">Spark Free &nbsp;·&nbsp; Plus $9/mo &nbsp;·&nbsp; Studio $50/mo</span>
     <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;">
-        <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">Plans →</button>
-        <a href="pricing.html" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);text-decoration:underline;text-underline-offset:3px;">Details →</a>
+        <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;">Plans →</button>
+        <a href="pricing.html" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);text-decoration:underline;text-underline-offset:3px;white-space:nowrap;">Details →</a>
     </div>
 </div>
 
 <footer style="padding:20px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:nowrap;gap:12px;overflow-x:auto;">
-    <div class="foot-copy" style="white-space:nowrap;font-size:9px;">© 2026 PMPNY Intelligence · A PMPNY Design Studio Product</div>
+    <div class="foot-copy" style="white-space:nowrap;font-size:9px;">© 2026 PMPNY Intelligence — PMPNY Design Studio</div>
     <div class="foot-links" style="flex-shrink:0;">
         <a href="index.html">Portfolio</a><a href="studio.html">Studio</a>
         <a href="https://pimpinicchio.com">Shop</a><a href="contact.html">Contact</a>
