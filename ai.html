@@ -401,18 +401,48 @@
 
 <!-- PAYWALL MODAL -->
 <div class="modal-overlay hidden" id="paywallModal">
-    <div class="paywall-modal">
+    <div class="paywall-modal" style="max-width:560px;">
         <button class="modal-close" onclick="closePaywall()">×</button>
-        <div class="paywall-eyebrow">Daily Limit Reached</div>
+        <div class="paywall-eyebrow" id="paywallEyebrow">Daily Limit Reached</div>
         <h2 class="paywall-title">Upgrade for<br><em>unlimited access.</em></h2>
-        <p class="paywall-desc">You've used your 20 free messages today. Upgrade to Plus for unlimited trend intelligence, mood boards, and visual palettes.</p>
-        <div class="paywall-plans">
-            <div class="paywall-plan"><span class="paywall-plan-name">Spark</span><span class="paywall-plan-price">Free <span>/ forever</span></span></div>
-            <div class="paywall-plan featured"><span class="paywall-plan-name">Plus</span><span class="paywall-plan-price">$9 <span>/ mo</span></span></div>
-            <div class="paywall-plan"><span class="paywall-plan-name">Studio</span><span class="paywall-plan-price">$50 <span>/ mo</span></span></div>
+        <p class="paywall-desc">Your 20 free messages are up. Upgrade to keep designing with intelligence.</p>
+        <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);margin-bottom:24px;">
+            <!-- SPARK -->
+            <div style="background:var(--panel-2);padding:16px 20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);">Spark</span>
+                    <span style="font-family:var(--font-display);font-size:20px;font-weight:300;">Free <span style="font-family:var(--font-mono);font-size:11px;color:var(--gray);">/ forever</span></span>
+                </div>
+                <div style="font-size:10px;color:var(--gray);line-height:1.8;">
+                    20 AI messages/day · Voice input · Weekly trend brief · 5 image uploads/month · Chat history
+                </div>
+            </div>
+            <!-- PLUS -->
+            <div style="background:rgba(204,255,0,0.05);border-left:2px solid var(--accent);padding:16px 20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Plus <span style="font-size:8px;background:var(--accent);color:var(--black);padding:2px 6px;margin-left:6px;">POPULAR</span></span>
+                    <span style="font-family:var(--font-display);font-size:20px;font-weight:300;">$9 <span style="font-family:var(--font-mono);font-size:11px;color:var(--gray);">/ mo</span></span>
+                </div>
+                <div style="font-size:10px;color:var(--gray);line-height:1.8;">
+                    Unlimited AI messages · Unlimited image uploads · Mood board builder · Visual color palettes · Full brief archive · Export as PDF
+                </div>
+            </div>
+            <!-- STUDIO -->
+            <div style="background:var(--panel-2);padding:16px 20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);">Studio</span>
+                    <span style="font-family:var(--font-display);font-size:20px;font-weight:300;">$50 <span style="font-family:var(--font-mono);font-size:11px;color:var(--gray);">/ mo</span></span>
+                </div>
+                <div style="font-size:10px;color:var(--gray);line-height:1.8;">
+                    Everything in Plus · Quarterly trend analysis on your work · Written PDF feedback by email · Direct studio intelligence · Early feature access
+                </div>
+            </div>
         </div>
         <button class="paywall-cta" onclick="handleUpgrade()">Get Plus — $9/mo →</button>
-        <button class="paywall-skip" onclick="closePaywall()">Maybe tomorrow</button>
+        <button class="paywall-skip" onclick="closePaywall()">Maybe later</button>
+        <div style="text-align:center;margin-top:12px;">
+            <a href="pricing.html" style="font-size:9px;letter-spacing:0.12em;color:var(--dim);text-decoration:underline;text-underline-offset:3px;">Full pricing details →</a>
+        </div>
     </div>
 </div>
 
@@ -568,7 +598,10 @@
         <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Plus — $9/mo</span>
         <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Studio — $50/mo</span>
     </div>
-    <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">See plans →</button>
+    <div style="display:flex;gap:20px;align-items:center;">
+        <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">Compare plans →</button>
+        <a href="pricing.html" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray);text-decoration:underline;text-underline-offset:3px;">Full details →</a>
+    </div>
 </div>
 
 <footer>
@@ -1241,6 +1274,7 @@ async function analyze() {
 }
 
 function showPaywall() {
+    document.getElementById('paywallEyebrow').textContent = 'Plans & Pricing';
     document.getElementById('paywallModal').classList.remove('hidden');
 }
 document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t=document.querySelector(a.getAttribute('href')); if(t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); } }); });
