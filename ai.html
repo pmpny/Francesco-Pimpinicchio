@@ -3,998 +3,505 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMPNY Intelligence — AI Trend Platform</title>
-    <meta name="description" content="AI-powered fashion trend intelligence for independent designers.">
-    <meta name="theme-color" content="#080808">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="PMPNY AI">
-    <link rel="icon" href="/favicon.jpg" type="image/jpeg">
-    <link rel="apple-touch-icon" href="/favicon.jpg">
-    <link rel="manifest" href="/manifest.json">
+    <title>PMPNY Admin — Intelligence Platform</title>
+    <link rel="icon" href="/favicon.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --black: #080808; --white: #f4f4ee; --off-white: #e0e0d8;
-            --gray: #888880; --gray-light: #b0b0a8; --dim: #444440;
-            --panel: #141412; --panel-2: #1e1e1a;
+            --gray: #888880; --dim: #444440; --panel: #141412; --panel-2: #1e1e1a;
             --accent: #ccff00; --accent-dim: rgba(204,255,0,0.07); --accent-border: rgba(204,255,0,0.2);
             --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.18);
-            --font-display: 'Cormorant Garamond', Georgia, serif;
-            --font-mono: 'DM Mono', 'Courier New', monospace;
+            --red: #ff4444; --red-dim: rgba(255,68,68,0.08);
+            --font-display: 'Cormorant Garamond', serif; --font-mono: 'DM Mono', monospace;
         }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; line-height: 1.65; min-height: 100vh; overflow-x: hidden; }
-        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(8,8,8,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-        .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-        .nav-logo-text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
-        .nav-badge { font-size: 9px; letter-spacing: 0.18em; color: var(--accent); background: var(--accent-dim); border: 1px solid var(--accent-border); padding: 3px 10px; }
-        .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
-        .nav-links a { font-size: 10px; letter-spacing: 0.15em; color: var(--gray); text-decoration: none; transition: color 0.2s; text-transform: uppercase; }
-        .nav-links a:hover, .nav-links a.active { color: var(--white); }
-        .nav-right { display: flex; align-items: center; gap: 16px; }
-        .nav-user { font-size: 10px; letter-spacing: 0.1em; color: var(--gray); }
-        .nav-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 7px 16px; cursor: pointer; text-decoration: none; border: 1px solid var(--border); background: transparent; color: var(--gray); transition: all 0.2s; }
-        .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .nav-btn.primary { background: var(--white); color: var(--black); border-color: var(--white); }
-        .nav-btn.primary:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
-        .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(8,8,8,0.92); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.hidden { display: none; }
-        .modal { background: var(--panel); border: 1px solid var(--border); padding: 48px; width: 100%; max-width: 420px; position: relative; }
-        .modal-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
-        .modal-logo-text { font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
-        .modal-badge { font-size: 9px; color: var(--accent); letter-spacing: 0.14em; }
-        .modal h2 { font-family: var(--font-display); font-size: 32px; font-weight: 300; line-height: 1.05; margin-bottom: 8px; }
-        .modal h2 em { font-style: italic; color: var(--gray-light); }
-        .modal p { font-size: 12px; color: var(--gray); margin-bottom: 32px; line-height: 1.7; }
-        .modal-tabs { display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
-        .modal-tab { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 20px; cursor: pointer; color: var(--gray); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
-        .modal-tab.active { color: var(--white); border-bottom-color: var(--accent); }
-        .modal-form { display: flex; flex-direction: column; gap: 12px; }
-        .modal-input { background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 13px 16px; outline: none; width: 100%; transition: border-color 0.2s; }
-        .modal-input::placeholder { color: var(--dim); }
-        .modal-input:focus { border-color: var(--border-hover); }
-        .modal-submit { background: var(--white); color: var(--black); border: none; padding: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
-        .modal-submit:hover { background: var(--accent); color: var(--black); }
-        .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-        .modal-error { font-size: 11px; color: #ff6b6b; padding: 10px 14px; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); display: none; }
-        .modal-success { font-size: 11px; color: var(--accent); padding: 10px 14px; background: var(--accent-dim); border: 1px solid var(--accent-border); display: none; }
-        .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--dim); font-size: 18px; cursor: pointer; }
-        .modal-close:hover { color: var(--white); }
-        .modal-divider { text-align: center; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin: 4px 0; }
-        .paywall-modal { background: var(--panel); border: 1px solid var(--accent-border); padding: 48px; width: 100%; max-width: 480px; position: relative; }
-        .paywall-eyebrow { font-size: 9px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
-        .paywall-title { font-family: var(--font-display); font-size: 36px; font-weight: 300; line-height: 1.05; margin-bottom: 12px; }
-        .paywall-title em { font-style: italic; color: var(--gray-light); }
-        .paywall-desc { font-size: 12px; color: var(--gray); line-height: 1.8; margin-bottom: 32px; }
-        .paywall-plans { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-bottom: 28px; }
-        .paywall-plan { background: var(--panel-2); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .paywall-plan.featured { background: rgba(204,255,0,0.06); border-left: 2px solid var(--accent); }
-        .paywall-plan-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--off-white); }
-        .paywall-plan-price { font-family: var(--font-display); font-size: 22px; font-weight: 300; color: var(--white); }
-        .paywall-plan-price span { font-family: var(--font-mono); font-size: 11px; color: var(--gray); }
-        .paywall-cta { width: 100%; background: var(--accent); color: var(--black); border: none; padding: 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; margin-bottom: 12px; transition: opacity 0.2s; }
-        .paywall-cta:hover { opacity: 0.85; }
-        .paywall-skip { width: 100%; background: transparent; color: var(--dim); border: 1px solid var(--border); padding: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
-        .paywall-skip:hover { color: var(--gray); border-color: var(--border-hover); }
-        .msg-counter { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); }
-        .msg-counter.warning { color: #ff9944; }
-        .hero { min-height: 100vh; padding: 140px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; overflow: hidden; }
-        .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 70% at 5% 50%, rgba(204,255,0,0.025) 0%, transparent 70%); pointer-events: none; }
-        .hero-left { position: relative; z-index: 1; }
-        .eyebrow { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; }
-        .eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gray); }
-        h1 { font-family: var(--font-display); font-size: clamp(56px, 7vw, 108px); font-weight: 300; line-height: 0.88; letter-spacing: -0.015em; margin-bottom: 36px; color: var(--white); }
-        h1 em { font-style: italic; color: var(--gray-light); }
-        .hero-desc { font-size: 13px; color: var(--gray); max-width: 400px; line-height: 1.85; margin-bottom: 44px; }
-        .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-        .btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 14px 28px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; transition: all 0.22s; }
-        .btn-primary { background: var(--white); color: var(--black); }
-        .btn-primary:hover { background: var(--accent); color: var(--black); }
-        .btn-ghost { background: transparent; color: var(--gray); border: 1px solid var(--border); }
-        .btn-ghost:hover { border-color: var(--border-hover); color: var(--white); }
-        .hero-signals { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
-        .signal-card { background: var(--panel); border: 1px solid var(--border); padding: 16px 20px; position: relative; overflow: hidden; }
-        .signal-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); opacity: 0.4; }
-        .signal-meta { font-size: 8px; letter-spacing: 0.22em; color: var(--gray); text-transform: uppercase; margin-bottom: 6px; }
-        .signal-name { font-size: 13px; color: var(--white); margin-bottom: 10px; }
-        .signal-track { height: 1px; background: var(--border); position: relative; margin-bottom: 6px; }
-        .signal-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); opacity: 0.6; transition: width 2.5s cubic-bezier(0.16,1,0.3,1); width: 0%; }
-        .signal-pct { font-size: 9px; color: var(--gray-light); text-align: right; letter-spacing: 0.1em; }
-        .section { padding: 0 48px 80px; max-width: 1440px; margin: 0 auto; }
-        #chat { padding-top: 24px; }
-        .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 0 22px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
-        .app-bar-label { font-size: 9px; letter-spacing: 0.3em; color: var(--gray); text-transform: uppercase; }
-        .app-bar-right { display: flex; align-items: center; gap: 16px; }
-        .tier-pill { font-size: 9px; letter-spacing: 0.18em; padding: 5px 12px; background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
-        .interface { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
-        .history-panel { background: var(--panel); border: 1px solid var(--border); }
-        .panel-head { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: 0.22em; color: var(--gray); text-transform: uppercase; }
-        .history-list { max-height: 200px; overflow-y: auto; }
-        .history-list::-webkit-scrollbar { width: 3px; }
-        .history-list::-webkit-scrollbar-thumb { background: var(--border); }
-        .history-item { padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.18s; }
-        .history-item:hover { background: var(--panel-2); }
-        .history-item:last-child { border-bottom: none; }
-        .history-item-title { font-size: 11px; color: var(--off-white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
-        .history-item-date { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
-        .history-empty { padding: 20px 18px; font-size: 11px; color: var(--dim); text-align: center; }
-        .new-chat-btn { width: 100%; padding: 11px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: transparent; border: 1px solid var(--border); color: var(--gray); cursor: pointer; transition: all 0.18s; }
-        .new-chat-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .chat-panel { background: var(--panel); border: 1px solid var(--border); display: flex; flex-direction: column; height: 640px; }
-        .chat-top { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .chat-status { display: flex; align-items: center; gap: 8px; font-size: 9px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+        body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; min-height: 100vh; }
+        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: var(--panel); border: 1px solid var(--accent-border); padding: 52px; width: 100%; max-width: 400px; }
+        .login-logo { font-size: 10px; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
+        .login-title { font-family: var(--font-display); font-size: 36px; font-weight: 300; margin-bottom: 8px; }
+        .login-title em { font-style: italic; color: var(--gray); }
+        .login-sub { font-size: 11px; color: var(--gray); margin-bottom: 36px; }
+        .login-input { width: 100%; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 13px 16px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+        .login-input:focus { border-color: var(--border-hover); }
+        .login-input::placeholder { color: var(--dim); }
+        .login-btn { width: 100%; background: var(--accent); color: var(--black); border: none; padding: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+        .login-btn:hover { opacity: 0.85; }
+        .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .login-error { font-size: 11px; color: var(--red); padding: 10px 14px; background: var(--red-dim); border: 1px solid rgba(255,68,68,0.2); margin-bottom: 12px; display: none; }
+        .login-screen.hidden { display: none; }
+        .admin-layout { display: none; }
+        .admin-layout.show { display: block; }
+        .admin-header { background: rgba(8,8,8,0.98); border-bottom: 1px solid var(--accent-border); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .admin-logo { display: flex; align-items: center; gap: 12px; }
+        .admin-logo-text { font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
+        .admin-badge { font-size: 9px; color: var(--red); background: var(--red-dim); border: 1px solid rgba(255,68,68,0.2); padding: 3px 10px; letter-spacing: 0.14em; }
+        .admin-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        .admin-nav-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--gray); transition: all 0.18s; text-decoration: none; }
+        .admin-nav-btn:hover, .admin-nav-btn.active { border-color: var(--accent); color: var(--accent); }
+        .admin-nav-btn.danger { border-color: rgba(255,68,68,0.3); color: var(--red); }
+        .admin-nav-btn.danger:hover { background: var(--red-dim); }
+        .admin-content { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .admin-section { display: none; }
+        .admin-section.active { display: block; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-bottom: 40px; }
+        .stat { background: var(--panel); padding: 28px 24px; }
+        .stat-label { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; margin-bottom: 12px; }
+        .stat-value { font-family: var(--font-display); font-size: 40px; font-weight: 300; color: var(--white); line-height: 1; margin-bottom: 6px; }
+        .stat-sub { font-size: 10px; color: var(--dim); }
+        .stat.highlight .stat-value { color: var(--accent); }
+        .section-title { font-family: var(--font-display); font-size: 28px; font-weight: 300; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .admin-chat { background: var(--panel); border: 1px solid var(--border); height: 500px; display: flex; flex-direction: column; margin-bottom: 24px; }
+        .admin-chat-top { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .admin-chat-status { font-size: 9px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
         .dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 2.5s ease infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-        .voice-toggle { display: flex; align-items: center; gap: 8px; font-size: 9px; color: var(--gray); letter-spacing: 0.12em; cursor: pointer; }
-        .voice-toggle input { display: none; }
-        .toggle-track { width: 28px; height: 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 7px; position: relative; transition: all 0.2s; }
-        .toggle-thumb { position: absolute; left: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: var(--gray); transition: all 0.2s; }
-        .voice-toggle input:checked + .toggle-track { border-color: var(--accent); }
-        .voice-toggle input:checked + .toggle-track .toggle-thumb { left: 16px; background: var(--accent); }
-        .quick-bar { padding: 12px 20px 0; display: flex; gap: 8px; flex-wrap: wrap; }
-        .qp { font-size: 10px; letter-spacing: 0.1em; color: var(--gray); border: 1px solid var(--border); padding: 5px 11px; background: transparent; font-family: var(--font-mono); cursor: pointer; transition: all 0.18s; }
-        .qp:hover { border-color: var(--accent); color: var(--accent); }
-        .voice-status { padding: 6px 20px; font-size: 9px; letter-spacing: 0.18em; color: var(--accent); display: none; align-items: center; gap: 8px; text-transform: uppercase; }
-        .voice-status.show { display: flex; }
-        .vs-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 0.8s ease infinite; }
-        .chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
-        .chat-body::-webkit-scrollbar { width: 3px; }
-        .chat-body::-webkit-scrollbar-thumb { background: var(--border); }
-        .msg { max-width: 88%; animation: slideUp 0.28s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .msg.user { align-self: flex-end; }
-        .msg.ai { align-self: flex-start; width: 100%; max-width: 100%; }
-        .msg-label { font-size: 8px; letter-spacing: 0.22em; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; }
-        .msg.user .msg-label { text-align: right; }
-        .msg-body { padding: 13px 17px; font-size: 13px; line-height: 1.75; }
-        .msg.user .msg-body { background: var(--white); color: var(--black); }
-        .ai-response { display: flex; flex-direction: column; gap: 4px; }
-        .ai-plain { background: var(--panel-2); border: 1px solid var(--border); padding: 18px 20px; font-size: 13px; line-height: 1.9; color: var(--off-white); }
-        .section-card { border: 1px solid rgba(255,255,255,0.07); background: #1e1e1a; margin-bottom: 4px; overflow: hidden; padding: 0; }
+        .admin-unlimited { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+        .admin-chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .admin-chat-body::-webkit-scrollbar { width: 3px; }
+        .admin-chat-body::-webkit-scrollbar-thumb { background: var(--border); }
+        .amsg { max-width: 85%; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .amsg.user { align-self: flex-end; }
+        .amsg.ai { align-self: flex-start; }
+        .amsg-label { font-size: 8px; letter-spacing: 0.2em; color: var(--dim); margin-bottom: 5px; text-transform: uppercase; }
+        .amsg.user .amsg-label { text-align: right; }
+        .amsg-body { padding: 12px 16px; font-size: 13px; line-height: 1.7; }
+        .amsg.user .amsg-body { background: var(--accent); color: var(--black); }
+        .amsg.ai .amsg-body { background: var(--panel-2); border: 1px solid var(--border); color: var(--off-white); }
+        /* EDIT MESSAGE */
+        .amsg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; opacity: 0; transition: opacity 0.18s; }
+        .amsg:hover .amsg-actions { opacity: 1; }
+        .amsg-edit-btn { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--dim); background: none; border: none; cursor: pointer; padding: 2px 6px; text-transform: uppercase; transition: color 0.18s; }
+        .amsg-edit-btn:hover { color: var(--accent); }
+        .amsg-edit-area { width: 100%; background: var(--panel-2); border: 1px solid var(--accent-border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 10px 14px; outline: none; resize: none; min-height: 60px; margin-top: 4px; }
+        .amsg-edit-actions { display: flex; gap: 8px; margin-top: 6px; justify-content: flex-end; }
+        .amsg-edit-send { background: var(--accent); color: var(--black); border: none; padding: 7px 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+        .amsg-edit-cancel { background: none; border: 1px solid var(--border); color: var(--gray); padding: 7px 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+        .admin-chat-foot { border-top: 1px solid var(--border); padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .admin-chat-foot-row { display: flex; gap: 10px; align-items: flex-end; }
+        .admin-attach-preview { display: none; position: relative; padding: 8px; background: var(--panel-2); border: 1px solid var(--border); }
+        #adminAttachBtn { width: 44px; height: 44px; background: var(--panel-2); border: 1px solid var(--border); color: var(--gray); font-size: 18px; cursor: pointer; transition: all 0.18s; flex-shrink: 0; }
+        #adminAttachBtn:hover, #adminAttachBtn.has-image { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+        .admin-chat-input { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 15px; outline: none; resize: none; min-height: 44px; max-height: 120px; transition: border-color 0.18s; }
+        .admin-chat-input:focus { border-color: var(--border-hover); }
+        .admin-chat-input::placeholder { color: var(--dim); }
+        .admin-send { background: var(--accent); color: var(--black); border: none; padding: 12px 22px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; cursor: pointer; height: 44px; transition: opacity 0.18s; }
+        .admin-send:hover { opacity: 0.85; }
+        .admin-send:disabled { opacity: 0.4; cursor: not-allowed; }
+        /* RECONNECTING BANNER */
+        .reconnect-banner { display: none; padding: 10px 16px; background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.2); font-size: 11px; color: var(--red); text-align: center; letter-spacing: 0.08em; }
+        .reconnect-banner.show { display: block; }
+        .brief-editor { background: var(--panel); border: 1px solid var(--border); padding: 32px; margin-bottom: 24px; }
+        .brief-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; }
+        .form-input { background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 14px; outline: none; transition: border-color 0.18s; }
+        .form-input:focus { border-color: var(--border-hover); }
+        .form-input::placeholder { color: var(--dim); }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+        .signals-editor { display: flex; flex-direction: column; gap: 8px; }
+        .signal-row { display: grid; grid-template-columns: 1fr 80px; gap: 8px; }
+        .form-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-save { background: var(--accent); color: var(--black); border: none; padding: 13px 28px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: opacity 0.18s; }
+        .btn-save:hover { opacity: 0.85; }
+        .btn-secondary { background: transparent; color: var(--gray); border: 1px solid var(--border); padding: 13px 28px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
+        .btn-secondary:hover { border-color: var(--border-hover); color: var(--white); }
+        .save-status { font-size: 11px; color: var(--accent); display: none; align-items: center; gap: 8px; }
+        .admin-upload { background: var(--panel); border: 1px solid var(--border); padding: 32px; margin-bottom: 24px; }
+        .admin-upload-zone { border: 1px dashed var(--border); padding: 48px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; text-align: center; margin-bottom: 20px; }
+        .admin-upload-zone:hover { border-color: var(--accent); background: var(--accent-dim); }
+        .upload-icon { font-size: 32px; opacity: 0.4; }
+        .upload-text { font-size: 13px; color: var(--gray); }
+        .upload-text span { color: var(--accent); }
+        .upload-note { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
+        #adminFileInput { display: none; }
+        #adminPreview { display: none; margin-bottom: 16px; }
+        #adminPreview img { max-width: 100%; max-height: 300px; object-fit: contain; display: block; border: 1px solid var(--border); }
+        .admin-analysis { display: none; margin-top: 20px; padding: 20px; background: var(--panel-2); border: 1px solid var(--border); }
+        .admin-analysis-label { font-size: 9px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+        .admin-analysis-text { font-size: 13px; color: var(--off-white); line-height: 1.8; white-space: pre-line; }
+        .users-table { background: var(--panel); border: 1px solid var(--border); overflow: hidden; }
+        .users-table-head { display: grid; grid-template-columns: 1fr 120px 100px 80px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 9px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+        .users-table-row { display: grid; grid-template-columns: 1fr 120px 100px 80px; padding: 14px 20px; border-bottom: 1px solid var(--border); transition: background 0.18s; }
+        .users-table-row:hover { background: var(--panel-2); }
+        .users-table-row:last-child { border-bottom: none; }
+        .user-email { font-size: 12px; color: var(--off-white); }
+        .user-date { font-size: 11px; color: var(--gray); }
+        .user-tier { font-size: 9px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+        .user-convs { font-size: 11px; color: var(--gray); }
+        .section-card { border: 1px solid rgba(255,255,255,0.07); background: #1e1e1a; margin-bottom: 4px; overflow: hidden; }
         .section-title-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px 0 18px; }
-        .section-title-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 300; font-style: italic; color: #b0b0a8; letter-spacing: 0.01em; flex-shrink: 0; }
+        .section-title-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 300; font-style: italic; color: #b0b0a8; flex-shrink: 0; }
         .section-title-line { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
-        .section-body { padding: 8px 18px 16px 18px; font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9; color: #e0e0d8; }
-        .color-swatch-inline { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; margin: 0 3px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 6px 2px 3px; border-radius: 2px; }
-        .color-dot { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.2); display: inline-block; flex-shrink: 0; }
-        .hex-text { font-family: var(--font-mono); font-size: 10px; color: var(--gray-light); letter-spacing: 0.06em; }
-        .streaming-cursor { display: inline-block; width: 2px; height: 14px; background: var(--accent); animation: cursor-blink 0.7s ease infinite; vertical-align: middle; margin-left: 2px; }
-        @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .thinking-indicator { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--panel-2); border: 1px solid var(--border); width: fit-content; }
-        .thinking-symbol { width: 18px; height: 18px; position: relative; }
-        .thinking-symbol::before { content: ''; position: absolute; inset: 0; border: 1.5px solid var(--accent); transform: rotate(45deg); animation: think-rotate 2s linear infinite; }
-        .thinking-symbol::after { content: ''; position: absolute; inset: 4px; background: var(--accent); transform: rotate(45deg); animation: think-pulse 2s ease infinite; }
-        @keyframes think-rotate { 0% { transform: rotate(45deg); } 100% { transform: rotate(405deg); } }
-        @keyframes think-pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(0.8); } 50% { opacity: 1; transform: rotate(45deg) scale(1); } }
-        .thinking-text { font-size: 10px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
-        .speak-btn { margin-top: 8px; background: none; border: none; font-size: 9px; letter-spacing: 0.14em; color: var(--dim); cursor: pointer; font-family: var(--font-mono); padding: 2px 0; transition: color 0.18s; }
-        .speak-btn:hover { color: var(--gray-light); }
-        .chat-foot { border-top: 1px solid var(--border); padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-foot-row { display: flex; gap: 10px; align-items: flex-end; }
-        .chat-attach-preview { display: none; position: relative; padding: 8px; background: var(--panel-2); border: 1px solid var(--border); }
-        textarea#chatInput { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 13px; padding: 12px 15px; resize: none; outline: none; min-height: 44px; max-height: 120px; line-height: 1.6; transition: border-color 0.18s; }
-        textarea#chatInput::placeholder { color: var(--dim); }
-        textarea#chatInput:focus { border-color: var(--border-hover); }
-        #attachBtn { width: 44px; height: 44px; background: var(--panel-2); border: 1px solid var(--border); color: var(--gray); font-size: 20px; font-weight: 300; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; flex-shrink: 0; border-radius: 2px; }
-        #attachBtn:hover { border-color: var(--accent); color: var(--accent); }
-        #attachBtn.has-image { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-        #micBtn { width: 44px; height: 44px; background: var(--panel-2); border: 1px solid var(--border); color: var(--gray); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; flex-shrink: 0; border-radius: 2px; }
-        #micBtn:hover { border-color: var(--border-hover); color: var(--white); }
-        #micBtn.recording { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
-        #sendBtn { background: var(--white); color: var(--black); border: none; padding: 12px 22px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; cursor: pointer; height: 44px; transition: all 0.18s; white-space: nowrap; }
-        #sendBtn:hover { background: var(--accent); color: var(--black); }
-        #sendBtn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--white); color: var(--black); }
-        #chatAttachInput { display: none; }
-        .msg-image { max-width: 100%; max-height: 200px; object-fit: contain; display: block; margin-bottom: 8px; border: 1px solid var(--border); }
-        .right-col { display: flex; flex-direction: column; gap: 16px; }
-        .panel { background: var(--panel); border: 1px solid var(--border); }
-        .upload-zone { margin: 14px; padding: 28px 16px; border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; cursor: pointer; transition: all 0.2s; }
-        .upload-zone:hover, .upload-zone.over { border-color: var(--accent); background: var(--accent-dim); }
-        .upload-icon { font-size: 24px; opacity: 0.3; }
-        .upload-hint { font-size: 12px; color: var(--gray); line-height: 1.6; }
-        .upload-hint span { color: var(--accent); text-decoration: underline; }
-        .upload-cap { font-size: 9px; color: var(--dim); letter-spacing: 0.14em; }
-        #fileInput { display: none; }
-        #imgPreviewWrap { display: none; padding: 10px; }
-        #imgPreviewWrap img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
-        .img-actions { display: none; gap: 8px; padding: 0 10px 12px; }
-        .ia-btn { flex: 1; padding: 9px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; transition: all 0.18s; }
-        .ia-btn:hover { border-color: var(--border-hover); color: var(--white); }
-        .ia-btn.go { background: var(--white); color: var(--black); border-color: var(--white); }
-        .ia-btn.go:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
-        .ia-btn.go:disabled { opacity: 0.45; cursor: not-allowed; }
-        .analysis-out { display: none; padding: 0 18px 18px; animation: slideUp 0.3s ease; }
-        .analysis-label { font-size: 8px; letter-spacing: 0.24em; color: var(--gray); text-transform: uppercase; margin-bottom: 8px; }
-        .analysis-text { font-size: 12px; color: var(--off-white); line-height: 1.8; white-space: pre-line; }
-        .brief-body { padding: 18px; }
-        .brief-week { font-size: 8px; letter-spacing: 0.24em; color: var(--gray); text-transform: uppercase; margin-bottom: 10px; }
-        .brief-title { font-family: var(--font-display); font-size: 20px; font-weight: 300; font-style: italic; line-height: 1.15; margin-bottom: 16px; color: var(--white); }
-        .swatches { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-        .swatch-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .swatch { width: 26px; height: 26px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.08); }
-        .swatch-name { font-size: 7px; color: var(--dim); letter-spacing: 0.1em; }
-        .brief-signals { display: flex; flex-direction: column; gap: 9px; }
-        .bs { display: flex; align-items: center; font-size: 11px; }
-        .bs-name { color: var(--off-white); min-width: 110px; }
-        .bs-track { flex: 1; height: 1px; background: var(--border); margin: 0 10px; position: relative; }
-        .bs-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--gray); opacity: 0.6; }
-        .bs-pct { font-size: 9px; color: var(--gray-light); min-width: 30px; text-align: right; }
-        .moodboard-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(8,8,8,0.96); backdrop-filter: blur(20px); display: none; overflow-y: auto; padding: 40px; }
-        .moodboard-overlay.show { display: block; }
-        .moodboard-inner { max-width: 900px; margin: 0 auto; }
-        .moodboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
-        .moodboard-title { font-family: var(--font-display); font-size: 42px; font-weight: 300; font-style: italic; color: var(--white); line-height: 1; }
-        .moodboard-season { font-size: 9px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-top: 8px; }
-        .moodboard-close { background: none; border: 1px solid var(--border); color: var(--gray); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; padding: 8px 16px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
-        .moodboard-close:hover { border-color: var(--white); color: var(--white); }
-        .moodboard-colors { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
-        .mb-swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .mb-swatch-block { width: 48px; height: 48px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
-        .mb-swatch-name { font-size: 8px; letter-spacing: 0.1em; color: var(--dim); text-align: center; }
-        .moodboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 28px; }
-        .mb-img-wrap { aspect-ratio: 4/3; overflow: hidden; background: var(--panel-2); position: relative; }
-        .mb-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
-        .mb-img-wrap:hover img { transform: scale(1.03); }
-        .mb-img-source { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(8,8,8,0.7); font-size: 8px; color: var(--dim); padding: 4px 8px; }
-        .mb-loading { display: flex; align-items: center; justify-content: center; height: 300px; gap: 12px; font-size: 11px; color: var(--gray); letter-spacing: 0.14em; }
-        .moodboard-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
-        .mb-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 24px; cursor: pointer; border: none; transition: all 0.2s; }
-        .mb-btn-primary { background: var(--white); color: var(--black); }
-        .mb-btn-primary:hover { background: var(--accent); }
-        .mb-btn-secondary { background: transparent; color: var(--gray); border: 1px solid var(--border); }
-        .mb-btn-secondary:hover { border-color: var(--white); color: var(--white); }
-        .pwa-banner { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--accent-border); padding: 14px 20px; display: none; align-items: center; gap: 14px; z-index: 300; max-width: 340px; width: calc(100% - 40px); }
-        .pwa-banner.show { display: flex; }
-        .pwa-banner-text { font-size: 11px; color: var(--off-white); line-height: 1.5; flex: 1; }
-        .pwa-banner-text span { display: block; font-size: 9px; color: var(--gray); letter-spacing: 0.1em; margin-top: 2px; }
-        .pwa-install-btn { background: var(--accent); color: var(--black); border: none; padding: 8px 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
-        .pwa-dismiss { background: none; border: none; color: var(--dim); font-size: 18px; cursor: pointer; padding: 0 4px; }
-        .pricing-wrap { padding: 80px 48px; max-width: 1440px; margin: 0 auto; }
-        .section-eye { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-        .section-eye::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gray); }
-        .pricing-h { font-family: var(--font-display); font-size: clamp(36px, 4vw, 60px); font-weight: 300; line-height: 1.05; margin-bottom: 14px; }
-        .pricing-h em { font-style: italic; color: var(--gray-light); }
-        .pricing-sub { font-size: 13px; color: var(--gray); margin-bottom: 52px; }
-        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
-        .pc { background: var(--black); padding: 40px 32px; }
-        .pc.featured { background: var(--panel); }
-        .pc-label { font-size: 9px; letter-spacing: 0.28em; color: var(--gray); text-transform: uppercase; margin-bottom: 22px; }
-        .pc-label .badge { display: inline-block; font-size: 8px; padding: 2px 7px; background: rgba(255,255,255,0.05); color: var(--gray-light); border: 1px solid var(--border); margin-left: 8px; }
-        .pc-price { font-family: var(--font-display); font-size: 52px; font-weight: 300; line-height: 1; margin-bottom: 6px; color: var(--white); }
-        .pc-price sup { font-size: 22px; vertical-align: super; }
-        .pc-price span { font-family: var(--font-mono); font-size: 14px; color: var(--gray); }
-        .pc-desc { font-size: 12px; color: var(--gray); line-height: 1.7; margin-bottom: 28px; min-height: 52px; }
-        .pc-features { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 36px; }
-        .pc-features li { font-size: 12px; color: var(--off-white); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
-        .pc-features li::before { content: '✓'; color: var(--accent); font-size: 10px; flex-shrink: 0; margin-top: 2px; }
-        .pc-features li.off { color: var(--dim); }
-        .pc-features li.off::before { content: '—'; color: var(--dim); }
-        .pc-cta { display: block; text-align: center; text-decoration: none; }
-        footer { border-top: 1px solid var(--border); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center; }
-        .foot-copy { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
-        .foot-links { display: flex; gap: 28px; }
-        .foot-links a { font-size: 10px; letter-spacing: 0.14em; color: var(--gray); text-decoration: none; transition: color 0.18s; text-transform: uppercase; }
-        .foot-links a:hover { color: var(--white); }
-        @media (max-width: 640px) {
-    .chat-foot { padding: 8px 12px; }
-    .chat-foot-row { gap: 8px; }
-    textarea#chatInput { font-size: 16px; padding: 10px 12px; } /* 16px prevents iOS zoom */
-    #attachBtn, #micBtn { width: 40px; height: 40px; flex-shrink: 0; }
-    #sendBtn { padding: 10px 16px; font-size: 9px; height: 40px; }
-    .quick-bar { padding: 10px 12px 0; gap: 6px; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
-    .qp { white-space: nowrap; flex-shrink: 0; font-size: 9px; padding: 5px 10px; }
-    .chat-panel { height: calc(100vh - 160px); }
-    .interface { grid-template-columns: 1fr; }
-    .right-col { display: none; } /* hide sidebar on mobile */
-    .app-bar { padding: 16px 0 14px; }
-    nav { padding: 14px 20px; }
-    .nav-links { display: none; }
-    h1 { font-size: 40px; }
-}
-@media (max-width: 1024px) {
-            nav { padding: 14px 24px; }
-            .hero { padding: 120px 24px 60px; grid-template-columns: 1fr; gap: 48px; }
-            .hero-signals { display: grid; grid-template-columns: 1fr 1fr; }
-            .section, .pricing-wrap { padding-left: 24px; padding-right: 24px; }
-            .interface { grid-template-columns: 1fr; }
-            .chat-panel { height: 560px; }
-            .pricing-grid { grid-template-columns: 1fr; }
-            footer { flex-direction: column; gap: 20px; text-align: center; padding: 28px 24px; }
-            .right-col { display: none; }
-        }
-        @media (max-width: 640px) {
-            h1 { font-size: 46px; }
-            .nav-links { display: none; }
-            .hero-signals { grid-template-columns: 1fr; }
-            .pc { padding: 28px 20px; }
-            nav { padding: 12px 16px; }
-            .section { padding-left: 16px; padding-right: 16px; }
-            #chat { padding-top: 12px; }
-            .chat-panel { height: calc(100dvh - 140px); border-left: none; border-right: none; }
-            .chat-body { padding: 14px; gap: 14px; }
-            .chat-foot { padding: 8px 12px; }
-            textarea#chatInput { font-size: 16px; padding: 10px 12px; }
-            #sendBtn { padding: 10px 16px; font-size: 9px; }
-            #attachBtn, #micBtn { width: 40px; height: 40px; }
-            .quick-bar { padding: 8px 12px 0; gap: 6px; }
-            .qp { font-size: 9px; padding: 4px 9px; }
-            .app-bar { padding: 16px 0 14px; }
-            .msg-body { padding: 10px 13px; font-size: 13px; }
-            .ai-plain { padding: 13px 15px; font-size: 13px; }
+        .section-body { padding: 8px 18px 16px 18px; font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.9; color: #e0e0d8; }
+        .color-swatch-inline { display: inline-flex; align-items: center; gap: 5px; vertical-align: middle; margin: 0 2px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 6px 2px 3px; border-radius: 2px; }
+        .color-dot { width: 14px; height: 14px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.2); display: inline-block; flex-shrink: 0; }
+        .hex-text { font-family: var(--font-mono); font-size: 10px; color: #b0b0a8; }
+        .streaming-cursor { display: inline-block; width: 2px; height: 12px; background: var(--accent); animation: cur-blink 0.7s ease infinite; vertical-align: middle; margin-left: 2px; }
+        @keyframes cur-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .admin-thinking { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--panel-2); border: 1px solid var(--border); width: fit-content; }
+        .admin-think-sym { width: 16px; height: 16px; position: relative; }
+        .admin-think-sym::before { content: ''; position: absolute; inset: 0; border: 1.5px solid var(--accent); transform: rotate(45deg); animation: think-rot 2s linear infinite; }
+        .admin-think-sym::after { content: ''; position: absolute; inset: 4px; background: var(--accent); transform: rotate(45deg); animation: think-pls 2s ease infinite; }
+        @keyframes think-rot { 0% { transform: rotate(45deg); } 100% { transform: rotate(405deg); } }
+        @keyframes think-pls { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(0.8); } 50% { opacity: 1; transform: rotate(45deg) scale(1); } }
+        .admin-think-text { font-size: 9px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+        .brief-images-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+        .brief-img-slot { aspect-ratio: 3/4; background: var(--panel-2); border: 1px dashed var(--border); cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s; }
+        .brief-img-slot:hover { border-color: var(--accent); }
+        .brief-img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .slot-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+        .slot-remove { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); border: none; color: var(--white); font-size: 14px; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
+        @media (max-width: 768px) {
+            .brief-images-grid { grid-template-columns: repeat(2, 1fr); }
+            .admin-header { padding: 14px 20px; }
+            .admin-content { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .brief-form { grid-template-columns: 1fr; }
+            .admin-nav { gap: 4px; }
+            .admin-nav-btn { padding: 7px 10px; font-size: 9px; }
         }
     </style>
 </head>
 <body>
-
-<!-- PWA INSTALL BANNER -->
-<div class="pwa-banner" id="pwaBanner">
-    <div class="pwa-banner-text">Install PMPNY Intelligence<span>Add to Home Screen for instant access</span></div>
-    <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
-    <button class="pwa-dismiss" onclick="dismissPWA()">×</button>
-</div>
-
-<!-- AUTH MODAL -->
-<div class="modal-overlay" id="authModal">
-    <div class="modal">
-        <button class="modal-close" onclick="closeModal()">×</button>
-        <div class="modal-logo"><span class="modal-logo-text">PMPNY</span><span class="modal-badge">INTELLIGENCE</span></div>
-        <h2>Your trend<br><em>intelligence.</em></h2>
-        <p>Sign in to save your chat history and unlock your personalized trend analysis.</p>
-        <div class="modal-tabs">
-            <button class="modal-tab active" onclick="switchTab('signin')">Sign In</button>
-            <button class="modal-tab" onclick="switchTab('signup')">Create Account</button>
-        </div>
-        <div id="signinForm" class="modal-form">
-            <button class="modal-submit" style="background:#fff;color:#000;border:none;display:flex;align-items:center;justify-content:center;gap:10px;font-size:11px;" onclick="signInWithGoogle()">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Continue with Google
-            </button>
-            <div class="modal-divider">or</div>
-            <input type="email" class="modal-input" id="signinEmail" placeholder="Email address" autocomplete="email">
-            <input type="password" class="modal-input" id="signinPassword" placeholder="Password" autocomplete="current-password">
-            <div class="modal-error" id="signinError"></div>
-            <button class="modal-submit" id="signinBtn" onclick="signIn()">Sign In →</button>
-            <div class="modal-divider">or</div>
-            <button class="modal-submit" style="background:var(--panel-2);color:var(--white);border:1px solid var(--border);" onclick="continueAsGuest()">Continue as Guest</button>
-        </div>
-        <div id="signupForm" class="modal-form" style="display:none">
-            <button class="modal-submit" style="background:#fff;color:#000;border:none;display:flex;align-items:center;justify-content:center;gap:10px;font-size:11px;" onclick="signInWithGoogle()">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Continue with Google
-            </button>
-            <div class="modal-divider">or</div>
-            <input type="email" class="modal-input" id="signupEmail" placeholder="Email address" autocomplete="email">
-            <input type="password" class="modal-input" id="signupPassword" placeholder="Password (min 6 chars)" autocomplete="new-password">
-            <div class="modal-error" id="signupError"></div>
-            <div class="modal-success" id="signupSuccess">✓ Check your email to confirm your account.</div>
-            <button class="modal-submit" id="signupBtn" onclick="signUp()">Create Account →</button>
-            <div class="modal-divider">or</div>
-            <button class="modal-submit" style="background:var(--panel-2);color:var(--white);border:1px solid var(--border);" onclick="continueAsGuest()">Continue as Guest</button>
-        </div>
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">PMPNY Intelligence</div>
+        <h1 class="login-title">Admin<br><em>Access.</em></h1>
+        <p class="login-sub">For Francesco Pimpinicchio only.</p>
+        <input type="password" class="login-input" id="adminPassword" placeholder="Admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter') adminLogin()">
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="loginBtn" onclick="adminLogin()">Access Admin →</button>
     </div>
 </div>
-
-<!-- MOOD BOARD OVERLAY -->
-<div class="moodboard-overlay" id="moodboardOverlay">
-    <div class="moodboard-inner">
-        <div class="moodboard-header">
-            <div>
-                <div class="moodboard-title" id="mbTitle">Mood Board</div>
-                <div class="moodboard-season" id="mbSeason">SS27</div>
+<!-- ADMIN -->
+<div class="admin-layout" id="adminLayout">
+    <div class="admin-header">
+        <div class="admin-logo">
+            <span class="admin-logo-text">PMPNY Intelligence</span>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div class="admin-nav">
+            <button class="admin-nav-btn active" onclick="showSection('dashboard', this)">Dashboard</button>
+            <button class="admin-nav-btn" onclick="showSection('chat', this)">AI Chat</button>
+            <button class="admin-nav-btn" onclick="showSection('brief', this)">Weekly Brief</button>
+            <button class="admin-nav-btn" onclick="showSection('upload', this)">Analysis</button>
+            <button class="admin-nav-btn" onclick="showSection('brandanalysis', this)">Brand Analysis</button>
+            <button class="admin-nav-btn" onclick="showSection('moodboard', this)">Mood Board</button>
+            <button class="admin-nav-btn" onclick="showSection('users', this)">Users</button>
+            <a href="ai.html" class="admin-nav-btn">← Platform</a>
+            <button class="admin-nav-btn danger" onclick="adminLogout()">Logout</button>
+        </div>
+    </div>
+    <!-- RECONNECTING BANNER -->
+    <div class="reconnect-banner" id="reconnectBanner">Connection interrupted — your request is being retried...</div>
+    <div class="admin-content">
+        <!-- DASHBOARD -->
+        <div class="admin-section active" id="section-dashboard">
+            <div class="stats-grid">
+                <div class="stat highlight">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="statUsers">—</div>
+                    <div class="stat-sub">Registered accounts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Conversations</div>
+                    <div class="stat-value" id="statConvs">—</div>
+                    <div class="stat-sub">All time</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Messages</div>
+                    <div class="stat-value" id="statMsgs">—</div>
+                    <div class="stat-sub">Total sent</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Platform</div>
+                    <div class="stat-value" style="font-size:24px;color:var(--accent)">LIVE</div>
+                    <div class="stat-sub">pmpny.com/ai</div>
+                </div>
             </div>
-            <button class="moodboard-close" onclick="closeMoodboard()">Close ×</button>
-        </div>
-        <div class="moodboard-colors" id="mbColors"></div>
-        <div class="moodboard-grid" id="mbGrid">
-            <div class="mb-loading"><div class="thinking-symbol"></div><span>Generating mood board...</span></div>
-        </div>
-        <div class="moodboard-actions">
-            <button class="mb-btn mb-btn-secondary" onclick="closeMoodboard()">Close</button>
-            <button class="mb-btn mb-btn-primary" onclick="downloadMoodboard()">Download →</button>
-        </div>
-    </div>
-</div>
-
-<!-- PAYWALL MODAL -->
-<div class="modal-overlay hidden" id="paywallModal">
-    <div class="paywall-modal">
-        <button class="modal-close" onclick="closePaywall()">×</button>
-        <div class="paywall-eyebrow">Daily Limit Reached</div>
-        <h2 class="paywall-title">Upgrade for<br><em>unlimited access.</em></h2>
-        <p class="paywall-desc">You've used your 20 free messages today. Upgrade to Plus for unlimited trend intelligence, mood boards, and visual palettes.</p>
-        <div class="paywall-plans">
-            <div class="paywall-plan"><span class="paywall-plan-name">Spark</span><span class="paywall-plan-price">Free <span>/ forever</span></span></div>
-            <div class="paywall-plan featured"><span class="paywall-plan-name">Plus</span><span class="paywall-plan-price">$9 <span>/ mo</span></span></div>
-            <div class="paywall-plan"><span class="paywall-plan-name">Studio</span><span class="paywall-plan-price">$50 <span>/ mo</span></span></div>
-        </div>
-        <button class="paywall-cta" onclick="handleUpgrade()">Get Plus — $9/mo →</button>
-        <button class="paywall-skip" onclick="closePaywall()">Maybe tomorrow</button>
-    </div>
-</div>
-
-<!-- NAV -->
-<nav>
-    <a href="index.html" class="nav-logo">
-        <span class="nav-logo-text">PMPNY Design Studio</span>
-        <span class="nav-badge">— AI</span>
-    </a>
-    <ul class="nav-links">
-        <li><a href="studio.html">Studio</a></li>
-        <li><a href="work.html">Work</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="ai.html" class="active">AI</a></li>
-    </ul>
-    <div class="nav-right">
-        <span class="nav-user" id="navUserEmail"></span>
-        <button class="nav-btn" id="authNavBtn" onclick="showModal()">Sign In</button>
-        <a href="contact.html" class="nav-btn primary">Start a Project</a>
-    </div>
-</nav>
-
-<!-- RECONNECT BANNER — shows when tab hidden during active request -->
-<div id="reconnectBanner" style="display:none;padding:10px 16px;background:rgba(255,68,68,0.1);border-bottom:1px solid rgba(255,68,68,0.25);font-size:11px;color:#ff6666;text-align:center;letter-spacing:0.08em;position:fixed;top:61px;left:0;right:0;z-index:199;">
-    Returning to send your request...
-</div>
-
-<!-- HERO -->
-<section class="hero">
-    <div class="hero-left">
-        <div class="eyebrow">PMPNY Intelligence — Trend Platform</div>
-        <h1>Trend intel<br>for <em>every</em><br>designer.</h1>
-        <p class="hero-desc">AI-powered fashion trend intelligence. Colors, silhouettes, materials — from runway to resale. Speak it, type it, or upload a photo. Built for independent designers worldwide.</p>
-        <div class="hero-ctas">
-            <a href="#chat" class="btn btn-primary">Start Free →</a>
-            <a href="#pricing" class="btn btn-ghost">See Plans</a>
-        </div>
-    </div>
-    <div class="hero-signals" id="heroSignals">
-        <div class="signal-card"><div class="signal-meta" id="hsMeta0">SS26 Signal</div><div class="signal-name" id="hsName0">Structural Volume</div><div class="signal-track"><div class="signal-fill" id="hsFill0" data-w="84"></div></div><div class="signal-pct" id="hsPct0">↑ 84%</div></div>
-        <div class="signal-card"><div class="signal-meta" id="hsMeta1">SS26 Signal</div><div class="signal-name" id="hsName1">Warm Neutral Tones</div><div class="signal-track"><div class="signal-fill" id="hsFill1" data-w="63"></div></div><div class="signal-pct" id="hsPct1">↑ 63%</div></div>
-        <div class="signal-card"><div class="signal-meta" id="hsMeta2">SS26 Signal</div><div class="signal-name" id="hsName2">Hardware Detailing</div><div class="signal-track"><div class="signal-fill" id="hsFill2" data-w="71"></div></div><div class="signal-pct" id="hsPct2">↑ 71%</div></div>
-        <div class="signal-card"><div class="signal-meta" id="hsMeta3">SS26 Signal</div><div class="signal-name" id="hsName3">Bio Material Adoption</div><div class="signal-track"><div class="signal-fill" id="hsFill3" data-w="58"></div></div><div class="signal-pct" id="hsPct3">↑ 58%</div></div>
-        <div class="signal-card"><div class="signal-meta" id="hsMeta4">SS26 Signal</div><div class="signal-name" id="hsName4">Chain Hardware</div><div class="signal-track"><div class="signal-fill" id="hsFill4" data-w="47"></div></div><div class="signal-pct" id="hsPct4">↑ 47%</div></div>
-    </div>
-</section>
-
-<!-- CHAT -->
-<div class="section" id="chat">
-    <div class="app-bar">
-        <span class="app-bar-label">Intelligence Platform</span>
-        <div class="app-bar-right">
-            <span class="msg-counter" id="msgCounter">20 messages left today</span>
-            <span class="tier-pill" id="tierPill">SPARK — FREE</span>
-        </div>
-    </div>
-    <div class="interface">
-        <div class="chat-panel">
-            <div class="chat-top">
-                <div class="chat-status"><div class="dot-live"></div>AI Trend Analyst — Online</div>
-                <label class="voice-toggle">
-                    <input type="checkbox" id="autoSpeak">
-                    <div class="toggle-track"><div class="toggle-thumb"></div></div>
-                    Auto-speak
-                </label>
+            <h2 class="section-title">Quick Actions</h2>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn-save" onclick="showSection('chat', document.querySelector('[onclick*=chat]'))">Open AI Chat →</button>
+                <button class="btn-save" onclick="showSection('brief', document.querySelector('[onclick*=brief]'))">Update Weekly Brief →</button>
+                <button class="btn-save" onclick="generateBriefNow()" id="genBriefBtn">Generate Brief Now →</button>
+                <button class="btn-save" onclick="showSection('brandanalysis', document.querySelector('[onclick*=brandanalysis]'))">Brand Analysis →</button>
+                <a href="ai.html" class="btn-secondary">View Platform →</a>
             </div>
-            <div class="quick-bar">
-                <button class="qp" onclick="qp('What are the latest handbag trends for FW27?')">FW27 Bags</button>
-                <button class="qp" onclick="qp('Top colors for Spring Summer 2027')">SS27 Colors</button>
-                <button class="qp" onclick="qp('Trending sustainable materials for accessories 2027')">Eco Materials</button>
-                <button class="qp" onclick="qp('Hardware and chain trends for luxury accessories 2027')">Hardware</button>
-            </div>
-            <div class="voice-status" id="voiceStatus"><div class="vs-dot"></div><span id="vsText">Listening...</span></div>
-            <div class="chat-body" id="chatBody">
-                <div class="msg ai">
-                    <div class="msg-label">PMPNY Intelligence</div>
-                    <div class="ai-response">
-                        <div class="ai-plain">Welcome. I'm your AI trend analyst — built by PMPNY Design Studio.<br><br>Ask me anything about fashion trends for any season — colors, silhouettes, materials, hardware, market signals.<br><br>Tap the mic to speak in any language. Upload an image for instant visual trend analysis.</div>
+            <div id="genBriefStatus" style="display:none;margin-top:12px;font-size:11px;padding:10px 14px;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);"></div>
+        </div>
+        <!-- ADMIN CHAT -->
+        <div class="admin-section" id="section-chat">
+            <h2 class="section-title">AI Intelligence Chat</h2>
+            <div style="display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start;">
+                <div style="background:var(--panel);border:1px solid var(--border);">
+                    <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:9px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;">History</span>
+                        <button onclick="adminNewChat()" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.1em;background:transparent;border:1px solid var(--border);color:var(--gray);padding:4px 8px;cursor:pointer;text-transform:uppercase;">+ New</button>
                     </div>
-                    <button class="speak-btn" onclick="speakMsg(this)">Listen →</button>
-                </div>
-            </div>
-            <div class="chat-foot">
-                <div class="chat-attach-preview" id="chatAttachPreview"></div>
-                <div class="chat-foot-row">
-                    <textarea id="chatInput" placeholder="Ask about trends, share a sketch, upload a photo..." rows="1" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
-                    <input type="file" id="chatAttachInput" accept="image/*" multiple onchange="onChatAttach(event)">
-                    <button id="attachBtn" onclick="document.getElementById('chatAttachInput').click()" title="Attach image">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-</button>
-                    <button id="micBtn" onclick="toggleMic()" title="Speak">
-    <svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-</button>
-                    <button id="sendBtn" onclick="send()">Send →</button>
-                </div>
-            </div>
-        </div>
-        <div class="right-col">
-            <div class="history-panel panel">
-                <div class="panel-head">
-                    <span>Chat History</span>
-                    <button class="new-chat-btn" onclick="newChat()" style="width:auto;padding:4px 10px;font-size:8px;">+ New</button>
-                </div>
-                <div id="historyList" class="history-list">
-                    <div class="history-empty">Sign in to save history</div>
-                </div>
-            </div>
-<!-- Visual Analysis panel removed — integrated into chat -->
-            <div class="panel">
-                <div class="panel-head"><span>Biweekly Brief</span><span id="briefSeasonLabel">SS27</span></div>
-                <div class="brief-body">
-                    <div class="brief-week">Biweekly Drop · May 2026</div>
-                    <div class="brief-title">The Architecture of Restraint</div>
-                    <div class="brief-note" id="briefNote" style="display:none;font-size:11px;color:var(--gray);line-height:1.7;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);font-style:italic;"></div>
-                    <div class="brief-images" id="briefImages" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px;"></div>
-                    <div class="swatches">
-                        <div class="swatch-wrap"><div class="swatch" style="background:#6B1C23"></div><div class="swatch-name">Burgundy</div></div>
-                        <div class="swatch-wrap"><div class="swatch" style="background:#3D2817"></div><div class="swatch-name">Bark</div></div>
-                        <div class="swatch-wrap"><div class="swatch" style="background:#9CAF88"></div><div class="swatch-name">Sage</div></div>
-                        <div class="swatch-wrap"><div class="swatch" style="background:#e8e0d0"></div><div class="swatch-name">Bone</div></div>
-                        <div class="swatch-wrap"><div class="swatch" style="background:#080808;border-color:rgba(255,255,255,0.15)"></div><div class="swatch-name">Matte</div></div>
+                    <div id="adminHistoryList" style="max-height:440px;overflow-y:auto;">
+                        <div style="padding:16px;font-size:11px;color:var(--dim);text-align:center;">No history yet</div>
                     </div>
-                    <div class="brief-signals">
-                        <div class="bs"><span class="bs-name">Structural Volume</span><div class="bs-track"><div class="bs-fill" style="width:84%"></div></div><span class="bs-pct">↑84%</span></div>
-                        <div class="bs"><span class="bs-name">Hardware Detail</span><div class="bs-track"><div class="bs-fill" style="width:71%"></div></div><span class="bs-pct">↑71%</span></div>
-                        <div class="bs"><span class="bs-name">Bio Materials</span><div class="bs-track"><div class="bs-fill" style="width:58%"></div></div><span class="bs-pct">↑58%</span></div>
-                        <div class="bs"><span class="bs-name">Chain Hardware</span><div class="bs-track"><div class="bs-fill" style="width:47%"></div></div><span class="bs-pct">↑47%</span></div>
+                </div>
+                <div class="admin-chat">
+                    <div class="admin-chat-top">
+                        <div class="admin-chat-status"><div class="dot-live"></div>PMPNY Intelligence — Admin Mode</div>
+                        <div class="admin-unlimited">∞ Unlimited</div>
+                    </div>
+                    <div class="admin-chat-body" id="adminChatBody">
+                        <div class="amsg ai">
+                            <div class="amsg-label">PMPNY Intelligence</div>
+                            <div class="amsg-body">Ciao Francesco. Admin mode — unlimited access, no restrictions. Ask me anything, test new prompts, or research trends for the weekly brief.</div>
+                        </div>
+                    </div>
+                    <div class="admin-chat-foot">
+                        <div class="admin-attach-preview" id="adminAttachPreview"></div>
+                        <div class="admin-chat-foot-row">
+                            <textarea class="admin-chat-input" id="adminChatInput" placeholder="Ask anything, share a sketch, upload a photo..." rows="1" onkeydown="adminOnKey(event)" oninput="adminGrow(this)"></textarea>
+                            <input type="file" id="adminAttachInput" accept="image/*" multiple style="display:none" onchange="onAdminAttach(event)">
+                            <button id="adminAttachBtn" onclick="document.getElementById('adminAttachInput').click()" title="Attach image">⬆</button>
+                            <button class="admin-send" id="adminSendBtn" onclick="adminSend()">Send →</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="panel">
-                <div class="panel-head"><span>Mood Board Builder</span><span style="font-size:9px;color:var(--accent);letter-spacing:0.1em;">PLUS</span></div>
-                <div style="padding:14px 18px;">
-                    <div style="font-size:11px;color:var(--gray);line-height:1.6;margin-bottom:12px;">Describe your concept, add colors, upload your reference photos.</div>
-                    <textarea id="mbConcept" placeholder="SS27 collection concept — silhouette, materials, mood..." style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:10px 12px;resize:none;outline:none;min-height:60px;line-height:1.6;margin-bottom:8px;box-sizing:border-box;"></textarea>
-                    <input type="text" id="mbColorsInput" placeholder="Colors: #9CAF88, #F4E4C1" style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:9px 12px;outline:none;margin-bottom:8px;box-sizing:border-box;">
-                    <div id="mbPhotoUploadZone" onclick="document.getElementById('mbPhotoInput').click()" style="border:1px dashed var(--border);padding:16px;text-align:center;cursor:pointer;margin-bottom:8px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
-                        <div style="font-size:11px;color:var(--gray);">⬆ Add reference photos (max 12)</div>
+        </div>
+        <!-- BRIEF EDITOR -->
+        <div class="admin-section" id="section-brief">
+            <h2 class="section-title">Biweekly Brief Editor</h2>
+            <div class="brief-editor">
+                <div class="brief-form">
+                    <div class="form-group">
+                        <label class="form-label">Drop Label</label>
+                        <input type="text" class="form-input" id="briefWeek" placeholder="Biweekly Drop · May 2026">
                     </div>
-                    <input type="file" id="mbPhotoInput" accept="image/*" multiple style="display:none" onchange="onMbPhotos(event)">
-                    <div id="mbPhotoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:8px;"></div>
-                    <button onclick="buildHybridMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Build Mood Board →</button>
+                    <div class="form-group">
+                        <label class="form-label">Season</label>
+                        <input type="text" class="form-input" id="briefSeason" placeholder="SS27">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Brief Title</label>
+                        <input type="text" class="form-input" id="briefTitle" placeholder="What I'm Seeing Right Now">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">I'm Seeing... (fittings, streets, showrooms)</label>
+                        <textarea class="form-input" id="briefNote" placeholder="This week at Steve Madden fittings I noticed..." style="min-height:80px;"></textarea>
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Color Story (comma separated hex codes)</label>
+                        <input type="text" class="form-input" id="briefColors" placeholder="#6B1C23,#3D2817,#9CAF88,#e8e0d0,#080808">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Color Names (comma separated)</label>
+                        <input type="text" class="form-input" id="briefColorNames" placeholder="Burgundy,Bark,Sage,Bone,Matte">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Trend Signals</label>
+                        <div class="signals-editor" id="signalsEditor">
+                            <div class="signal-row"><input type="text" class="form-input" placeholder="Signal name" value="Structural Volume"><input type="number" class="form-input" placeholder="%" value="84" min="0" max="100"></div>
+                            <div class="signal-row"><input type="text" class="form-input" placeholder="Signal name" value="Hardware Detail"><input type="number" class="form-input" placeholder="%" value="71" min="0" max="100"></div>
+                            <div class="signal-row"><input type="text" class="form-input" placeholder="Signal name" value="Bio Materials"><input type="number" class="form-input" placeholder="%" value="58" min="0" max="100"></div>
+                            <div class="signal-row"><input type="text" class="form-input" placeholder="Signal name" value="Chain Hardware"><input type="number" class="form-input" placeholder="%" value="47" min="0" max="100"></div>
+                        </div>
+                        <button class="btn-secondary" onclick="addSignalRow()" style="margin-top:8px;padding:8px 16px;">+ Add Signal</button>
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Inspiration Images (max 4)</label>
+                        <div class="brief-images-grid" id="briefImagesGrid">
+                            <div class="brief-img-slot" onclick="triggerBriefImg(0)" id="slot-0"><div class="slot-empty">+ Add Photo</div><input type="file" accept="image/*" style="display:none" id="briefImg-0" onchange="handleBriefImg(event, 0)"></div>
+                            <div class="brief-img-slot" onclick="triggerBriefImg(1)" id="slot-1"><div class="slot-empty">+ Add Photo</div><input type="file" accept="image/*" style="display:none" id="briefImg-1" onchange="handleBriefImg(event, 1)"></div>
+                            <div class="brief-img-slot" onclick="triggerBriefImg(2)" id="slot-2"><div class="slot-empty">+ Add Photo</div><input type="file" accept="image/*" style="display:none" id="briefImg-2" onchange="handleBriefImg(event, 2)"></div>
+                            <div class="brief-img-slot" onclick="triggerBriefImg(3)" id="slot-3"><div class="slot-empty">+ Add Photo</div><input type="file" accept="image/*" style="display:none" id="briefImg-3" onchange="handleBriefImg(event, 3)"></div>
+                        </div>
+                        <p style="font-size:10px;color:var(--dim);margin-top:8px;letter-spacing:0.08em;">Click each slot to upload. JPG, PNG, WEBP — max 5MB each.</p>
+                    </div>
                 </div>
+                <div class="form-actions">
+                    <button class="btn-save" onclick="saveBrief()">Save & Publish Brief →</button>
+                    <div class="save-status" id="saveStatus">✓ Brief published live</div>
+                </div>
+            </div>
+        </div>
+        <!-- IMAGE ANALYSIS -->
+        <div class="admin-section" id="section-upload">
+            <h2 class="section-title">Visual Trend Analysis</h2>
+            <div class="admin-upload">
+                <div class="admin-upload-zone" onclick="document.getElementById('adminFileInput').click()" ondragover="adOver(event)" ondragleave="adLeave(event)" ondrop="adDrop(event)">
+                    <div class="upload-icon">⬆</div>
+                    <div class="upload-text">Drop an image or <span>browse</span></div>
+                    <div class="upload-note">Unlimited uploads · JPG · PNG · WEBP</div>
+                </div>
+                <input type="file" id="adminFileInput" accept="image/*" onchange="adminOnFile(event)">
+                <div id="adminPreview"><img id="adminPreviewImg" src="" alt="Preview"></div>
+                <div style="display:none;gap:8px;" id="adminImgActions">
+                    <button class="btn-secondary" onclick="clearAdminImg()">Clear</button>
+                    <button class="btn-save" id="adminAnalyzeBtn" onclick="adminAnalyze()">Analyze →</button>
+                </div>
+                <div class="admin-analysis" id="adminAnalysis">
+                    <div class="admin-analysis-label">Trend Analysis</div>
+                    <div class="admin-analysis-text" id="adminAnalysisText"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRAND ANALYSIS — GEMINI -->
+        <div class="admin-section" id="section-brandanalysis">
+            <h2 class="section-title">Brand Analysis</h2>
+
+            <!-- BRAND DNA PRESET -->
+            <div class="brief-editor" style="padding:24px;margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <label class="form-label" style="margin:0;">Brand DNA — Saved Facts</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <span id="dnaSaveStatus" style="font-size:9px;color:var(--accent);display:none;">&#10003; Saved</span>
+                        <button onclick="saveBrandDNA()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;background:transparent;border:1px solid var(--accent-border);color:var(--accent);padding:5px 12px;cursor:pointer;text-transform:uppercase;">Save</button>
+                        <button onclick="clearBrandDNA()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;background:transparent;border:1px solid var(--border);color:var(--gray);padding:5px 12px;cursor:pointer;text-transform:uppercase;">Clear</button>
+                    </div>
+                </div>
+                <textarea class="form-input" id="brandDNA" style="min-height:100px;width:100%;font-size:11px;line-height:1.7;" placeholder="Material: 100% Pinatex (bio pineapple leaf leather) NOT animal leather. Prices: $245-$345 USD. Brand: LGBTQ+ owned. Italian-trained founder (Versace, Gucci, Westwood). Positioning: Vegan luxury armor. Press: Harpers Bazaar, Elle, Glamour, Cosmopolitan, LOfficiel, Grazia."></textarea>
+                <p style="font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:0.08em;">Saved once — auto-included in every analysis. Prices, materials, positioning, press.</p>
+            </div>
+
+            <div style="display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start;">
+                <!-- Controls -->
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div class="brief-editor" style="padding:24px;">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Brand Website URL</label>
+                            <div style="display:flex;gap:8px;">
+                                <input type="text" class="form-input" id="brandUrl" placeholder="https://pimpinicchio.com" style="flex:1;">
+                                <button class="btn-save" onclick="fetchBrandSite()" id="fetchBtn" style="padding:12px 16px;white-space:nowrap;">Fetch →</button>
+                            </div>
+                            <div id="fetchStatus" style="font-size:10px;color:var(--dim);margin-top:6px;display:none;"></div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" class="form-input" id="brandName" placeholder="Pimpinicchio New York">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-input" id="brandCategory" placeholder="Handbags / Accessories">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Additional Context <span style="color:var(--dim);font-size:9px;">(per-analysis)</span></label>
+                            <textarea class="form-input" id="brandContext" style="min-height:60px;" placeholder="Season focus, competitor comparison, specific questions..."></textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom:20px;">
+                            <label class="form-label">Upload Product Photos (max 8)</label>
+                            <div id="brandPhotoZone" onclick="document.getElementById('brandPhotoInput').click()" style="border:1px dashed var(--border);padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
+                                <div style="font-size:11px;color:var(--gray);">⬆ Upload photos</div>
+                            </div>
+                            <input type="file" id="brandPhotoInput" accept="image/*" multiple style="display:none" onchange="onBrandPhotos(event)">
+                            <div id="brandPhotoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:8px;"></div>
+                        </div>
+                        <button class="btn-save" onclick="runBrandAnalysis()" id="analyzeBtn" style="width:100%;padding:14px;">Analyze Brand →</button>
+                    </div>
+                </div>
+                <!-- Output -->
+                <div id="brandOutput" style="background:var(--panel);border:1px solid var(--border);min-height:500px;display:flex;align-items:center;justify-content:center;">
+                    <div style="text-align:center;color:var(--dim);">
+                        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;margin-bottom:8px;">Brand analysis</div>
+                        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;">will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOOD BOARD -->
+        <div class="admin-section" id="section-moodboard">
+            <h2 class="section-title">Mood Board Builder</h2>
+            <div style="display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start;">
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div class="brief-editor" style="padding:24px;">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Collection Concept</label>
+                            <textarea class="form-input" id="adminMbConcept" placeholder="Ex: SS27 bowler bag collection..." style="min-height:90px;"></textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Season</label>
+                            <input type="text" class="form-input" id="adminMbSeason" placeholder="SS27">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Color Story (hex codes)</label>
+                            <input type="text" class="form-input" id="adminMbColors" placeholder="#9CAF88, #F4E4C1, #6B1C23">
+                            <div id="adminMbSwatches" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:20px;">
+                            <label class="form-label">Board Title</label>
+                            <input type="text" class="form-input" id="adminMbTitle" placeholder="The Architecture of Restraint">
+                        </div>
+                        <button class="btn-save" onclick="adminGenerateMbNarrative()" style="width:100%;margin-bottom:8px;">Generate AI Narrative →</button>
+                        <div id="adminMbNarrative" style="display:none;margin-top:12px;padding:14px;background:var(--panel-2);border:1px solid var(--border);font-size:11px;color:var(--off-white);line-height:1.8;font-style:italic;"></div>
+                    </div>
+                    <div class="brief-editor" style="padding:24px;">
+                        <label class="form-label" style="margin-bottom:12px;display:block;">Your Reference Photos (max 12)</label>
+                        <div id="adminMbDropzone" onclick="document.getElementById('adminMbFileInput').click()" ondragover="adminMbDragOver(event)" ondragleave="adminMbDragLeave(event)" ondrop="adminMbDrop(event)" style="border:1px dashed var(--border);padding:32px 16px;text-align:center;cursor:pointer;transition:all 0.2s;">
+                            <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">⬆</div>
+                            <div style="font-size:11px;color:var(--gray);">Drop up to 12 photos or <span style="color:var(--accent);">browse</span></div>
+                        </div>
+                        <input type="file" id="adminMbFileInput" accept="image/*" multiple style="display:none" onchange="adminMbOnFiles(event)">
+                        <div id="adminMbPhotoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;"></div>
+                        <div id="adminMbPhotoCount" style="font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:0.1em;">0 / 12 photos</div>
+                    </div>
+                    <button class="btn-save" onclick="adminBuildFullMoodboard()" style="width:100%;padding:16px;font-size:11px;letter-spacing:0.18em;">Build Mood Board →</button>
+                </div>
+                <div id="adminMbCanvas" style="background:var(--panel);border:1px solid var(--border);min-height:600px;display:flex;align-items:center;justify-content:center;">
+                    <div style="text-align:center;color:var(--dim);">
+                        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;margin-bottom:8px;">Your mood board</div>
+                        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;">will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- USERS -->
+        <div class="admin-section" id="section-users">
+            <h2 class="section-title">Registered Users</h2>
+            <div class="users-table">
+                <div class="users-table-head"><span>Email</span><span>Joined</span><span>Tier</span><span>Convs</span></div>
+                <div id="usersList"><div style="padding:20px;font-size:11px;color:var(--dim);text-align:center;">Loading users...</div></div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- PRICING — minimal -->
-<div style="padding:32px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-    <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;">
-        <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Spark — Free</span>
-        <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Plus — $9/mo</span>
-        <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);">Studio — $50/mo</span>
-    </div>
-    <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">See plans →</button>
-</div>
-
-<footer>
-    <div class="foot-copy">© 2026 PMPNY Intelligence — A PMPNY Design Studio Product</div>
-    <div class="foot-links">
-        <a href="index.html">Portfolio</a><a href="studio.html">Studio</a>
-        <a href="https://pimpinicchio.com">Shop</a><a href="contact.html">Contact</a>
-    </div>
-</footer>
-
 <script>
-// PWA
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault(); deferredPrompt = e;
-    if (!localStorage.getItem('pwa_dismissed')) setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 3000);
-});
-document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    document.getElementById('pwaBanner').classList.remove('show');
-});
-function dismissPWA() { document.getElementById('pwaBanner').classList.remove('show'); localStorage.setItem('pwa_dismissed','1'); }
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
-
-// SUPABASE
 const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let currentUser = null, currentConvId = null, isGuest = false;
-const FREE_LIMIT = 20;
 
-sb.auth.onAuthStateChange((event, session) => {
-    currentUser = session?.user || null; updateAuthUI();
-    if (currentUser) { loadHistory(); closeModal(); if (window.location.hash.includes('access_token')) window.history.replaceState({}, document.title, '/ai'); }
-});
-async function signInWithGoogle() { await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pmpny.com/ai' } }); }
-async function signIn() {
-    const email = document.getElementById('signinEmail').value.trim();
-    const pass = document.getElementById('signinPassword').value;
-    const btn = document.getElementById('signinBtn');
-    const err = document.getElementById('signinError');
-    if (!email || !pass) { showErr(err, 'Fill in all fields.'); return; }
-    btn.disabled = true; btn.textContent = 'Signing in...';
-    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-    if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Sign In →'; }
-}
-async function signUp() {
-    const email = document.getElementById('signupEmail').value.trim();
-    const pass = document.getElementById('signupPassword').value;
-    const btn = document.getElementById('signupBtn');
-    const err = document.getElementById('signupError');
-    const suc = document.getElementById('signupSuccess');
-    if (!email || !pass) { showErr(err, 'Fill in all fields.'); return; }
-    if (pass.length < 6) { showErr(err, 'Password must be at least 6 characters.'); return; }
-    btn.disabled = true; btn.textContent = 'Creating account...';
-    const { error } = await sb.auth.signUp({ email, password: pass });
-    if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Create Account →'; }
-    else { err.style.display = 'none'; suc.style.display = 'block'; btn.textContent = 'Check your email'; }
-}
-async function signOut() {
-    await sb.auth.signOut(); currentUser = null; currentConvId = null; isGuest = false; updateAuthUI();
-    document.getElementById('historyList').innerHTML = '<div class="history-empty">Sign in to save history</div>';
-}
-function continueAsGuest() { isGuest = true; closeModal(); updateAuthUI(); }
-function updateAuthUI() {
-    const btn = document.getElementById('authNavBtn');
-    const emailEl = document.getElementById('navUserEmail');
-    if (currentUser) { emailEl.textContent = currentUser.email.split('@')[0]; btn.textContent = 'Sign Out'; btn.onclick = signOut; }
-    else { emailEl.textContent = ''; btn.textContent = 'Sign In'; btn.onclick = showModal; }
-    updateMsgCounter();
-}
-function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
-function showModal() { document.getElementById('authModal').classList.remove('hidden'); }
-function closeModal() { document.getElementById('authModal').classList.add('hidden'); }
-function closePaywall() { document.getElementById('paywallModal').classList.add('hidden'); }
-async function handleUpgrade(plan = 'plus') {
-    const btn = event?.target;
-    if (btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
-    try {
-        const res = await fetch('/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ plan, email: currentUser?.email || '' }) });
-        const data = await res.json();
-        if (data.url) window.location.href = data.url;
-        else { alert('Something went wrong.'); if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; } }
-    } catch(e) { alert('Something went wrong.'); if (btn) { btn.textContent = 'Get Plus →'; btn.disabled = false; } }
-}
-function switchTab(tab) {
-    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('signinForm').style.display = tab === 'signin' ? 'flex' : 'none';
-    document.getElementById('signupForm').style.display = tab === 'signup' ? 'flex' : 'none';
-}
-
-// COUNTER
-function getTodayKey() { return 'pmpny_msgs_' + new Date().toISOString().split('T')[0]; }
-function getMsgCount() { return parseInt(localStorage.getItem(getTodayKey()) || '0'); }
-function incrementMsgCount() { localStorage.setItem(getTodayKey(), getMsgCount() + 1); updateMsgCounter(); }
-function updateMsgCounter() {
-    const remaining = Math.max(0, FREE_LIMIT - getMsgCount());
-    const el = document.getElementById('msgCounter');
-    el.className = remaining <= 5 ? 'msg-counter warning' : 'msg-counter';
-    el.textContent = remaining + ' messages left today';
-}
-function checkLimit() { if (getMsgCount() >= FREE_LIMIT) { document.getElementById('paywallModal').classList.remove('hidden'); return false; } return true; }
-
-// HISTORY
-async function loadHistory() {
-    if (!currentUser) return;
-    const { data } = await sb.from('conversations').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(20);
-    const list = document.getElementById('historyList');
-    if (!data?.length) { list.innerHTML = '<div class="history-empty">No conversations yet</div>'; return; }
-    list.innerHTML = data.map(c => `<div class="history-item" onclick="loadConversation('${c.id}')"><div class="history-item-title">${c.title}</div><div class="history-item-date">${new Date(c.created_at).toLocaleDateString()}</div></div>`).join('');
-}
-async function loadConversation(convId) {
-    if (!currentUser) return;
-    currentConvId = convId;
-    const { data } = await sb.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
-    if (!data) return;
-    const body = document.getElementById('chatBody');
-    body.innerHTML = ''; history.length = 0;
-    data.forEach(msg => { history.push({ role: msg.role, content: msg.content }); addMsg(msg.role === 'user' ? 'user' : 'ai', msg.content); });
-}
-async function saveMessage(role, content) {
-    if (!currentUser) return;
-    if (!currentConvId) {
-        const title = content.substring(0, 50) + (content.length > 50 ? '...' : '');
-        const { data } = await sb.from('conversations').insert({ user_id: currentUser.id, title }).select().single();
-        if (data) { currentConvId = data.id; loadHistory(); }
-    }
-    if (currentConvId) await sb.from('messages').insert({ conversation_id: currentConvId, user_id: currentUser.id, role, content });
-}
-function newChat() {
-    currentConvId = null; history.length = 0;
-    document.getElementById('chatBody').innerHTML = `<div class="msg ai"><div class="msg-label">PMPNY Intelligence</div><div class="ai-response"><div class="ai-plain">New conversation started. What trends are you researching?</div></div></div>`;
-}
-
-// WEEKLY BRIEF
-async function loadWeeklyBrief() {
-    try {
-        const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
-        if (!data) return;
-        const weekEl = document.querySelector('.brief-week');
-        const titleEl = document.querySelector('.brief-title');
-        if (weekEl) weekEl.textContent = data.week_label;
-        if (titleEl) titleEl.textContent = data.title;
-        const noteEl = document.getElementById('briefNote');
-        if (noteEl && data.note) { noteEl.textContent = data.note; noteEl.style.display = 'block'; }
-        const imagesEl = document.getElementById('briefImages');
-        if (imagesEl && data.images?.length) { imagesEl.style.display = 'grid'; imagesEl.innerHTML = data.images.map(url => `<img src="${url}" alt="Brief inspiration" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">`).join(''); }
-        const swatchesEl = document.querySelector('.swatches');
-        if (swatchesEl && data.colors?.length) swatchesEl.innerHTML = data.colors.map(c => `<div class="swatch-wrap"><div class="swatch" style="background:${c.hex}"></div><div class="swatch-name">${c.name}</div></div>`).join('');
-        const signalsEl = document.querySelector('.brief-signals');
-        if (signalsEl && data.signals?.length) signalsEl.innerHTML = data.signals.map(s => `<div class="bs"><span class="bs-name">${s.name}</span><div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div><span class="bs-pct">↑${s.pct}%</span></div>`).join('');
-        const seasonEl = document.getElementById('briefSeasonLabel');
-        if (seasonEl && data.season) seasonEl.textContent = data.season;
-
-        // Update hero signals
-        if (data.signals?.length) {
-            data.signals.slice(0, 5).forEach((s, i) => {
-                const meta = document.getElementById('hsMeta' + i);
-                const name = document.getElementById('hsName' + i);
-                const fill = document.getElementById('hsFill' + i);
-                const pct = document.getElementById('hsPct' + i);
-                if (meta) meta.textContent = (data.season || 'SS26') + ' Signal';
-                if (name) name.textContent = s.name;
-                if (fill) { fill.dataset.w = s.pct; fill.style.width = s.pct + '%'; }
-                if (pct) pct.textContent = '↑ ' + s.pct + '%';
-            });
-        }
-    } catch(err) {}
-}
-
-// UPLOAD
-const IMG_LIMIT_FREE = 5;
-function getUploadMonthKey() { const d = new Date(); return `pmpny_uploads_${d.getFullYear()}_${d.getMonth()}`; }
-function getUploadCount() { return parseInt(localStorage.getItem(getUploadMonthKey()) || '0'); }
-function incrementUploadCount() { localStorage.setItem(getUploadMonthKey(), getUploadCount() + 1); updateUploadCounter(); }
-function updateUploadCounter() { const el = document.getElementById('uploadLimit'); if (el) el.textContent = Math.max(0, IMG_LIMIT_FREE - getUploadCount()) + ' free / mo'; }
-function checkUploadLimit() { if (getUploadCount() >= IMG_LIMIT_FREE) { document.getElementById('paywallModal').classList.remove('hidden'); return false; } return true; }
-
-// MOOD BOARD
-let currentMoodboardData = null;
-async function generateMoodboard(query, colors, season, title) {
-    document.getElementById('moodboardOverlay').classList.add('show');
-    document.getElementById('mbTitle').textContent = title || query;
-    document.getElementById('mbSeason').textContent = season || 'SS27';
-    const colorsEl = document.getElementById('mbColors');
-    colorsEl.innerHTML = '';
-    if (colors?.length) colors.forEach(c => { colorsEl.innerHTML += `<div class="mb-swatch"><div class="mb-swatch-block" style="background:${c.hex}"></div><div class="mb-swatch-name">${c.name}</div></div>`; });
-    document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1"><div class="thinking-symbol"></div><span style="margin-left:10px">Generating...</span></div>`;
-    try {
-        const res = await fetch('/api/moodboard', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query, colors, season, title }) });
-        const data = await res.json();
-        currentMoodboardData = data;
-        const grid = document.getElementById('mbGrid');
-        if (!data.images?.length) { grid.innerHTML = `<div class="mb-loading" style="grid-column:1/-1">No images found.</div>`; return; }
-        grid.innerHTML = data.images.map(img => `<div class="mb-img-wrap"><img src="${img.url}" alt="${img.title}" onerror="this.parentElement.style.display='none'"><div class="mb-img-source"><a href="${img.photographerUrl}" target="_blank" style="color:var(--dim);text-decoration:none;">${img.photographer||img.source}</a> · <a href="https://unsplash.com/?utm_source=pmpny_intelligence&utm_medium=referral" target="_blank" style="color:var(--dim);text-decoration:none;">Unsplash</a></div></div>`).join('');
-    } catch(e) { document.getElementById('mbGrid').innerHTML = `<div class="mb-loading" style="grid-column:1/-1">Error. Try again.</div>`; }
-}
-function closeMoodboard() { document.getElementById('moodboardOverlay').classList.remove('show'); }
-function downloadMoodboard() {
-    const data = currentMoodboardData; if (!data) return;
-    const w = window.open('','_blank');
-    w.document.write(`<html><head><title>PMPNY Mood Board</title><style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}h1{font-size:36px;font-style:italic;font-weight:300;margin-bottom:4px;}.season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}.footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}</style></head><body><h1>${data.title}</h1><div class="season">${data.season} · PMPNY Intelligence</div><div class="grid">${data.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div><div class="footer">pmpny.com/ai</div></body></html>`);
-    w.document.close(); setTimeout(()=>w.print(),600);
-}
-
-// HYBRID MOOD BOARD
-let mbPhotos = [];
-async function onMbPhotos(e) {
-    const files = Array.from(e.target.files||[]);
-    const remaining = 12 - mbPhotos.length;
-    for (const file of files.slice(0, remaining)) mbPhotos.push(await compressImage(file));
-    renderMbPhotoGrid();
-    document.getElementById('mbPhotoInput').value = '';
-}
-function renderMbPhotoGrid() {
-    const grid = document.getElementById('mbPhotoGrid'); if (!grid) return;
-    grid.innerHTML = mbPhotos.map((p,i) => `<div style="position:relative;aspect-ratio:1;overflow:hidden;"><img src="${p.src}" style="width:100%;height:100%;object-fit:cover;"><button onclick="mbRemovePhoto(${i})" style="position:absolute;top:1px;right:1px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:10px;width:16px;height:16px;cursor:pointer;">×</button></div>`).join('');
-}
-function mbRemovePhoto(idx) { mbPhotos.splice(idx,1); renderMbPhotoGrid(); }
-async function buildHybridMoodboard() {
-    const concept = document.getElementById('mbConcept')?.value.trim();
-    const colorsRaw = document.getElementById('mbColorsInput')?.value.trim();
-    if (!concept && mbPhotos.length === 0) { alert('Add a concept or photos first.'); return; }
-    const hexes = colorsRaw ? (colorsRaw.match(/#[0-9A-Fa-f]{6}/g)||[]) : [];
-    let narrative = '';
-    if (concept) {
-        try {
-            const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ messages:[{ role:'user', content:`Write a 3-sentence mood board narrative for: "${concept}". Poetic, creative director voice. No bullets.` }] }) });
-            const data = await res.json();
-            narrative = data.content?.[0]?.text || '';
-        } catch(e) {}
-    }
-    document.getElementById('moodboardOverlay').classList.add('show');
-    document.getElementById('mbTitle').textContent = concept?.substring(0,40) || 'Mood Board';
-    document.getElementById('mbSeason').textContent = 'SS27';
-    document.getElementById('mbColors').innerHTML = hexes.map(h => `<div class="mb-swatch"><div class="mb-swatch-block" style="background:${h}"></div><div class="mb-swatch-name">${h}</div></div>`).join('');
-    const grid = document.getElementById('mbGrid');
-    if (mbPhotos.length > 0) {
-        const cols = mbPhotos.length <= 3 ? mbPhotos.length : mbPhotos.length <= 6 ? 3 : 4;
-        grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        grid.innerHTML = mbPhotos.map(p => `<div class="mb-img-wrap"><img src="${p.src}" alt="Reference"></div>`).join('');
-    } else grid.innerHTML = '<div class="mb-loading" style="grid-column:1/-1">No photos added.</div>';
-    if (narrative) {
-        let narDiv = document.getElementById('mbNarrative');
-        if (!narDiv) { narDiv = document.createElement('div'); narDiv.id = 'mbNarrative'; narDiv.style.cssText = 'padding:16px;border-left:2px solid var(--accent);margin-top:16px;font-size:12px;color:var(--off-white);line-height:1.9;font-style:italic;'; document.querySelector('.moodboard-inner').insertBefore(narDiv, document.querySelector('.moodboard-actions')); }
-        narDiv.textContent = narrative;
+// AUTH
+function adminLogin() {
+    const pass = document.getElementById('adminPassword').value;
+    if (pass === 'PMPny92-') {
+        sessionStorage.setItem('pmpny_admin', '1');
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminLayout').classList.add('show');
+        loadDashboard(); loadCurrentBrief(); loadAdminHistory();
+    setTimeout(loadBrandDNA, 100);
+    } else {
+        const e = document.getElementById('loginError');
+        e.textContent = 'Incorrect password.'; e.style.display = 'block';
     }
 }
-function buildMoodboard() { buildHybridMoodboard(); }
-
-// INIT
-window.addEventListener('load', () => {
-    setTimeout(() => { document.querySelectorAll('.signal-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 500);
-    updateMsgCounter(); updateUploadCounter();
-    loadWeeklyBrief();
-    setTimeout(() => { sb.auth.getSession().then(({ data }) => { if (!data.session && !isGuest) showModal(); }); }, 2000);
-});
-
-// TEXT PROCESSING
-function processText(text) {
-    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, (_,l,u) => `<a href="${u}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${l}</a>`);
-    text = text.replace(/(?<![">])(https?:\/\/[^\s<>")\]]+)/g, u => `<a href="${u}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${u}</a>`);
-    text = text.replace(/(?<![/"@=a-zA-Z])([a-zA-Z0-9][a-zA-Z0-9-]*\.(com|net|org|io|co|it|fr|uk|de|es)(?:\/[^\s<>")\]]*)?)/g, m => `<a href="https://${m}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${m}</a>`);
-    text = text.replace(/#([0-9A-Fa-f]{6})\b/g, m => `<span class="color-swatch-inline"><span class="color-dot" style="background:${m}"></span><span class="hex-text">${m}</span></span>`);
-    text = text.replace(/(\$[\d,]+)/g, '<strong style="color:var(--off-white)">$1</strong>');
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    text = text.replace(/^· /gm, '<span style="color:var(--accent);margin-right:6px;">·</span>');
-    return text;
+function adminLogout() {
+    sessionStorage.removeItem('pmpny_admin');
+    document.getElementById('adminLayout').classList.remove('show');
+    document.getElementById('loginScreen').classList.remove('hidden');
+}
+if (sessionStorage.getItem('pmpny_admin') === '1') {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminLayout').classList.add('show');
+    loadDashboard();
+    setTimeout(loadBrandDNA, 100);
 }
 
-// PROGRESSIVE DISPLAY — universal section card detection
-async function displayProgressively(container, text) {
-    const body = document.getElementById('chatBody');
-    const existing = container.querySelector('.thinking-indicator');
-    if (existing) existing.remove();
-    text = text.replace(/^#{1,3}\s+(.+)$/gm, (_,t) => t.toUpperCase());
-    text = text.replace(/^\*\*([^*\n]+)\*\*\s*$/gm, (_,t) => t.toUpperCase());
-    text = text.replace(/^---+\s*$/gm, '');
-    const isTitleLine = line => {
-        const t = line.trim();
-        if (!t) return false;
-        if (/^\d+\.\s+[A-Z]/.test(t) && t.length < 60) return true;
-        if (/^[A-Z][A-Z\s\-\/&+]{2,}$/.test(t) && t.length < 60) return true;
-        return false;
-    };
-    const lines = text.split('\n');
-    const blocks = [];
-    let cur = { type:'plain', lines:[] };
-    for (let i = 0; i < lines.length; i++) {
-        const isTitle = isTitleLine(lines[i]) && (lines[i-1]?.trim()==='' || i===0);
-        if (isTitle) { if (cur.lines.join('\n').trim()) blocks.push(cur); cur = { type:'section', title:lines[i].trim(), lines:[] }; }
-        else cur.lines.push(lines[i]);
-    }
-    if (cur.lines.join('\n').trim() || cur.type==='section') blocks.push(cur);
-    const hasSections = blocks.some(b => b.type==='section');
-    if (!hasSections) {
-        const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
-        for (let i = 0; i < paragraphs.length; i++) {
-            const div = document.createElement('div');
-            div.className = 'ai-plain';
-            if (i > 0) div.style.marginTop = '4px';
-            div.style.cssText += ';opacity:0;transition:opacity 0.25s ease;';
-            container.appendChild(div);
-            await new Promise(r => setTimeout(r,30));
-            div.style.opacity = '1';
-            await typeText(div, paragraphs[i], body);
-            if (i < paragraphs.length-1) await new Promise(r => setTimeout(r,60));
-        }
-        return;
-    }
-    for (const block of blocks) {
-        if (block.type==='plain') {
-            const content = block.lines.join('\n').trim();
-            if (!content) continue;
-            const div = document.createElement('div');
-            div.className = 'ai-plain';
-            div.style.cssText = 'opacity:0;transition:opacity 0.25s ease;';
-            container.appendChild(div);
-            await new Promise(r => setTimeout(r,30));
-            div.style.opacity = '1';
-            await typeText(div, content, body);
-            await new Promise(r => setTimeout(r,40));
-        } else {
-            const content = block.lines.join('\n').trim();
-            if (!content) continue;
-            const rawTitle = block.title.replace(/^\d+\.\s+/,'');
-            const tf = rawTitle.charAt(0) + rawTitle.slice(1).toLowerCase().replace(/\b(ss|fw|ai|dna|pmpny|uv)\b/gi, s => s.toUpperCase());
-            const card = document.createElement('div');
-            card.className = 'section-card';
-            card.style.cssText = 'opacity:0;transform:translateY(8px);transition:opacity 0.3s ease,transform 0.3s ease;';
-            const tr = document.createElement('div'); tr.className = 'section-title-row';
-            const tt = document.createElement('span'); tt.className = 'section-title-text'; tt.textContent = tf;
-            const tl = document.createElement('div'); tl.className = 'section-title-line';
-            tr.appendChild(tt); tr.appendChild(tl);
-            const bd = document.createElement('div'); bd.className = 'section-body';
-            card.appendChild(tr); card.appendChild(bd);
-            container.appendChild(card);
-            await new Promise(r => setTimeout(r,50));
-            card.style.opacity='1'; card.style.transform='translateY(0)';
-            body.scrollTop = body.scrollHeight;
-            await typeText(bd, content, body, 16);
-            bd.innerHTML = processText(content.replace(/\n/g,'<br>'));
-            await new Promise(r => setTimeout(r,60));
-        }
-    }
-}
-async function typeText(el, text, body, speed = 20) {
-    const finalHTML = processText(text);
-    const words = text.replace(/\n\n/g,' ¶ ').replace(/\n/g,' ').split(' ').filter(w=>w!=='');
-    let shown = '';
-    for (const w of words) {
-        shown += w==='¶' ? '\n\n' : (shown.length>0?' ':'')+w;
-        el.innerHTML = shown.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')+'<span class="streaming-cursor"></span>';
-        body.scrollTop = body.scrollHeight;
-        await new Promise(r => setTimeout(r,speed));
-    }
-    el.innerHTML = finalHTML;
-    body.scrollTop = body.scrollHeight;
-}
-
-// IMAGE COMPRESSION
-function compressImage(file) {
-    return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-            const img = new Image();
-            img.onload = () => {
-                const MAX = 1024;
-                let w = img.width, h = img.height;
-                if (w>MAX||h>MAX) { if (w>h) { h=Math.round(h*MAX/w); w=MAX; } else { w=Math.round(w*MAX/h); h=MAX; } }
-                const canvas = document.createElement('canvas');
-                canvas.width=w; canvas.height=h;
-                canvas.getContext('2d').drawImage(img,0,0,w,h);
-                const compressed = canvas.toDataURL('image/jpeg',0.75);
-                resolve({ src:compressed, b64:compressed.split(',')[1], mime:'image/jpeg' });
-            };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// CHAT ATTACHMENTS
-let chatAttachments = [];
-async function onChatAttach(e) {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
-    const remaining = 5 - chatAttachments.length;
-    if (remaining <= 0) { alert('Maximum 5 images per message.'); return; }
-    for (const file of files.slice(0,remaining)) {
-        if (!checkUploadLimit()) break;
-        chatAttachments.push(await compressImage(file));
-        incrementUploadCount();
-        renderChatAttachPreviews();
-    }
-    e.target.value = '';
-}
-function renderChatAttachPreviews() {
-    const container = document.getElementById('chatAttachPreview');
-    if (!chatAttachments.length) { container.style.display='none'; document.getElementById('attachBtn').classList.remove('has-image'); return; }
-    container.style.display='block';
-    document.getElementById('attachBtn').classList.add('has-image');
-    container.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;">` + chatAttachments.map((a,i) => `<div style="position:relative;"><img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);"><button onclick="removeChatAttach(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:12px;width:18px;height:18px;cursor:pointer;">×</button></div>`).join('') + `</div>`;
-}
-function removeChatAttach(idx) { chatAttachments.splice(idx,1); renderChatAttachPreviews(); }
-function clearAllChatAttach() { chatAttachments=[]; renderChatAttachPreviews(); }
-function isConversational(text) {
-    const t = text.toLowerCase().trim();
-    return ['ciao','hello','hi','hey','grazie','thanks','thank you','ok','okay','buongiorno','buonasera','bene','good','perfetto'].some(w => t.startsWith(w)||t===w) || t.length<20;
-}
-
-// CHAT — page visibility + AbortController
-const history = [];
-let pendingFetch = null;
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-        const banner = document.getElementById('reconnectBanner');
-        if (banner) banner.style.display = 'none';
-    }
-});
-
-// URL AUTO-DETECTION
+// URL AUTO-DETECTION — same as public AI
 function extractURL(text) {
     const httpMatch = text.match(/https?:\/\/[^\s]+/);
     if (httpMatch) return httpMatch[0].replace(/[.,;!?]$/, '');
@@ -1016,234 +523,786 @@ async function fetchSiteForChat(url) {
     } catch(e) { return null; }
 }
 
-async function send() {
-    const inp = document.getElementById('chatInput');
-    const txt = inp.value.trim();
-    if (!txt) return;
-    if (!checkLimit()) return;
-    addUserMsg(txt, chatAttachments.map(a => a.src));
+// PAGE VISIBILITY — pause/resume on tab switch
+let pendingRequest = null;
+let pageIsVisible = true;
+document.addEventListener('visibilitychange', () => {
+    pageIsVisible = !document.hidden;
+    if (!document.hidden && pendingRequest) {
+        document.getElementById('reconnectBanner').classList.remove('show');
+    }
+});
+
+// NAVIGATION
+function showSection(id, btn) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (id === 'users') loadUsers();
+}
+
+// DASHBOARD
+async function loadDashboard() {
+    try {
+        const { count: convCount } = await sb.from('conversations').select('*', { count: 'exact', head: true });
+        const { count: msgCount } = await sb.from('messages').select('*', { count: 'exact', head: true });
+        document.getElementById('statConvs').textContent = convCount || 0;
+        document.getElementById('statMsgs').textContent = msgCount || 0;
+        document.getElementById('statUsers').textContent = '—';
+    } catch(e) {}
+}
+
+// IMAGE COMPRESSION
+function compressImage(file) {
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                const MAX = 1024;
+                let w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const compressed = canvas.toDataURL('image/jpeg', 0.75);
+                resolve({ src: compressed, b64: compressed.split(',')[1], mime: 'image/jpeg' });
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ATTACHMENTS
+let adminAttachments = [];
+async function onAdminAttach(e) {
+    const files = Array.from(e.target.files);
+    const remaining = 5 - adminAttachments.length;
+    if (remaining <= 0) { alert('Maximum 5 images.'); return; }
+    for (const file of files.slice(0, remaining)) {
+        adminAttachments.push(await compressImage(file));
+        renderAdminAttachPreviews();
+    }
+    e.target.value = '';
+}
+function renderAdminAttachPreviews() {
+    const container = document.getElementById('adminAttachPreview');
+    if (!adminAttachments.length) {
+        container.style.display = 'none';
+        document.getElementById('adminAttachBtn').classList.remove('has-image');
+        return;
+    }
+    container.style.display = 'block';
+    document.getElementById('adminAttachBtn').classList.add('has-image');
+    container.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;">` +
+        adminAttachments.map((a, i) => `
+            <div style="position:relative;">
+                <img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);">
+                <button onclick="removeAdminAttach(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:12px;width:18px;height:18px;cursor:pointer;">×</button>
+            </div>`).join('') + `</div>`;
+}
+function removeAdminAttach(idx) {
+    if (idx === undefined) adminAttachments = [];
+    else adminAttachments.splice(idx, 1);
+    renderAdminAttachPreviews();
+}
+
+// TEXT PROCESSING
+function adminProcessText(text) {
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, (_, l, u) => `<a href="${u}" target="_blank" style="color:var(--accent);text-decoration:underline;">${l}</a>`);
+    text = text.replace(/(?<![">])(https?:\/\/[^\s<>")\]]+)/g, u => `<a href="${u}" target="_blank" style="color:var(--accent);text-decoration:underline;">${u}</a>`);
+    text = text.replace(/#([0-9A-Fa-f]{6})\b/g, m => `<span class="color-swatch-inline"><span class="color-dot" style="background:${m}"></span><span class="hex-text">${m}</span></span>`);
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/^· /gm, '<span style="color:var(--accent);margin-right:5px;">·</span>');
+    return text;
+}
+async function adminTypeText(el, text, body, speed = 16) {
+    const words = text.replace(/\n\n/g, ' ¶ ').replace(/\n/g, ' ').split(' ').filter(w => w !== '');
+    let shown = '';
+    for (const w of words) {
+        shown += w === '¶' ? '\n\n' : (shown.length > 0 ? ' ' : '') + w;
+        el.innerHTML = shown.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>') + '<span class="streaming-cursor"></span>';
+        body.scrollTop = body.scrollHeight;
+        await new Promise(r => setTimeout(r, speed));
+    }
+    el.innerHTML = adminProcessText(text.replace(/\n/g, '<br>'));
+}
+async function adminDisplayResponse(container, text) {
+    text = text.replace(/^#{1,3}\s+(.+)$/gm, (_, t) => t.toUpperCase());
+    text = text.replace(/^\*\*([^*\n]+)\*\*\s*$/gm, (_, t) => t.toUpperCase());
+    text = text.replace(/^---+\s*$/gm, '');
+    const body = document.getElementById('adminChatBody');
+    const isTitleLine = line => {
+        const t = line.trim();
+        if (!t) return false;
+        if (/^\d+\.\s+[A-Z]/.test(t) && t.length < 60) return true;
+        if (/^[A-Z][A-Z\s\-\/&+]{2,}$/.test(t) && t.length < 60) return true;
+        return false;
+    };
+    const lines = text.split('\n');
+    const blocks = [];
+    let cur = { type: 'plain', lines: [] };
+    for (let i = 0; i < lines.length; i++) {
+        const isTitle = isTitleLine(lines[i]) && (lines[i-1]?.trim() === '' || i === 0);
+        if (isTitle) {
+            if (cur.lines.join('\n').trim()) blocks.push(cur);
+            cur = { type: 'section', title: lines[i].trim(), lines: [] };
+        } else cur.lines.push(lines[i]);
+    }
+    if (cur.lines.join('\n').trim() || cur.type === 'section') blocks.push(cur);
+    const hasSections = blocks.some(b => b.type === 'section');
+    if (!hasSections) {
+        for (const para of text.split(/\n\n+/).filter(p => p.trim())) {
+            const div = document.createElement('div');
+            div.className = 'amsg-body'; div.style.cssText = 'margin-bottom:3px;opacity:0;transition:opacity 0.2s;';
+            container.appendChild(div);
+            await new Promise(r => setTimeout(r, 30));
+            div.style.opacity = '1';
+            await adminTypeText(div, para, body);
+        }
+        return;
+    }
+    for (const block of blocks) {
+        if (block.type === 'plain') {
+            const content = block.lines.join('\n').trim();
+            if (!content) continue;
+            const div = document.createElement('div');
+            div.className = 'amsg-body'; div.style.cssText = 'opacity:0;transition:opacity 0.2s;';
+            container.appendChild(div);
+            await new Promise(r => setTimeout(r, 30));
+            div.style.opacity = '1';
+            await adminTypeText(div, content, body);
+        } else {
+            const content = block.lines.join('\n').trim();
+            if (!content) continue;
+            const rawTitle = block.title.replace(/^\d+\.\s+/, '');
+            const tf = rawTitle.charAt(0) + rawTitle.slice(1).toLowerCase().replace(/\b(ss|fw|ai|dna|pmpny|uv)\b/gi, s => s.toUpperCase());
+            const card = document.createElement('div');
+            card.className = 'section-card';
+            card.style.cssText = 'opacity:0;transform:translateY(6px);transition:opacity 0.3s ease,transform 0.3s ease;';
+            const tr = document.createElement('div'); tr.className = 'section-title-row';
+            const tt = document.createElement('span'); tt.className = 'section-title-text'; tt.textContent = tf;
+            const tl = document.createElement('div'); tl.className = 'section-title-line';
+            tr.appendChild(tt); tr.appendChild(tl);
+            const bd = document.createElement('div'); bd.className = 'section-body';
+            card.appendChild(tr); card.appendChild(bd);
+            container.appendChild(card);
+            await new Promise(r => setTimeout(r, 50));
+            card.style.opacity = '1'; card.style.transform = 'translateY(0)';
+            body.scrollTop = body.scrollHeight;
+            await adminTypeText(bd, content, body, 14);
+            bd.innerHTML = adminProcessText(content.replace(/\n/g, '<br>'));
+            await new Promise(r => setTimeout(r, 50));
+        }
+    }
+}
+
+// ADMIN CHAT SEND — with visibility handling + edit support
+async function adminSend(editedText, editIndex) {
+    const inp = document.getElementById('adminChatInput');
+    const txt = editedText || inp.value.trim();
+    if (!txt && adminAttachments.length === 0) return;
+    const body = document.getElementById('adminChatBody');
+
+    // If editing, truncate history to that point
+    if (editIndex !== undefined) {
+        adminHistory.splice(editIndex);
+        // Remove all messages after the edited one in DOM
+        const msgs = body.querySelectorAll('.amsg');
+        for (let i = msgs.length - 1; i >= editIndex; i--) msgs[i].remove();
+    }
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'amsg user';
+    const imgHtml = adminAttachments.length > 0
+        ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">${adminAttachments.map(a => `<img src="${a.src}" style="height:80px;width:80px;object-fit:cover;border:1px solid var(--border);">`).join('')}</div>`
+        : '';
+    const msgIndex = adminHistory.length;
+    userMsg.innerHTML = `<div class="amsg-label">FRANCESCO</div>${imgHtml}${txt ? `<div class="amsg-body">${txt}</div>` : ''}
+        <div class="amsg-actions">
+            <button class="amsg-edit-btn" onclick="startEditMsg(this, ${msgIndex}, '${txt.replace(/'/g,"\\'")}')">Edit</button>
+        </div>`;
+    body.appendChild(userMsg);
+    body.scrollTop = body.scrollHeight;
+
     let messageContent;
-    if (chatAttachments.length > 0) {
+    if (adminAttachments.length > 0) {
         messageContent = [
-            ...chatAttachments.map(a => ({ type:'image', source:{ type:'base64', media_type:a.mime||'image/jpeg', data:a.b64 } })),
-            { type:'text', text:txt||'Analyze these images.' }
+            ...adminAttachments.map(a => ({ type: 'image', source: { type: 'base64', media_type: a.mime, data: a.b64 } })),
+            { type: 'text', text: txt || 'Analyze these images.' }
         ];
     } else messageContent = txt;
-    clearAllChatAttach();
-    inp.value=''; inp.style.height='auto';
-    history.push({ role:'user', content:messageContent });
-    saveMessage('user', txt||'[images]');
-    incrementMsgCount();
-    document.getElementById('sendBtn').disabled = true;
-    const body = document.getElementById('chatBody');
-    const msgEl = document.createElement('div');
-    msgEl.className = 'msg ai';
-    msgEl.innerHTML = '<div class="msg-label">PMPNY Intelligence</div>';
+
+    removeAdminAttach();
+    inp.value = ''; inp.style.height = 'auto';
+    adminHistory.push({ role: 'user', content: messageContent });
+    saveAdminMessage('user', typeof messageContent === 'string' ? messageContent : (txt || '[image]'));
+    document.getElementById('adminSendBtn').disabled = true;
+
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'amsg ai';
+    aiMsg.innerHTML = '<div class="amsg-label">PMPNY INTELLIGENCE</div>';
     const responseContainer = document.createElement('div');
-    responseContainer.className = 'ai-response';
     const thinking = document.createElement('div');
-    thinking.className = 'thinking-indicator';
-    thinking.innerHTML = `<div class="thinking-symbol"></div><span class="thinking-text" id="thinkingText">${isConversational(txt)?'Thinking':'Analyzing trends'}</span>`;
+    thinking.className = 'admin-thinking';
+    thinking.innerHTML = `<div class="admin-think-sym"></div><span class="admin-think-text" id="adminThinkText">Analyzing</span>`;
     responseContainer.appendChild(thinking);
-    msgEl.appendChild(responseContainer);
-    body.appendChild(msgEl);
+    aiMsg.appendChild(responseContainer);
+    body.appendChild(aiMsg);
     body.scrollTop = body.scrollHeight;
-    const messages = isConversational(txt) ? ['Thinking','Processing','Almost there'] : ['Analyzing trends','Searching signals','Scanning runway','Reading market data','Almost there'];
-    let msgIdx = 0;
-    const cycleInterval = setInterval(() => {
-        msgIdx = (msgIdx+1) % messages.length;
-        const el = document.getElementById('thinkingText');
-        if (el) el.textContent = messages[msgIdx];
+
+    const thinkMsgs = ['Analyzing trends', 'Searching signals', 'Scanning runway', 'Reading market data', 'Almost there'];
+    let thinkIdx = 0;
+    const thinkInterval = setInterval(() => {
+        thinkIdx = (thinkIdx + 1) % thinkMsgs.length;
+        const el = document.getElementById('adminThinkText');
+        if (el) el.textContent = thinkMsgs[thinkIdx];
     }, 1800);
 
-    // AUTO URL FETCH — detect URL and silently enrich message
+    // AUTO URL FETCH
     const detectedURL = extractURL(txt);
     if (detectedURL) {
-        const thinkEl = document.getElementById('thinkingText');
+        const thinkEl = document.getElementById('adminThinkText');
         if (thinkEl) thinkEl.textContent = 'Reading site...';
         const siteData = await fetchSiteForChat(detectedURL);
-        if (siteData?.content) {
-            const siteContext = `\n\n[WEBSITE CONTENT FROM ${detectedURL}]\nTitle: ${siteData.title || ''}\nDescription: ${siteData.description || ''}\n\n${siteData.content.substring(0, 4000)}\n[END WEBSITE CONTENT]`;
+        if (siteData && siteData.content) {
+            const siteContext = '\n\n[WEBSITE CONTENT FROM ' + detectedURL + ']\nTitle: ' + (siteData.title || '') + '\n' + (siteData.hasShopifyData ? 'Products found: ' + siteData.productCount : '') + '\n\n' + siteData.content.substring(0, 5000) + '\n[END WEBSITE CONTENT]';
             if (typeof messageContent === 'string') {
                 messageContent = messageContent + siteContext;
             } else {
-                const textPart = messageContent.find(p => p.type === 'text');
+                const textPart = messageContent.find(function(p) { return p.type === 'text'; });
                 if (textPart) textPart.text += siteContext;
             }
-            history[history.length - 1].content = messageContent;
+            adminHistory[adminHistory.length - 1].content = messageContent;
         }
     }
 
+    // PAGE VISIBILITY — wait for page to be visible before sending
+    if (document.hidden) {
+        document.getElementById('reconnectBanner').classList.add('show');
+        await new Promise(resolve => {
+            const check = setInterval(() => {
+                if (!document.hidden) { clearInterval(check); resolve(); }
+            }, 500);
+        });
+        document.getElementById('reconnectBanner').classList.remove('show');
+    }
+
     try {
-        // PAGE VISIBILITY — wait if tab hidden
-        if (document.hidden) {
-            const banner = document.getElementById('reconnectBanner');
-            if (banner) banner.style.display = 'block';
-            await new Promise(resolve => {
-                const check = setInterval(() => { if (!document.hidden) { clearInterval(check); resolve(); } }, 500);
-            });
-            const banner2 = document.getElementById('reconnectBanner');
-            if (banner2) banner2.style.display = 'none';
-        }
-        // ABORT CONTROLLER — 2 min timeout
         const controller = new AbortController();
-        pendingFetch = controller;
+        pendingRequest = controller;
         const timeoutId = setTimeout(() => controller.abort(), 120000);
+
         const res = await fetch('/api/chat', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ messages: history }),
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: adminHistory }),
             signal: controller.signal
         });
         clearTimeout(timeoutId);
-        pendingFetch = null;
+        pendingRequest = null;
+
         const data = await res.json();
-        const reply = data.content?.[0]?.text || 'Sorry, something went wrong.';
-        clearInterval(cycleInterval);
-        await displayProgressively(responseContainer, reply);
-        const btnRow = document.createElement('div');
-        btnRow.style.cssText = 'display:flex;gap:12px;align-items:center;margin-top:8px;';
-        const speakBtn = document.createElement('button');
-        speakBtn.className = 'speak-btn'; speakBtn.style.marginTop = '0';
-        speakBtn.textContent = 'Listen →';
-        speakBtn.onclick = () => speakMsg(speakBtn);
-        btnRow.appendChild(speakBtn);
-        msgEl.appendChild(btnRow);
-        history.push({ role:'assistant', content:reply });
-        saveMessage('assistant', reply);
-        if (document.getElementById('autoSpeak').checked) speakMsg(speakBtn);
+        const reply = data.content?.[0]?.text || 'Error — check API.';
+        clearInterval(thinkInterval);
+        thinking.remove();
+        adminHistory.push({ role: 'assistant', content: reply });
+        saveAdminMessage('assistant', reply);
+        await adminDisplayResponse(responseContainer, reply);
     } catch(e) {
-        clearInterval(cycleInterval);
-        pendingFetch = null;
-        const banner = document.getElementById('reconnectBanner');
-        if (banner) banner.style.display = 'none';
+        clearInterval(thinkInterval);
+        pendingRequest = null;
+        thinking.remove();
         if (e.name === 'AbortError') {
-            responseContainer.innerHTML = '<div class="ai-plain" style="color:#ff9944;">Request timed out. Please try again.</div>';
+            responseContainer.innerHTML = `<div class="amsg-body" style="color:var(--red);">Request timed out. Please try again.</div>`;
         } else {
-            responseContainer.innerHTML = '<div class="ai-plain" style="color:#ff9944;">Connection error. Please try again.</div>';
+            responseContainer.innerHTML = `<div class="amsg-body" style="color:var(--red);">Connection error: ${e.message}</div>`;
         }
     }
-    document.getElementById('sendBtn').disabled = false;
+    document.getElementById('adminSendBtn').disabled = false;
 }
 
-function addUserMsg(text, imgSrcs) {
-    const body = document.getElementById('chatBody');
-    const d = document.createElement('div');
-    d.className = 'msg user';
-    const imgs = Array.isArray(imgSrcs) && imgSrcs.length > 0
-        ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:6px;">${imgSrcs.map(src=>`<img src="${src}" class="msg-image" style="height:80px;width:80px;object-fit:cover;" alt="Attached">`).join('')}</div>`
-        : '';
-    const msgIdx = document.querySelectorAll('.msg.user').length;
-    d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div>${imgs}${text?`<div class="msg-body" id="userMsg-${msgIdx}">${text}</div>`:''}
-        <div style="text-align:right;margin-top:4px;">
-            <button onclick="editUserMsg(this,${msgIdx})" style="background:none;border:none;font-size:9px;letter-spacing:0.12em;color:var(--dim);cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;opacity:0;transition:opacity 0.18s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">Edit</button>
-        </div>`;
-    body.appendChild(d); body.scrollTop = body.scrollHeight;
-}
-function editUserMsg(btn, idx) {
-    const msgBody = document.getElementById(`userMsg-${idx}`);
+// EDIT MESSAGE
+function startEditMsg(btn, msgIndex, originalText) {
+    const amsg = btn.closest('.amsg');
+    const msgBody = amsg.querySelector('.amsg-body');
     if (!msgBody) return;
-    const inp = document.getElementById('chatInput');
-    inp.value = msgBody.textContent; inp.focus(); grow(inp);
-    btn.closest('.msg').nextElementSibling?.remove();
-    btn.closest('.msg').remove();
-    if (history.length >= 2) history.splice(-2,2); else if (history.length >= 1) history.splice(-1,1);
+    msgBody.style.display = 'none';
+    amsg.querySelector('.amsg-actions').style.display = 'none';
+    const editArea = document.createElement('textarea');
+    editArea.className = 'amsg-edit-area';
+    editArea.value = originalText;
+    const editActions = document.createElement('div');
+    editActions.className = 'amsg-edit-actions';
+    editActions.innerHTML = `
+        <button class="amsg-edit-cancel" onclick="cancelEditMsg(this)">Cancel</button>
+        <button class="amsg-edit-send" onclick="submitEditMsg(this, ${msgIndex})">Send Edit →</button>`;
+    amsg.appendChild(editArea);
+    amsg.appendChild(editActions);
+    editArea.focus();
 }
-function addMsg(role, text) {
-    const body = document.getElementById('chatBody');
-    const d = document.createElement('div'); d.className = `msg ${role}`;
-    if (role==='user') {
-        d.innerHTML = `<div class="msg-label" style="text-align:right">YOU</div><div class="msg-body">${text}</div>`;
-    } else {
-        const label = document.createElement('div'); label.className='msg-label'; label.textContent='PMPNY INTELLIGENCE';
-        d.appendChild(label);
-        const resp = document.createElement('div'); resp.className='ai-response';
-        const plain = document.createElement('div'); plain.className='ai-plain';
-        plain.innerHTML = processText(text.replace(/\n/g,'<br>'));
-        resp.appendChild(plain); d.appendChild(resp);
-        const btn = document.createElement('button'); btn.className='speak-btn'; btn.textContent='Listen →'; btn.onclick=()=>speakMsg(btn);
-        d.appendChild(btn);
+function cancelEditMsg(btn) {
+    const amsg = btn.closest('.amsg');
+    amsg.querySelector('.amsg-body').style.display = '';
+    amsg.querySelector('.amsg-actions').style.display = '';
+    amsg.querySelector('.amsg-edit-area')?.remove();
+    amsg.querySelector('.amsg-edit-actions')?.remove();
+}
+function submitEditMsg(btn, msgIndex) {
+    const amsg = btn.closest('.amsg');
+    const newText = amsg.querySelector('.amsg-edit-area').value.trim();
+    if (!newText) return;
+    cancelEditMsg(btn);
+    adminSend(newText, msgIndex);
+}
+
+function adminOnKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); adminSend(); } }
+function adminGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+
+// HISTORY
+let adminConvId = null;
+let adminConversations = JSON.parse(localStorage.getItem('pmpny_admin_convs') || '[]');
+function loadAdminHistory() {
+    const list = document.getElementById('adminHistoryList');
+    if (!adminConversations.length) { list.innerHTML = '<div style="padding:16px;font-size:11px;color:var(--dim);text-align:center;">No history yet</div>'; return; }
+    list.innerHTML = adminConversations.slice().reverse().map(c => `
+        <div onclick="loadAdminConversation('${c.id}')" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.18s;" onmouseover="this.style.background='var(--panel-2)'" onmouseout="this.style.background='transparent'">
+            <div style="font-size:11px;color:var(--off-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;">${c.title}</div>
+            <div style="font-size:9px;color:var(--dim);letter-spacing:0.08em;">${new Date(c.created_at).toLocaleDateString()}</div>
+        </div>`).join('');
+}
+function loadAdminConversation(convId) {
+    const conv = adminConversations.find(c => c.id === convId);
+    if (!conv) return;
+    adminConvId = convId;
+    const body = document.getElementById('adminChatBody');
+    body.innerHTML = '';
+    adminHistory.length = 0;
+    conv.messages.forEach(msg => {
+        adminHistory.push({ role: msg.role, content: msg.content });
+        const d = document.createElement('div');
+        d.className = `amsg ${msg.role === 'user' ? 'user' : 'ai'}`;
+        d.innerHTML = `<div class="amsg-label">${msg.role === 'user' ? 'FRANCESCO' : 'PMPNY INTELLIGENCE'}</div><div class="amsg-body">${(typeof msg.content === 'string' ? msg.content : '[image]').replace(/\n/g,'<br>')}</div>`;
+        body.appendChild(d);
+    });
+    body.scrollTop = body.scrollHeight;
+}
+function saveAdminMessage(role, content) {
+    const text = typeof content === 'string' ? content : '[image + message]';
+    if (!adminConvId) {
+        adminConvId = Date.now().toString();
+        adminConversations.push({ id: adminConvId, title: text.substring(0, 50), created_at: new Date().toISOString(), messages: [] });
     }
-    body.appendChild(d); body.scrollTop=body.scrollHeight; return d;
+    const conv = adminConversations.find(c => c.id === adminConvId);
+    if (conv) { conv.messages.push({ role, content: text }); localStorage.setItem('pmpny_admin_convs', JSON.stringify(adminConversations)); loadAdminHistory(); }
 }
-function qp(text) { document.getElementById('chatInput').value=text; send(); }
-function onKey(e) { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); send(); } }
-function grow(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function adminNewChat() {
+    adminConvId = null; adminHistory.length = 0;
+    document.getElementById('adminChatBody').innerHTML = `<div class="amsg ai"><div class="amsg-label">PMPNY Intelligence</div><div class="amsg-body">New conversation. What are you researching?</div></div>`;
+}
+const adminHistory = [];
 
-// VOICE
-let recognition=null, isRecording=false;
-function initRec() {
-    const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
-    if (!SR) return null;
-    const r=new SR(); r.continuous=false; r.interimResults=true; r.lang='';
-    r.onstart=()=>{ isRecording=true; document.getElementById('micBtn').classList.add('recording'); document.getElementById('micBtn').innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>'; showVS('Listening...'); };
-    r.onresult=e=>{ let t=''; for(let i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript; document.getElementById('chatInput').value=t; };
-    r.onend=()=>{ isRecording=false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').innerHTML='<svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'; hideVS(); const txt=document.getElementById('chatInput').value.trim(); if(txt) setTimeout(()=>send(),300); };
-    r.onerror=()=>{ isRecording=false; document.getElementById('micBtn').classList.remove('recording'); document.getElementById('micBtn').innerHTML='<svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'; hideVS(); };
-    return r;
+// GENERATE BRIEF
+async function generateBriefNow() {
+    const btn = document.getElementById('genBriefBtn');
+    const status = document.getElementById('genBriefStatus');
+    btn.disabled = true; btn.textContent = 'Generating...';
+    status.style.display = 'block';
+    status.textContent = 'AI is researching current trends...';
+    try {
+        const res = await fetch('/api/generate-brief', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ secret: 'PMPny92-' })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '✓ Brief generated for ' + (data.brief?.season || 'current season') + ' — "' + (data.brief?.title || '') + '"';
+        setTimeout(() => loadCurrentBrief(), 1000);
+    } catch(e) {
+        status.style.color = 'var(--red)';
+        status.textContent = 'Error: ' + e.message;
+    }
+    btn.disabled = false; btn.textContent = 'Generate Brief Now →';
 }
-function toggleMic() {
-    if (!recognition) recognition=initRec();
-    if (!recognition) { alert('Voice not supported. Try Chrome or Safari.'); return; }
-    if (isRecording) recognition.stop(); else recognition.start();
-}
-function showVS(t) { document.getElementById('vsText').textContent=t; document.getElementById('voiceStatus').classList.add('show'); }
-function hideVS() { document.getElementById('voiceStatus').classList.remove('show'); }
-function getBestVoice() {
-    const voices=window.speechSynthesis.getVoices();
-    for (const name of ['Google US English','Microsoft Guy Online','Alex','Fred']) { const v=voices.find(v=>v.name===name); if(v) return v; }
-    return voices.find(v=>v.lang==='en-US') || voices.find(v=>v.lang.startsWith('en')) || null;
-}
-function speakMsg(btn) {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const msg=btn.closest('.msg');
-    const text=Array.from(msg.querySelectorAll('.ai-plain,.section-body')).map(el=>el.innerText).join('. ');
-    if (!text) return;
-    const utt=new SpeechSynthesisUtterance(text); utt.rate=0.88; utt.lang='en-US';
-    const voice=getBestVoice(); if(voice) utt.voice=voice;
-    btn.textContent='Stop →';
-    utt.onend=()=>{ btn.textContent='Listen →'; btn.onclick=()=>speakMsg(btn); };
-    btn.onclick=()=>{ window.speechSynthesis.cancel(); btn.textContent='Listen →'; btn.onclick=()=>speakMsg(btn); };
-    window.speechSynthesis.speak(utt);
-}
-function speakAnalysis() { if(!window.speechSynthesis) return; window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(document.getElementById('analysisText').innerText)); }
 
-// IMAGE ANALYSIS
-let imgB64=null, imgMime=null;
-function dOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('over'); }
-function dLeave() { document.getElementById('uploadZone').classList.remove('over'); }
-function dDrop(e) { e.preventDefault(); dLeave(); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) loadImg(f); }
-function onFile(e) { const f=e.target.files[0]; if(f) loadImg(f); }
-function loadImg(file) {
-    compressImage(file).then(c => {
-        imgB64=c.b64; imgMime=c.mime;
-        document.getElementById('imgPreview').src=c.src;
-        document.getElementById('imgPreviewWrap').style.display='block';
-        document.getElementById('imgActions').style.display='flex';
-        document.getElementById('uploadZone').style.display='none';
-        document.getElementById('analysisOut').style.display='none';
+// BRIEF
+function addSignalRow() {
+    const row = document.createElement('div'); row.className = 'signal-row';
+    row.innerHTML = `<input type="text" class="form-input" placeholder="Signal name"><input type="number" class="form-input" placeholder="%" min="0" max="100">`;
+    document.getElementById('signalsEditor').appendChild(row);
+}
+const briefImages = [null, null, null, null];
+function triggerBriefImg(idx) { document.getElementById(`briefImg-${idx}`).click(); }
+function handleBriefImg(event, idx) {
+    const file = event.target.files[0]; if (!file) return;
+    briefImages[idx] = { file, url: null };
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const slot = document.getElementById(`slot-${idx}`);
+        slot.innerHTML = `<img src="${ev.target.result}"><button class="slot-remove" onclick="removeBriefImg(event,${idx})">×</button><input type="file" accept="image/*" style="display:none" id="briefImg-${idx}" onchange="handleBriefImg(event,${idx})">`;
+    };
+    reader.readAsDataURL(file);
+}
+function removeBriefImg(event, idx) {
+    event.stopPropagation(); briefImages[idx] = null;
+    const slot = document.getElementById(`slot-${idx}`);
+    slot.innerHTML = `<div class="slot-empty">+ Add Photo</div><input type="file" accept="image/*" style="display:none" id="briefImg-${idx}" onchange="handleBriefImg(event,${idx})">`;
+    slot.onclick = () => triggerBriefImg(idx);
+}
+async function uploadBriefImages() {
+    const urls = [];
+    for (let i = 0; i < 4; i++) {
+        if (!briefImages[i]?.file) { urls.push(null); continue; }
+        const file = briefImages[i].file;
+        const ext = file.name.split('.').pop();
+        const path = `brief-${Date.now()}-${i}.${ext}`;
+        const { data, error } = await sb.storage.from('brief-images').upload(path, file, { upsert: true });
+        if (error) { urls.push(null); continue; }
+        const { data: urlData } = sb.storage.from('brief-images').getPublicUrl(path);
+        urls.push(urlData.publicUrl);
+    }
+    return urls.filter(Boolean);
+}
+async function saveBrief() {
+    const btn = document.querySelector('[onclick="saveBrief()"]');
+    btn.textContent = 'Publishing...'; btn.disabled = true;
+    const week = document.getElementById('briefWeek').value.trim();
+    const title = document.getElementById('briefTitle').value.trim();
+    if (!week || !title) { alert('Please fill in Drop Label and Title.'); btn.textContent = 'Save & Publish Brief →'; btn.disabled = false; return; }
+    const hexCodes = document.getElementById('briefColors').value.split(',').map(s => s.trim()).filter(Boolean);
+    const colorNames = document.getElementById('briefColorNames').value.split(',').map(s => s.trim()).filter(Boolean);
+    const colors = hexCodes.map((hex, i) => ({ hex, name: colorNames[i] || '' }));
+    const signals = Array.from(document.querySelectorAll('#signalsEditor .signal-row')).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return { name: inputs[0].value.trim(), pct: parseInt(inputs[1].value) || 0 };
+    }).filter(s => s.name);
+    try {
+        const images = await uploadBriefImages();
+        await sb.from('weekly_brief').update({ is_active: false }).eq('is_active', true);
+        const { error } = await sb.from('weekly_brief').insert({ week_label: week, season: document.getElementById('briefSeason').value.trim() || 'SS27', title, colors, signals, images, is_active: true });
+        if (error) throw error;
+        const status = document.getElementById('saveStatus');
+        status.style.display = 'flex'; status.textContent = '✓ Brief published live';
+        setTimeout(() => { status.style.display = 'none'; }, 4000);
+    } catch(err) { alert('Error: ' + err.message); }
+    btn.textContent = 'Save & Publish Brief →'; btn.disabled = false;
+}
+async function loadCurrentBrief() {
+    const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
+    if (!data) return;
+    document.getElementById('briefWeek').value = data.week_label || '';
+    document.getElementById('briefSeason').value = data.season || '';
+    document.getElementById('briefTitle').value = data.title || '';
+    document.getElementById('briefColors').value = data.colors.map(c => c.hex).join(',');
+    document.getElementById('briefColorNames').value = data.colors.map(c => c.name).join(',');
+    const ed = document.getElementById('signalsEditor'); ed.innerHTML = '';
+    data.signals.forEach(s => {
+        const row = document.createElement('div'); row.className = 'signal-row';
+        row.innerHTML = `<input type="text" class="form-input" value="${s.name}"><input type="number" class="form-input" value="${s.pct}" min="0" max="100">`;
+        ed.appendChild(row);
     });
 }
-function clearImg() { imgB64=null; document.getElementById('imgPreviewWrap').style.display='none'; document.getElementById('imgActions').style.display='none'; document.getElementById('uploadZone').style.display='flex'; document.getElementById('analysisOut').style.display='none'; document.getElementById('fileInput').value=''; }
-async function analyze() {
-    if(!imgB64) return; if(!checkUploadLimit()) return;
-    const btn=document.getElementById('analyzeBtn'); btn.disabled=true; btn.textContent='Analyzing...';
-    incrementUploadCount();
+
+// IMAGE ANALYSIS
+let adminImgB64 = null, adminImgMime = null;
+function adOver(e) { e.preventDefault(); document.querySelector('.admin-upload-zone').style.borderColor = 'var(--accent)'; }
+function adLeave() { document.querySelector('.admin-upload-zone').style.borderColor = ''; }
+function adDrop(e) { e.preventDefault(); adLeave(); const f = e.dataTransfer.files[0]; if (f) adminLoadImg(f); }
+function adminOnFile(e) { const f = e.target.files[0]; if (f) adminLoadImg(f); }
+function adminLoadImg(file) {
+    adminImgMime = file.type;
+    const r = new FileReader();
+    r.onload = ev => {
+        adminImgB64 = ev.target.result.split(',')[1];
+        document.getElementById('adminPreviewImg').src = ev.target.result;
+        document.getElementById('adminPreview').style.display = 'block';
+        document.getElementById('adminImgActions').style.display = 'flex';
+        document.getElementById('adminAnalysis').style.display = 'none';
+    };
+    r.readAsDataURL(file);
+}
+function clearAdminImg() {
+    adminImgB64 = null;
+    document.getElementById('adminPreview').style.display = 'none';
+    document.getElementById('adminImgActions').style.display = 'none';
+    document.getElementById('adminAnalysis').style.display = 'none';
+    document.getElementById('adminFileInput').value = '';
+}
+async function adminAnalyze() {
+    if (!adminImgB64) return;
+    const btn = document.getElementById('adminAnalyzeBtn');
+    btn.disabled = true; btn.textContent = 'Analyzing...';
     try {
-        const res=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageData:imgB64,mediaType:imgMime})});
-        const data=await res.json();
-        document.getElementById('analysisText').textContent=data.content?.[0]?.text||'Analysis failed.';
-        document.getElementById('analysisOut').style.display='block';
-        if(document.getElementById('autoSpeak').checked) speakAnalysis();
-    } catch(e) { document.getElementById('analysisText').textContent='Analysis error.'; document.getElementById('analysisOut').style.display='block'; }
-    btn.disabled=false; btn.textContent='Analyze →';
+        const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageData: adminImgB64, mediaType: adminImgMime }) });
+        const data = await res.json();
+        document.getElementById('adminAnalysisText').textContent = data.content?.[0]?.text || 'Analysis failed.';
+        document.getElementById('adminAnalysis').style.display = 'block';
+    } catch(e) {
+        document.getElementById('adminAnalysisText').textContent = 'Error: ' + e.message;
+        document.getElementById('adminAnalysis').style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = 'Analyze →';
 }
 
-function showPaywall() {
-    document.getElementById('paywallModal').classList.remove('hidden');
+// BRAND ANALYSIS — GEMINI
+let brandPhotos = [];
+let fetchedSiteContent = '';
+
+// Load saved DNA on page load
+function loadBrandDNA() {
+    const saved = localStorage.getItem('pmpny_brand_dna');
+    if (saved) document.getElementById('brandDNA').value = saved;
 }
-document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t=document.querySelector(a.getAttribute('href')); if(t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); } }); });
+function saveBrandDNA() {
+    const val = document.getElementById('brandDNA').value.trim();
+    localStorage.setItem('pmpny_brand_dna', val);
+    const status = document.getElementById('dnaSaveStatus');
+    status.style.display = 'inline';
+    setTimeout(() => { status.style.display = 'none'; }, 2000);
+}
+function clearBrandDNA() {
+    document.getElementById('brandDNA').value = '';
+    localStorage.removeItem('pmpny_brand_dna');
+}
+
+async function onBrandPhotos(e) {
+    const files = Array.from(e.target.files);
+    const remaining = 8 - brandPhotos.length;
+    for (const file of files.slice(0, remaining)) {
+        brandPhotos.push(await compressImage(file));
+    }
+    renderBrandPhotoGrid();
+    e.target.value = '';
+}
+function renderBrandPhotoGrid() {
+    document.getElementById('brandPhotoGrid').innerHTML = brandPhotos.map((p, i) => `
+        <div style="position:relative;aspect-ratio:1;overflow:hidden;">
+            <img src="${p.src}" style="width:100%;height:100%;object-fit:cover;">
+            <button onclick="brandPhotos.splice(${i},1);renderBrandPhotoGrid()" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:11px;width:18px;height:18px;cursor:pointer;">×</button>
+        </div>`).join('');
+}
+
+async function fetchBrandSite() {
+    const url = document.getElementById('brandUrl').value.trim();
+    if (!url) return;
+    const btn = document.getElementById('fetchBtn');
+    const status = document.getElementById('fetchStatus');
+    btn.disabled = true; btn.textContent = 'Fetching...';
+    status.style.display = 'block'; status.textContent = 'Fetching site content...';
+    try {
+        const res = await fetch('/api/fetch-site', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        fetchedSiteContent = data.content || '';
+        status.style.color = 'var(--accent)';
+        status.textContent = `✓ Fetched ${data.wordCount || 0} words from ${url}`;
+        if (data.title && !document.getElementById('brandName').value) {
+            document.getElementById('brandName').value = data.title;
+        }
+    } catch(e) {
+        status.style.color = 'var(--red)';
+        status.textContent = 'Could not fetch site — add content manually above.';
+    }
+    btn.disabled = false; btn.textContent = 'Fetch →';
+}
+
+async function runBrandAnalysis() {
+    const brandName = document.getElementById('brandName').value.trim();
+    const category = document.getElementById('brandCategory').value.trim() || 'Fashion Accessories';
+    const perAnalysisContext = document.getElementById('brandContext').value.trim();
+    const dnaFacts = document.getElementById('brandDNA').value.trim();
+    // Combine saved DNA + per-analysis context
+    const context = [dnaFacts, perAnalysisContext].filter(Boolean).join('\n\n');
+    const url = document.getElementById('brandUrl').value.trim();
+
+    if (!brandName && !fetchedSiteContent && brandPhotos.length === 0) {
+        alert('Add a brand name, fetch a URL, or upload photos first.');
+        return;
+    }
+
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true; btn.textContent = 'Analyzing...';
+
+    const output = document.getElementById('brandOutput');
+    output.innerHTML = `
+        <div style="text-align:center;padding:40px;">
+            <div style="width:24px;height:24px;position:relative;margin:0 auto 16px;">
+                <div style="position:absolute;inset:0;border:2px solid var(--accent);transform:rotate(45deg);animation:think-rot 2s linear infinite;"></div>
+                <div style="position:absolute;inset:6px;background:var(--accent);transform:rotate(45deg);animation:think-pls 2s ease infinite;"></div>
+            </div>
+            <div style="font-size:10px;letter-spacing:0.18em;color:var(--gray);text-transform:uppercase;" id="analyzeStatus">Analyzing brand with Gemini...</div>
+        </div>`;
+
+    const statusMsgs = ['Analyzing brand with Gemini...', 'Reading visual identity...', 'Scanning market position...', 'Building strategic report...', 'Almost ready...'];
+    let sIdx = 0;
+    const sInterval = setInterval(() => {
+        sIdx = (sIdx + 1) % statusMsgs.length;
+        const el = document.getElementById('analyzeStatus');
+        if (el) el.textContent = statusMsgs[sIdx];
+    }, 2000);
+
+    try {
+        const res = await fetch('/api/brand-analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                brandName, category, url, context,
+                siteContent: fetchedSiteContent,
+                photos: brandPhotos.map(p => ({ b64: p.b64, mime: p.mime }))
+            })
+        });
+        const data = await res.json();
+        clearInterval(sInterval);
+
+        if (data.error) throw new Error(data.error);
+
+        const report = data.report || '';
+        output.innerHTML = `
+            <div style="width:100%;padding:32px;" id="brandReportExport">
+                <div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;">
+                    <div style="font-size:8px;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">PMPNY Intelligence · Brand Analysis</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;font-style:italic;">${brandName}</div>
+                    <div style="font-size:9px;color:var(--gray);margin-top:6px;letter-spacing:0.16em;">${category} · ${new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'})}</div>
+                </div>
+                <div id="brandReportBody" style="font-size:13px;color:var(--off-white);line-height:1.8;white-space:pre-wrap;">${report}</div>
+                <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:12px;">
+                    <button class="btn-save" onclick="downloadBrandReport()">Download PDF →</button>
+                    <button class="btn-secondary" onclick="copyBrandReport()">Copy Text</button>
+                </div>
+            </div>`;
+    } catch(e) {
+        clearInterval(sInterval);
+        output.innerHTML = `<div style="padding:32px;color:var(--red);font-size:12px;">Error: ${e.message}</div>`;
+    }
+    btn.disabled = false; btn.textContent = 'Analyze Brand →';
+}
+
+function downloadBrandReport() {
+    const el = document.getElementById('brandReportExport');
+    if (!el) return;
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html><head><title>PMPNY Brand Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#080808;color:#f4f4ee;font-family:'DM Mono',monospace;padding:40px;}</style>
+    </head><body>${el.innerHTML}</body></html>`);
+    w.document.close();
+    setTimeout(() => w.print(), 600);
+}
+function copyBrandReport() {
+    const el = document.getElementById('brandReportBody');
+    if (!el) return;
+    navigator.clipboard.writeText(el.textContent || el.innerText);
+    alert('Copied to clipboard');
+}
+
+// MOOD BOARD
+let adminMbPhotos = [], adminMbNarrativeText = '';
+function adminMbDragOver(e) { e.preventDefault(); document.getElementById('adminMbDropzone').style.borderColor = 'var(--accent)'; }
+function adminMbDragLeave() { document.getElementById('adminMbDropzone').style.borderColor = ''; }
+function adminMbDrop(e) { e.preventDefault(); adminMbDragLeave(); adminMbOnFiles({ target: { files: e.dataTransfer.files } }); }
+async function adminMbOnFiles(e) {
+    const files = Array.from(e.target.files || []);
+    const remaining = 12 - adminMbPhotos.length;
+    if (remaining <= 0) { alert('Maximum 12 photos.'); return; }
+    for (const file of files.slice(0, remaining)) adminMbPhotos.push(await compressImage(file));
+    renderAdminMbPhotoGrid();
+    document.getElementById('adminMbFileInput').value = '';
+}
+function renderAdminMbPhotoGrid() {
+    const grid = document.getElementById('adminMbPhotoGrid');
+    document.getElementById('adminMbPhotoCount').textContent = `${adminMbPhotos.length} / 12 photos`;
+    grid.innerHTML = adminMbPhotos.map((p, i) => `
+        <div style="position:relative;aspect-ratio:1;overflow:hidden;">
+            <img src="${p.src}" style="width:100%;height:100%;object-fit:cover;">
+            <button onclick="adminMbRemovePhoto(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.8);border:none;color:white;font-size:11px;width:18px;height:18px;cursor:pointer;">×</button>
+        </div>`).join('');
+    const hexes = (document.getElementById('adminMbColors').value.match(/#[0-9A-Fa-f]{6}/g) || []);
+    document.getElementById('adminMbSwatches').innerHTML = hexes.map(h => `<div style="width:24px;height:24px;background:${h};border:1px solid rgba(255,255,255,0.1);border-radius:2px;" title="${h}"></div>`).join('');
+}
+function adminMbRemovePhoto(idx) { adminMbPhotos.splice(idx, 1); renderAdminMbPhotoGrid(); }
+async function adminGenerateMbNarrative() {
+    const concept = document.getElementById('adminMbConcept').value.trim();
+    if (!concept) { alert('Enter a concept first.'); return; }
+    const el = document.getElementById('adminMbNarrative');
+    el.style.display = 'block'; el.textContent = 'Generating...';
+    try {
+        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: `Write a 3-sentence mood board narrative for: "${concept}". Poetic, creative director voice. No bullets.` }] }) });
+        const data = await res.json();
+        adminMbNarrativeText = data.content?.[0]?.text || '';
+        el.textContent = adminMbNarrativeText;
+    } catch(e) { el.textContent = 'Error generating narrative.'; }
+}
+function adminBuildFullMoodboard() {
+    const concept = document.getElementById('adminMbConcept').value.trim();
+    const season = document.getElementById('adminMbSeason').value.trim() || 'SS27';
+    const title = document.getElementById('adminMbTitle').value.trim() || concept.substring(0, 40);
+    const hexes = (document.getElementById('adminMbColors').value.match(/#[0-9A-Fa-f]{6}/g) || []);
+    if (!concept && adminMbPhotos.length === 0) { alert('Add a concept or upload photos first.'); return; }
+    const canvas = document.getElementById('adminMbCanvas');
+    const swatchesHtml = hexes.map(h => `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:36px;height:36px;background:${h};border:1px solid rgba(255,255,255,0.1);"></div><div style="font-size:8px;color:var(--dim);">${h}</div></div>`).join('');
+    let photoGrid = '';
+    if (adminMbPhotos.length > 0) {
+        const cols = adminMbPhotos.length <= 3 ? adminMbPhotos.length : adminMbPhotos.length <= 6 ? 3 : 4;
+        photoGrid = `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:3px;margin-bottom:16px;">${adminMbPhotos.map(p => `<div style="aspect-ratio:3/4;overflow:hidden;"><img src="${p.src}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>`).join('')}</div>`;
+    }
+    canvas.innerHTML = `
+        <div style="width:100%;padding:32px;" id="adminMbExport">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.07);padding-bottom:20px;">
+                <div>
+                    <div style="font-size:8px;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">PMPNY Intelligence · Mood Board</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;font-style:italic;color:var(--white);line-height:1;">${title || 'Untitled'}</div>
+                    <div style="font-size:9px;color:var(--gray);letter-spacing:0.2em;margin-top:6px;">${season}</div>
+                </div>
+                ${hexes.length > 0 ? `<div style="display:flex;gap:8px;">${swatchesHtml}</div>` : ''}
+            </div>
+            ${photoGrid}
+            ${adminMbNarrativeText ? `<div style="padding:16px;border-left:2px solid var(--accent);margin-bottom:16px;"><div style="font-size:8px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">Creative Direction</div><div style="font-size:12px;color:var(--off-white);line-height:1.9;font-style:italic;">${adminMbNarrativeText}</div></div>` : ''}
+            ${concept ? `<div style="padding:16px;background:var(--panel-2);border:1px solid var(--border);"><div style="font-size:8px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">Concept</div><div style="font-size:12px;color:var(--off-white);line-height:1.8;">${concept}</div></div>` : ''}
+            <div style="margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;">
+                <div style="font-size:8px;color:var(--dim);">PMPNY Design Studio · pmpny.com</div>
+                <div style="font-size:8px;color:var(--dim);">${new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'})}</div>
+            </div>
+        </div>
+        <div style="padding:0 32px 20px;display:flex;gap:12px;">
+            <button class="btn-save" onclick="adminDownloadMoodboard()" style="flex:1;">Download PDF →</button>
+            <button class="btn-secondary" onclick="adminResetMoodboard()">Reset</button>
+        </div>`;
+}
+function adminDownloadMoodboard() {
+    const exportEl = document.getElementById('adminMbExport'); if (!exportEl) return;
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html><head><title>PMPNY Mood Board</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#080808;color:#f4f4ee;font-family:'DM Mono',monospace;padding:40px;}</style></head><body>${exportEl.innerHTML}</body></html>`);
+    w.document.close(); setTimeout(() => w.print(), 800);
+}
+function adminResetMoodboard() {
+    adminMbPhotos = []; adminMbNarrativeText = '';
+    document.getElementById('adminMbPhotoGrid').innerHTML = '';
+    document.getElementById('adminMbPhotoCount').textContent = '0 / 12 photos';
+    document.getElementById('adminMbNarrative').style.display = 'none';
+    document.getElementById('adminMbCanvas').innerHTML = `<div style="text-align:center;color:var(--dim);"><div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;margin-bottom:8px;">Your mood board</div><div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;">will appear here</div></div>`;
+}
+
+// USERS
+async function loadUsers() {
+    const { data: convs } = await sb.from('conversations').select('user_id').order('created_at');
+    const userConvCount = {};
+    convs?.forEach(c => { userConvCount[c.user_id] = (userConvCount[c.user_id] || 0) + 1; });
+    const list = document.getElementById('usersList');
+    if (!convs?.length) { list.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--dim);text-align:center;">No registered users yet</div>'; document.getElementById('statUsers').textContent = '0'; return; }
+    const uniqueUsers = [...new Set(convs.map(c => c.user_id))];
+    document.getElementById('statUsers').textContent = uniqueUsers.length;
+    list.innerHTML = uniqueUsers.map(uid => `<div class="users-table-row"><span class="user-email">${uid.substring(0,8)}...</span><span class="user-date">—</span><span class="user-tier">Spark</span><span class="user-convs">${userConvCount[uid] || 0}</span></div>`).join('');
+}
 </script>
 </body>
 </html>
