@@ -500,6 +500,28 @@ if (sessionStorage.getItem('pmpny_admin') === '1') {
     setTimeout(loadBrandDNA, 100);
 }
 
+// URL AUTO-DETECTION — same as public AI
+function extractURL(text) {
+    const httpMatch = text.match(/https?:\/\/[^\s]+/);
+    if (httpMatch) return httpMatch[0].replace(/[.,;!?]$/, '');
+    const domainMatch = text.match(/(?:^|\s)([a-zA-Z0-9][a-zA-Z0-9-]*\.(?:com|net|org|io|co|it|fr|uk|de|es|store|shop|nyc)(?:\/[^\s]*)?)/i);
+    if (domainMatch) return domainMatch[1].replace(/[.,;!?]$/, '');
+    return null;
+}
+async function fetchSiteForChat(url) {
+    try {
+        const res = await fetch('/api/fetch-site', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }),
+            signal: AbortSignal.timeout(12000)
+        });
+        const data = await res.json();
+        if (data.error) return null;
+        return data;
+    } catch(e) { return null; }
+}
+
 // PAGE VISIBILITY — pause/resume on tab switch
 let pendingRequest = null;
 let pageIsVisible = true;
@@ -740,6 +762,24 @@ async function adminSend(editedText, editIndex) {
         const el = document.getElementById('adminThinkText');
         if (el) el.textContent = thinkMsgs[thinkIdx];
     }, 1800);
+
+    // AUTO URL FETCH
+    const detectedURL = extractURL(txt);
+    if (detectedURL) {
+        const thinkEl = document.getElementById('adminThinkText');
+        if (thinkEl) thinkEl.textContent = 'Reading site...';
+        const siteData = await fetchSiteForChat(detectedURL);
+        if (siteData && siteData.content) {
+            const siteContext = '\n\n[WEBSITE CONTENT FROM ' + detectedURL + ']\nTitle: ' + (siteData.title || '') + '\n' + (siteData.hasShopifyData ? 'Products found: ' + siteData.productCount : '') + '\n\n' + siteData.content.substring(0, 5000) + '\n[END WEBSITE CONTENT]';
+            if (typeof messageContent === 'string') {
+                messageContent = messageContent + siteContext;
+            } else {
+                const textPart = messageContent.find(function(p) { return p.type === 'text'; });
+                if (textPart) textPart.text += siteContext;
+            }
+            adminHistory[adminHistory.length - 1].content = messageContent;
+        }
+    }
 
     // PAGE VISIBILITY — wait for page to be visible before sending
     if (document.hidden) {
