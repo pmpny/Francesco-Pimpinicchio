@@ -552,24 +552,40 @@
             </div>
 <!-- Visual Analysis panel removed — integrated into chat -->
             <div class="panel">
-                <div class="panel-head"><span>Biweekly Brief</span><span id="briefSeasonLabel">SS27</span></div>
+                <div class="panel-head"><span>Monthly Brief</span><span id="briefSeasonLabel">SS26</span></div>
                 <div class="brief-body">
-                    <div class="brief-week">Biweekly Drop · May 2026</div>
-                    <div class="brief-title">The Architecture of Restraint</div>
+                    <div class="brief-week" id="briefWeekLabel">Monthly Brief · June 2026</div>
+                    <div class="brief-title" id="briefTitleEl">The Architecture of Restraint</div>
                     <div class="brief-note" id="briefNote" style="display:none;font-size:11px;color:var(--gray);line-height:1.7;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);font-style:italic;"></div>
-                    <div class="brief-images" id="briefImages" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px;"></div>
-                    <div class="swatches">
+                    <div class="brief-images" id="briefImages" style="display:none;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px;"></div>
+                    <div class="swatches" id="briefSwatches">
                         <div class="swatch-wrap"><div class="swatch" style="background:#6B1C23"></div><div class="swatch-name">Burgundy</div></div>
                         <div class="swatch-wrap"><div class="swatch" style="background:#3D2817"></div><div class="swatch-name">Bark</div></div>
                         <div class="swatch-wrap"><div class="swatch" style="background:#9CAF88"></div><div class="swatch-name">Sage</div></div>
                         <div class="swatch-wrap"><div class="swatch" style="background:#e8e0d0"></div><div class="swatch-name">Bone</div></div>
                         <div class="swatch-wrap"><div class="swatch" style="background:#080808;border-color:rgba(255,255,255,0.15)"></div><div class="swatch-name">Matte</div></div>
                     </div>
-                    <div class="brief-signals">
-                        <div class="bs"><span class="bs-name">Structural Volume</span><div class="bs-track"><div class="bs-fill" style="width:84%"></div></div><span class="bs-pct">↑84%</span></div>
-                        <div class="bs"><span class="bs-name">Hardware Detail</span><div class="bs-track"><div class="bs-fill" style="width:71%"></div></div><span class="bs-pct">↑71%</span></div>
-                        <div class="bs"><span class="bs-name">Bio Materials</span><div class="bs-track"><div class="bs-fill" style="width:58%"></div></div><span class="bs-pct">↑58%</span></div>
-                        <div class="bs"><span class="bs-name">Chain Hardware</span><div class="bs-track"><div class="bs-fill" style="width:47%"></div></div><span class="bs-pct">↑47%</span></div>
+                    <!-- SIGNALS: rising, peaking, fading -->
+                    <div id="briefSignalsPanel">
+                        <div style="font-size:8px;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;">↑ Rising</div>
+                        <div class="brief-signals" id="briefSignalsRising">
+                            <div class="bs"><span class="bs-name">Structural Volume</span><div class="bs-track"><div class="bs-fill" style="width:84%;background:rgba(204,255,0,0.6)"></div></div><span class="bs-pct" style="color:var(--accent)">84%</span></div>
+                        </div>
+                        <div style="font-size:8px;letter-spacing:0.18em;color:#ff9944;text-transform:uppercase;margin:10px 0 8px;">→ Peaking</div>
+                        <div class="brief-signals" id="briefSignalsPeaking">
+                            <div class="bs"><span class="bs-name">Chain Hardware</span><div class="bs-track"><div class="bs-fill" style="width:52%;background:rgba(255,153,68,0.5)"></div></div><span class="bs-pct" style="color:#ff9944">52%</span></div>
+                        </div>
+                        <div style="font-size:8px;letter-spacing:0.18em;color:#ff4444;text-transform:uppercase;margin:10px 0 8px;">↓ Fading</div>
+                        <div class="brief-signals" id="briefSignalsFading">
+                            <div class="bs"><span class="bs-name">Logo Streetwear</span><div class="bs-track"><div class="bs-fill" style="width:22%;background:rgba(255,68,68,0.4)"></div></div><span class="bs-pct" style="color:#ff4444">22%</span></div>
+                        </div>
+                    </div>
+                    <!-- BRAND MOMENTUM -->
+                    <div id="briefBrandMomentum" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+                        <div style="font-size:8px;letter-spacing:0.18em;color:var(--gray);text-transform:uppercase;margin-bottom:10px;">Brand Momentum</div>
+                        <div id="briefBrandsList" style="display:flex;flex-direction:column;gap:6px;">
+                            <div style="font-size:10px;color:var(--dim);">Loading...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -592,11 +608,17 @@
 </div>
 
 <!-- PRICING — minimal -->
-<div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;">
-    <span style="font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);">Spark Free &nbsp;·&nbsp; Plus $9/mo &nbsp;·&nbsp; Studio $50/mo</span>
-    <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;">
-        <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;">Plans →</button>
-        <a href="pricing.html" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);text-decoration:underline;text-underline-offset:3px;white-space:nowrap;">Details →</a>
+<div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:8px;letter-spacing:0.04em;text-transform:uppercase;color:var(--dim);white-space:nowrap;">Spark — Free</span>
+        <span style="color:var(--dim);font-size:8px;">·</span>
+        <span style="font-size:8px;letter-spacing:0.04em;text-transform:uppercase;color:var(--dim);white-space:nowrap;">Plus — $9/mo</span>
+        <span style="color:var(--dim);font-size:8px;">·</span>
+        <span style="font-size:8px;letter-spacing:0.04em;text-transform:uppercase;color:var(--dim);white-space:nowrap;">Studio — $50/mo</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;margin-left:8px;">
+        <button onclick="showPaywall()" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.04em;text-transform:uppercase;background:transparent;border:none;color:var(--gray);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;">Plans →</button>
+        <a href="pricing.html" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.04em;text-transform:uppercase;color:var(--gray);text-decoration:underline;text-underline-offset:3px;white-space:nowrap;">Details →</a>
     </div>
 </div>
 
@@ -755,6 +777,42 @@ async function loadWeeklyBrief() {
         if (signalsEl && data.signals?.length) signalsEl.innerHTML = data.signals.map(s => `<div class="bs"><span class="bs-name">${s.name}</span><div class="bs-track"><div class="bs-fill" style="width:${s.pct}%"></div></div><span class="bs-pct">↑${s.pct}%</span></div>`).join('');
         const seasonEl = document.getElementById('briefSeasonLabel');
         if (seasonEl && data.season) seasonEl.textContent = data.season;
+        const weekEl2 = document.getElementById('briefWeekLabel');
+        if (weekEl2 && data.week_label) weekEl2.textContent = data.week_label;
+        const titleEl2 = document.getElementById('briefTitleEl');
+        if (titleEl2 && data.title) titleEl2.textContent = data.title;
+
+        // Render signals by direction
+        if (data.signals?.length) {
+            const rising = data.signals.filter(s => s.direction === 'rising');
+            const peaking = data.signals.filter(s => s.direction === 'peaking');
+            const fading = data.signals.filter(s => s.direction === 'fading');
+            const renderSigs = (arr, color, trackColor) => arr.map(s =>
+                `<div class="bs" title="${s.note || ''}">
+                    <span class="bs-name">${s.name}</span>
+                    <div class="bs-track"><div class="bs-fill" style="width:${s.pct}%;background:${trackColor}"></div></div>
+                    <span class="bs-pct" style="color:${color}">${s.pct}%</span>
+                </div>`).join('');
+            const rEl = document.getElementById('briefSignalsRising');
+            const pEl = document.getElementById('briefSignalsPeaking');
+            const fEl = document.getElementById('briefSignalsFading');
+            if (rEl) rEl.innerHTML = rising.length ? renderSigs(rising, 'var(--accent)', 'rgba(204,255,0,0.6)') : '<div style="font-size:10px;color:var(--dim);">—</div>';
+            if (pEl) pEl.innerHTML = peaking.length ? renderSigs(peaking, '#ff9944', 'rgba(255,153,68,0.5)') : '<div style="font-size:10px;color:var(--dim);">—</div>';
+            if (fEl) fEl.innerHTML = fading.length ? renderSigs(fading, '#ff4444', 'rgba(255,68,68,0.4)') : '<div style="font-size:10px;color:var(--dim);">—</div>';
+        }
+
+        // Render brand momentum
+        if (data.brand_momentum) {
+            const bm = data.brand_momentum;
+            const brandsList = document.getElementById('briefBrandsList');
+            if (brandsList) {
+                let html = '';
+                if (bm.rising?.length) html += bm.rising.map(b => `<div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:9px;color:var(--accent);flex-shrink:0;">↑</span><span style="font-size:10px;color:var(--off-white);">${b.name} <span style="color:var(--dim);font-size:9px;">— ${b.note}</span></span></div>`).join('');
+                if (bm.holding?.length) html += bm.holding.map(b => `<div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:9px;color:#ff9944;flex-shrink:0;">→</span><span style="font-size:10px;color:var(--off-white);">${b.name} <span style="color:var(--dim);font-size:9px;">— ${b.note}</span></span></div>`).join('');
+                if (bm.cooling?.length) html += bm.cooling.map(b => `<div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:9px;color:#ff4444;flex-shrink:0;">↓</span><span style="font-size:10px;color:var(--off-white);">${b.name} <span style="color:var(--dim);font-size:9px;">— ${b.note}</span></span></div>`).join('');
+                brandsList.innerHTML = html || '<div style="font-size:10px;color:var(--dim);">No data</div>';
+            }
+        }
 
         // Update hero signals
         if (data.signals?.length) {
