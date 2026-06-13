@@ -168,7 +168,10 @@
     /* CHAT — hide history sidebar on mobile, full width chat */
     #section-chat > div { grid-template-columns: 1fr !important; }
     #section-chat > div > div:first-child { display: none; }
-    .admin-chat { height: calc(100vh - 200px); }
+    .admin-chat { height: calc(100vh - 220px); }
+    #mobileHistorySection { display: block !important; }
+    .admin-chat-input { font-size: 16px !important; } /* prevent iOS auto-zoom */
+    textarea.admin-chat-input { font-size: 16px !important; }
     /* BRAND ANALYSIS — stack on mobile */
     #section-brandanalysis > div { grid-template-columns: 1fr !important; }
     /* MOOD BOARD — stack on mobile */
@@ -289,6 +292,23 @@
                 </div>
             </div>
         </div>
+
+        <!-- MOBILE HISTORY DROPDOWN — visible only on mobile -->
+        <div id="mobileHistorySection" style="display:none;margin-top:12px;">
+            <button onclick="toggleMobileHistory()" style="width:100%;background:var(--panel);border:1px solid var(--border);color:var(--gray);font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all 0.18s;">
+                <span>Chat History</span>
+                <span id="mobileHistoryArrow" style="transition:transform 0.2s;">↓</span>
+            </button>
+            <div id="mobileHistoryPanel" style="display:none;background:var(--panel);border:1px solid var(--border);border-top:none;max-height:300px;overflow-y:auto;">
+                <div style="padding:8px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end;">
+                    <button onclick="adminNewChat()" style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.1em;background:transparent;border:1px solid var(--border);color:var(--gray);padding:4px 8px;cursor:pointer;text-transform:uppercase;">+ New Chat</button>
+                </div>
+                <div id="mobileHistoryList" style="padding:8px 0;">
+                    <div style="padding:12px 16px;font-size:11px;color:var(--dim);text-align:center;">No history yet</div>
+                </div>
+            </div>
+        </div>
+
         <!-- BRIEF EDITOR -->
         <div class="admin-section" id="section-brief">
             <h2 class="section-title">Biweekly Brief Editor</h2>
@@ -885,12 +905,27 @@ let adminConvId = null;
 let adminConversations = JSON.parse(localStorage.getItem('pmpny_admin_convs') || '[]');
 function loadAdminHistory() {
     const list = document.getElementById('adminHistoryList');
-    if (!adminConversations.length) { list.innerHTML = '<div style="padding:16px;font-size:11px;color:var(--dim);text-align:center;">No history yet</div>'; return; }
-    list.innerHTML = adminConversations.slice().reverse().map(c => `
-        <div onclick="loadAdminConversation('${c.id}')" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.18s;" onmouseover="this.style.background='var(--panel-2)'" onmouseout="this.style.background='transparent'">
+    const mobileList = document.getElementById('mobileHistoryList');
+    const html = !adminConversations.length
+        ? '<div style="padding:16px;font-size:11px;color:var(--dim);text-align:center;">No history yet</div>'
+        : adminConversations.slice().reverse().map(c => `
+        <div onclick="loadAdminConversation('${c.id}');closeMobileHistory()" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.18s;" onmouseover="this.style.background='var(--panel-2)'" onmouseout="this.style.background='transparent'">
             <div style="font-size:11px;color:var(--off-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;">${c.title}</div>
             <div style="font-size:9px;color:var(--dim);letter-spacing:0.08em;">${new Date(c.created_at).toLocaleDateString()}</div>
         </div>`).join('');
+    if (list) list.innerHTML = html;
+    if (mobileList) mobileList.innerHTML = html;
+}
+function toggleMobileHistory() {
+    const panel = document.getElementById('mobileHistoryPanel');
+    const arrow = document.getElementById('mobileHistoryArrow');
+    const isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : 'block';
+    arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+function closeMobileHistory() {
+    document.getElementById('mobileHistoryPanel').style.display = 'none';
+    document.getElementById('mobileHistoryArrow').style.transform = 'rotate(0deg)';
 }
 function loadAdminConversation(convId) {
     const conv = adminConversations.find(c => c.id === convId);
