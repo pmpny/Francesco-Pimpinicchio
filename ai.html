@@ -333,7 +333,17 @@
     .brief-colors-row { padding: 16px 0; }
 }
 @media (max-width: 1024px) {
-    .brief-grid { grid-template-columns: 1fr 1fr; }
+    .brief-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "rising fading"
+            "peaking fading"
+            "brands brands";
+    }
+    .brief-col:nth-child(1) { grid-area: rising; }
+    .brief-col:nth-child(2) { grid-area: peaking; }
+    .brief-col:nth-child(3) { grid-area: fading; }
+    .brief-col:nth-child(4) { grid-area: brands; }
 }
 @media (max-width: 1024px) {
             nav { padding: 14px 24px; }
