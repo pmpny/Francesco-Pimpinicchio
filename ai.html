@@ -329,11 +329,19 @@
     /* Show tabs on mobile */
     .ai-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 0; }
     /* Brief grid — 2 col on mobile: signals left, brands right */
-    .brief-grid { grid-template-columns: 1fr 1fr; margin-top: 0; }
-    .brief-col:nth-child(1) { grid-column: 1; grid-row: 1; } /* Rising */
-    .brief-col:nth-child(2) { grid-column: 1; grid-row: 2; } /* Peaking */
-    .brief-col:nth-child(3) { grid-column: 1; grid-row: 3; } /* Fading */
-    .brief-col:nth-child(4) { grid-column: 2; grid-row: 1 / 4; } /* Brand Momentum — full height */
+    .brief-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+            "rising brands"
+            "peaking brands"
+            "fading brands";
+        margin-top: 0;
+    }
+    .brief-col:nth-child(1) { grid-area: rising; }
+    .brief-col:nth-child(2) { grid-area: peaking; }
+    .brief-col:nth-child(3) { grid-area: fading; }
+    .brief-col:nth-child(4) { grid-area: brands; }
     .brief-colors-row { padding: 16px 0; flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 @media (max-width: 1024px) {
