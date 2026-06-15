@@ -750,9 +750,44 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').cat
 // SUPABASE
 const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage
+    }
+});
 let currentUser = null, currentConvId = null, isGuest = false;
 const FREE_LIMIT = 20;
+
+// Restore session on PWA load — critical for iOS home screen apps
+async function restoreSession() {
+    try {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user) {
+            currentUser = session.user;
+            updateAuthUI();
+            loadHistory();
+            closeModal();
+        }
+    } catch(e) {}
+}
+restoreSession();
+
+// Re-check session when user returns to app (switching apps on mobile)
+document.addEventListener('visibilitychange', async () => {
+    if (!document.hidden && !currentUser) {
+        try {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session?.user) {
+                currentUser = session.user;
+                updateAuthUI();
+                loadHistory();
+            }
+        } catch(e) {}
+    }
+});
 
 sb.auth.onAuthStateChange((event, session) => {
     currentUser = session?.user || null; updateAuthUI();
