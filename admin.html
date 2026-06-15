@@ -559,14 +559,28 @@ async function fetchSiteForChat(url) {
     } catch(e) { return null; }
 }
 
-// PAGE VISIBILITY — pause/resume on tab switch
+// PAGE VISIBILITY — keep request alive when switching apps
 let pendingRequest = null;
 let pageIsVisible = true;
 document.addEventListener('visibilitychange', () => {
     pageIsVisible = !document.hidden;
-    if (!document.hidden && pendingRequest) {
-        document.getElementById('reconnectBanner').classList.remove('show');
+    if (!document.hidden) {
+        const banner = document.getElementById('reconnectBanner');
+        if (banner) banner.classList.remove('show');
     }
+});
+
+// Keep page alive on iOS by playing silent audio trick + wake lock
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            await navigator.wakeLock.request('screen');
+        }
+    } catch(e) {}
+}
+requestWakeLock();
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) requestWakeLock();
 });
 
 // NAVIGATION
