@@ -344,13 +344,13 @@
     .brief-col:nth-child(4) { grid-area: brands; }
     .brief-colors-row { padding: 16px 0; flex-direction: column; align-items: flex-start; gap: 12px; }
 }
-@media (max-width: 1024px) {
+@media (min-width: 641px) and (max-width: 1024px) {
     .brief-grid {
         grid-template-columns: 1fr 1fr;
         grid-template-areas:
-            "rising fading"
-            "peaking fading"
-            "brands brands";
+            "rising brands"
+            "peaking brands"
+            "fading brands";
     }
     .brief-col:nth-child(1) { grid-area: rising; }
     .brief-col:nth-child(2) { grid-area: peaking; }
