@@ -255,6 +255,44 @@
                 <a href="ai.html" class="btn-secondary">View Platform →</a>
             </div>
             <div id="genBriefStatus" style="display:none;margin-top:12px;font-size:11px;padding:10px 14px;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);"></div>
+
+            <!-- CURRENT BRIEF PREVIEW -->
+            <h2 class="section-title" style="margin-top:32px;">Current Brief</h2>
+            <div id="dashBriefPreview" style="background:var(--panel);border:1px solid var(--border);">
+                <!-- Header -->
+                <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:8px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;" id="dbWeekLabel">Loading...</div>
+                        <div style="font-family:var(--font-display);font-size:18px;font-weight:300;font-style:italic;color:var(--white);margin-top:4px;" id="dbTitle">—</div>
+                    </div>
+                    <div style="display:flex;gap:4px;" id="dbColors"></div>
+                </div>
+                <!-- 4 column grid -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);">
+                    <!-- Rising -->
+                    <div style="background:var(--panel-2);padding:16px;">
+                        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:6px;">↑ Rising</div>
+                        <div id="dbRising" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                    <!-- Peaking -->
+                    <div style="background:var(--panel-2);padding:16px;">
+                        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff9944;margin-bottom:12px;">→ Peaking</div>
+                        <div id="dbPeaking" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                    <!-- Fading -->
+                    <div style="background:var(--panel-2);padding:16px;">
+                        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff4444;margin-bottom:12px;">↓ Fading</div>
+                        <div id="dbFading" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                    <!-- Brand Momentum -->
+                    <div style="background:var(--panel-2);padding:16px;">
+                        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;">Brand Momentum</div>
+                        <div id="dbBrands" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                </div>
+                <!-- Note -->
+                <div id="dbNote" style="display:none;padding:14px 20px;font-size:11px;color:var(--gray);line-height:1.7;font-style:italic;border-top:1px solid var(--border);"></div>
+            </div>
         </div>
         <!-- ADMIN CHAT -->
         <div class="admin-section" id="section-chat">
@@ -1061,17 +1099,86 @@ async function saveBrief() {
 async function loadCurrentBrief() {
     const { data } = await sb.from('weekly_brief').select('*').eq('is_active', true).order('published_at', { ascending: false }).limit(1).single();
     if (!data) return;
+
+    // Populate form fields
     document.getElementById('briefWeek').value = data.week_label || '';
     document.getElementById('briefSeason').value = data.season || '';
     document.getElementById('briefTitle').value = data.title || '';
-    document.getElementById('briefColors').value = data.colors.map(c => c.hex).join(',');
-    document.getElementById('briefColorNames').value = data.colors.map(c => c.name).join(',');
+    if (data.colors?.length) {
+        document.getElementById('briefColors').value = data.colors.map(c => c.hex).join(',');
+        document.getElementById('briefColorNames').value = data.colors.map(c => c.name).join(',');
+    }
     const ed = document.getElementById('signalsEditor'); ed.innerHTML = '';
-    data.signals.forEach(s => {
-        const row = document.createElement('div'); row.className = 'signal-row';
-        row.innerHTML = `<input type="text" class="form-input" value="${s.name}"><input type="number" class="form-input" value="${s.pct}" min="0" max="100">`;
-        ed.appendChild(row);
-    });
+    if (data.signals?.length) {
+        data.signals.forEach(s => {
+            const row = document.createElement('div'); row.className = 'signal-row';
+            row.innerHTML = `<input type="text" class="form-input" value="${s.name}"><input type="number" class="form-input" value="${s.pct}" min="0" max="100">`;
+            ed.appendChild(row);
+        });
+    }
+
+    // Populate dashboard preview
+    const weekEl = document.getElementById('dbWeekLabel');
+    const titleEl = document.getElementById('dbTitle');
+    const colorsEl = document.getElementById('dbColors');
+    const risingEl = document.getElementById('dbRising');
+    const peakingEl = document.getElementById('dbPeaking');
+    const fadingEl = document.getElementById('dbFading');
+    const brandsEl = document.getElementById('dbBrands');
+    const noteEl = document.getElementById('dbNote');
+
+    if (weekEl) weekEl.textContent = data.week_label || '';
+    if (titleEl) titleEl.textContent = data.title || '';
+
+    // Colors swatches
+    if (colorsEl && data.colors?.length) {
+        colorsEl.innerHTML = data.colors.slice(0,5).map(c =>
+            `<div title="${c.name}" style="width:20px;height:20px;background:${c.hex};border:1px solid rgba(255,255,255,0.1);"></div>`
+        ).join('');
+    }
+
+    // Signals by direction
+    const renderSig = (arr, color, trackColor) => arr.length ? arr.map(s =>
+        `<div style="display:flex;align-items:center;gap:6px;" title="${s.note||s.category||''}">
+            <span style="font-size:10px;color:var(--off-white);flex:1;line-height:1.3;">${s.name}</span>
+            <div style="width:30px;height:1px;background:var(--border);position:relative;flex-shrink:0;">
+                <div style="position:absolute;left:0;top:0;height:100%;width:${s.pct}%;background:${trackColor};"></div>
+            </div>
+            <span style="font-size:9px;color:${color};min-width:26px;text-align:right;">${s.pct}%</span>
+        </div>`).join('') : '<div style="font-size:10px;color:var(--dim);">—</div>';
+
+    if (data.signals?.length) {
+        const rising = data.signals.filter(s => s.direction === 'rising');
+        const peaking = data.signals.filter(s => s.direction === 'peaking');
+        const fading = data.signals.filter(s => s.direction === 'fading');
+        if (risingEl) risingEl.innerHTML = renderSig(rising, 'var(--accent)', 'rgba(204,255,0,0.6)');
+        if (peakingEl) peakingEl.innerHTML = renderSig(peaking, '#ff9944', 'rgba(255,153,68,0.5)');
+        if (fadingEl) fadingEl.innerHTML = renderSig(fading, '#ff4444', 'rgba(255,68,68,0.4)');
+    }
+
+    // Brand momentum
+    if (brandsEl && data.brand_momentum) {
+        const bm = data.brand_momentum;
+        let html = '';
+        const renderBrands = (arr, arrow, color) => (arr||[]).map(b =>
+            `<div style="display:flex;gap:6px;align-items:flex-start;">
+                <span style="font-size:9px;color:${color};flex-shrink:0;">${arrow}</span>
+                <div>
+                    <div style="font-size:10px;color:var(--off-white);">${b.name}</div>
+                    <div style="font-size:9px;color:var(--dim);line-height:1.4;">${b.note||''}</div>
+                </div>
+            </div>`).join('');
+        html += renderBrands(bm.rising, '↑', 'var(--accent)');
+        html += renderBrands(bm.holding, '→', '#ff9944');
+        html += renderBrands(bm.cooling, '↓', '#ff4444');
+        brandsEl.innerHTML = html || '<div style="font-size:10px;color:var(--dim);">No data</div>';
+    }
+
+    // Note
+    if (noteEl && data.note) {
+        noteEl.textContent = data.note;
+        noteEl.style.display = 'block';
+    }
 }
 
 // IMAGE ANALYSIS
