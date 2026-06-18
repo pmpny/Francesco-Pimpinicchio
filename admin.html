@@ -207,16 +207,36 @@
             <span class="admin-logo-text">PMPNY Intelligence</span>
             <span class="admin-badge">ADMIN</span>
         </div>
-        <div class="admin-nav">
-            <button class="admin-nav-btn active" onclick="showSection('dashboard', this)">Dashboard</button>
-            <button class="admin-nav-btn" onclick="showSection('chat', this)">AI Chat</button>
-            <button class="admin-nav-btn" onclick="showSection('brief', this)">Weekly Brief</button>
-            <button class="admin-nav-btn" onclick="showSection('upload', this)">Analysis</button>
-            <button class="admin-nav-btn" onclick="showSection('brandanalysis', this)">Brand Analysis</button>
-            <button class="admin-nav-btn" onclick="showSection('moodboard', this)">Mood Board</button>
-            <button class="admin-nav-btn" onclick="showSection('users', this)">Users</button>
-            <a href="ai.html" class="admin-nav-btn">← Platform</a>
-            <button class="admin-nav-btn danger" onclick="adminLogout()">Logout</button>
+        <button class="dots-btn" onclick="openAdminPanel()" title="Menu" style="padding:8px 12px;">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <!-- ADMIN PANEL OVERLAY -->
+    <div class="panel-overlay" id="adminPanelOverlay" onclick="closeAdminPanel()"></div>
+
+    <!-- ADMIN SIDE PANEL -->
+    <div class="side-panel" id="adminSidePanel">
+        <div class="side-panel-head">
+            <span class="side-panel-title">Admin Menu</span>
+            <button class="side-panel-close" onclick="closeAdminPanel()">×</button>
+        </div>
+        <div class="side-panel-section">
+            <div class="side-panel-section-label">Navigation</div>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <button class="admin-panel-nav-btn active" id="pnav-dashboard" onclick="adminNavTo('dashboard')">Dashboard</button>
+                <button class="admin-panel-nav-btn" id="pnav-chat" onclick="adminNavTo('chat')">Chat</button>
+                <button class="admin-panel-nav-btn" id="pnav-brief" onclick="adminNavTo('brief')">Brief Editor</button>
+                <button class="admin-panel-nav-btn" id="pnav-brandanalysis" onclick="adminNavTo('brandanalysis')">Brand Analysis</button>
+                <button class="admin-panel-nav-btn" id="pnav-moodboard" onclick="adminNavTo('moodboard')">Mood Board</button>
+                <button class="admin-panel-nav-btn" id="pnav-users" onclick="adminNavTo('users')">Users</button>
+                <a href="ai.html" class="admin-panel-nav-btn" style="text-decoration:none;">Platform</a>
+            </div>
+        </div>
+        <div class="side-panel-section">
+            <div class="side-panel-section-label">Quick Actions</div>
+            <button onclick="generateBriefNow();closeAdminPanel()" style="width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);cursor:pointer;margin-bottom:8px;">Generate Brief Now</button>
+            <button onclick="adminLogout()" style="width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--gray);cursor:pointer;">Sign Out</button>
         </div>
     </div>
     <!-- RECONNECTING BANNER -->
@@ -621,12 +641,29 @@ document.addEventListener('visibilitychange', () => {
     if (!document.hidden) requestWakeLock();
 });
 
+// ADMIN PANEL
+function openAdminPanel() {
+    document.getElementById('adminSidePanel').classList.add('open');
+    document.getElementById('adminPanelOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeAdminPanel() {
+    document.getElementById('adminSidePanel').classList.remove('open');
+    document.getElementById('adminPanelOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function adminNavTo(id) {
+    showSection(id, null);
+    document.querySelectorAll('.admin-panel-nav-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('pnav-' + id);
+    if (btn) btn.classList.add('active');
+    closeAdminPanel();
+}
+
 // NAVIGATION
 function showSection(id, btn) {
     document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
     document.getElementById('section-' + id).classList.add('active');
-    document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
     if (id === 'users') loadUsers();
 }
 
