@@ -212,33 +212,7 @@
         </button>
     </div>
 
-    <!-- ADMIN PANEL OVERLAY -->
-    <div class="panel-overlay" id="adminPanelOverlay" onclick="closeAdminPanel()"></div>
 
-    <!-- ADMIN SIDE PANEL -->
-    <div class="side-panel" id="adminSidePanel">
-        <div class="side-panel-head">
-            <span class="side-panel-title">Admin Menu</span>
-            <button class="side-panel-close" onclick="closeAdminPanel()">×</button>
-        </div>
-        <div class="side-panel-section">
-            <div class="side-panel-section-label">Navigation</div>
-            <div style="display:flex;flex-direction:column;gap:2px;">
-                <button class="admin-panel-nav-btn active" id="pnav-dashboard" onclick="adminNavTo('dashboard')">Dashboard</button>
-                <button class="admin-panel-nav-btn" id="pnav-chat" onclick="adminNavTo('chat')">Chat</button>
-                <button class="admin-panel-nav-btn" id="pnav-brief" onclick="adminNavTo('brief')">Brief Editor</button>
-                <button class="admin-panel-nav-btn" id="pnav-brandanalysis" onclick="adminNavTo('brandanalysis')">Brand Analysis</button>
-                <button class="admin-panel-nav-btn" id="pnav-moodboard" onclick="adminNavTo('moodboard')">Mood Board</button>
-                <button class="admin-panel-nav-btn" id="pnav-users" onclick="adminNavTo('users')">Users</button>
-                <a href="ai.html" class="admin-panel-nav-btn" style="text-decoration:none;">Platform</a>
-            </div>
-        </div>
-        <div class="side-panel-section">
-            <div class="side-panel-section-label">Quick Actions</div>
-            <button onclick="generateBriefNow();closeAdminPanel()" style="width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);cursor:pointer;margin-bottom:8px;">Generate Brief Now</button>
-            <button onclick="adminLogout()" style="width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--gray);cursor:pointer;">Sign Out</button>
-        </div>
-    </div>
     <!-- RECONNECTING BANNER -->
     <div class="reconnect-banner" id="reconnectBanner">Connection interrupted — your request is being retried...</div>
     <div class="admin-content">
@@ -1403,7 +1377,34 @@ function downloadBrandReport() {
     w.document.write(`<!DOCTYPE html><html><head><title>PMPNY Brand Analysis</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
     <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#080808;color:#f4f4ee;font-family:'DM Mono',monospace;padding:40px;}</style>
-    </head><body>${el.innerHTML}</body></html>`);
+    </head><body>${el.innerHTML}<!-- ADMIN PANEL OVERLAY -->
+<div class="panel-overlay" id="adminPanelOverlay" onclick="closeAdminPanel()"></div>
+
+<!-- ADMIN SIDE PANEL -->
+<div class="side-panel" id="adminSidePanel">
+    <div class="side-panel-head">
+        <span class="side-panel-title">Admin Menu</span>
+        <button class="side-panel-close" onclick="closeAdminPanel()">×</button>
+    </div>
+    <div class="side-panel-section">
+        <div class="side-panel-section-label">Navigation</div>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+            <button class="admin-panel-nav-btn active" id="pnav-dashboard" onclick="adminNavTo('dashboard')">Dashboard</button>
+            <button class="admin-panel-nav-btn" id="pnav-chat" onclick="adminNavTo('chat')">Chat</button>
+            <button class="admin-panel-nav-btn" id="pnav-brief" onclick="adminNavTo('brief')">Brief Editor</button>
+            <button class="admin-panel-nav-btn" id="pnav-brandanalysis" onclick="adminNavTo('brandanalysis')">Brand Analysis</button>
+            <button class="admin-panel-nav-btn" id="pnav-moodboard" onclick="adminNavTo('moodboard')">Mood Board</button>
+            <button class="admin-panel-nav-btn" id="pnav-users" onclick="adminNavTo('users')">Users</button>
+            <a href="ai.html" class="admin-panel-nav-btn" style="text-decoration:none;">Platform</a>
+        </div>
+    </div>
+    <div class="side-panel-section">
+        <div class="side-panel-section-label">Quick Actions</div>
+        <button onclick="generateBriefNow();closeAdminPanel()" style="width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);cursor:pointer;margin-bottom:8px;">Generate Brief Now</button>
+        <button onclick="adminLogout()" style="width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--gray);cursor:pointer;">Sign Out</button>
+    </div>
+</div>
+</body></html>`);
     w.document.close();
     setTimeout(() => w.print(), 600);
 }
