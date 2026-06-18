@@ -728,49 +728,6 @@
 
     </div><!-- end brief tab -->
 
-<!-- PANEL OVERLAY -->
-<div class="panel-overlay" id="panelOverlay" onclick="closeSidePanel()"></div>
-
-<!-- SIDE PANEL -->
-<div class="side-panel" id="sidePanel">
-    <div class="side-panel-head">
-        <span class="side-panel-title">PMPNY Intelligence</span>
-        <button class="side-panel-close" onclick="closeSidePanel()">×</button>
-    </div>
-
-    <!-- HISTORY -->
-    <div class="side-panel-section">
-        <div class="side-panel-section-label">Chat History</div>
-        <button class="panel-new-chat" onclick="newChat();closeSidePanel()">+ New Chat</button>
-        <div id="historyList" class="history-list" style="max-height:200px;overflow-y:auto;">
-            <div class="history-empty">Sign in to save history</div>
-        </div>
-    </div>
-
-    <!-- BRIEF -->
-    <div class="side-panel-section">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-            <div class="side-panel-section-label" style="margin:0;">Monthly Brief</div>
-            <span style="font-size:9px;letter-spacing:0.1em;color:var(--accent);" id="panelSeasonLabel">SS26</span>
-        </div>
-        <div style="font-family:var(--font-display);font-size:14px;font-weight:300;font-style:italic;color:var(--white);margin-bottom:12px;" id="panelBriefTitle">—</div>
-        <!-- Colors -->
-        <div id="panelColors" style="display:flex;gap:4px;margin-bottom:16px;"></div>
-        <!-- Rising -->
-        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Rising</div>
-        <div id="panelRising" style="margin-bottom:14px;"></div>
-        <!-- Peaking -->
-        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff9944;margin-bottom:8px;">Peaking</div>
-        <div id="panelPeaking" style="margin-bottom:14px;"></div>
-        <!-- Fading -->
-        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff4444;margin-bottom:8px;">Fading</div>
-        <div id="panelFading" style="margin-bottom:14px;"></div>
-        <!-- Brand Momentum -->
-        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Brand Momentum</div>
-        <div id="panelBrands"></div>
-    </div>
-</div>
-
 <!-- PRICING — minimal -->
 <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
     <div style="display:flex;gap:8px;align-items:center;">
@@ -1109,7 +1066,40 @@ function closeMoodboard() { document.getElementById('moodboardOverlay').classLis
 function downloadMoodboard() {
     const data = currentMoodboardData; if (!data) return;
     const w = window.open('','_blank');
-    w.document.write(`<html><head><title>PMPNY Mood Board</title><style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}h1{font-size:36px;font-style:italic;font-weight:300;margin-bottom:4px;}.season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}.footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}</style></head><body><h1>${data.title}</h1><div class="season">${data.season} · PMPNY Intelligence</div><div class="grid">${data.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div><div class="footer">pmpny.com/ai</div></body></html>`);
+    w.document.write(`<html><head><title>PMPNY Mood Board</title><style>body{margin:0;padding:24px;background:#080808;color:#f4f4ee;font-family:Georgia,serif;}h1{font-size:36px;font-style:italic;font-weight:300;margin-bottom:4px;}.season{font-size:10px;letter-spacing:3px;color:#ccff00;margin-bottom:20px;font-family:monospace;}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:20px;}.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}.footer{font-size:10px;color:#444;letter-spacing:2px;font-family:monospace;}</style></head><body><h1>${data.title}</h1><div class="season">${data.season} · PMPNY Intelligence</div><div class="grid">${data.images.map(img=>`<img src="${img.url}" onerror="this.style.display='none'">`).join('')}</div><div class="footer">pmpny.com/ai</div><!-- PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closeSidePanel()"></div>
+
+<!-- SIDE PANEL -->
+<div class="side-panel" id="sidePanel">
+    <div class="side-panel-head">
+        <span class="side-panel-title">PMPNY Intelligence</span>
+        <button class="side-panel-close" onclick="closeSidePanel()">×</button>
+    </div>
+    <div class="side-panel-section">
+        <div class="side-panel-section-label">Chat History</div>
+        <button class="panel-new-chat" onclick="newChat();closeSidePanel()">+ New Chat</button>
+        <div id="historyList" class="history-list" style="max-height:220px;overflow-y:auto;">
+            <div class="history-empty">Sign in to save history</div>
+        </div>
+    </div>
+    <div class="side-panel-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="side-panel-section-label" style="margin:0;">Monthly Brief</div>
+            <span style="font-size:9px;letter-spacing:0.1em;color:var(--accent);" id="panelSeasonLabel">SS26</span>
+        </div>
+        <div style="font-family:var(--font-display);font-size:14px;font-weight:300;font-style:italic;color:var(--white);margin-bottom:12px;" id="panelBriefTitle">—</div>
+        <div id="panelColors" style="display:flex;gap:4px;margin-bottom:16px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Rising</div>
+        <div id="panelRising" style="margin-bottom:14px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff9944;margin-bottom:8px;">Peaking</div>
+        <div id="panelPeaking" style="margin-bottom:14px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff4444;margin-bottom:8px;">Fading</div>
+        <div id="panelFading" style="margin-bottom:14px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Brand Momentum</div>
+        <div id="panelBrands"></div>
+    </div>
+</div>
+</body></html>`);
     w.document.close(); setTimeout(()=>w.print(),600);
 }
 
