@@ -1624,5 +1624,38 @@ function showPaywall() {
 }
 document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t=document.querySelector(a.getAttribute('href')); if(t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); } }); });
 </script>
+
+<!-- PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closeSidePanel()"></div>
+<!-- SIDE PANEL -->
+<div class="side-panel" id="sidePanel">
+    <div class="side-panel-head">
+        <span class="side-panel-title">PMPNY Intelligence</span>
+        <button class="side-panel-close" onclick="closeSidePanel()">×</button>
+    </div>
+    <div class="side-panel-section">
+        <div class="side-panel-section-label">Chat History</div>
+        <button class="panel-new-chat" onclick="newChat();closeSidePanel()">+ New Chat</button>
+        <div id="historyList" class="history-list" style="max-height:220px;overflow-y:auto;">
+            <div class="history-empty">Sign in to save history</div>
+        </div>
+    </div>
+    <div class="side-panel-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="side-panel-section-label" style="margin:0;">Monthly Brief</div>
+            <span style="font-size:9px;letter-spacing:0.1em;color:var(--accent);" id="panelSeasonLabel">SS26</span>
+        </div>
+        <div style="font-family:var(--font-display);font-size:14px;font-weight:300;font-style:italic;color:var(--white);margin-bottom:12px;" id="panelBriefTitle">—</div>
+        <div id="panelColors" style="display:flex;gap:4px;margin-bottom:16px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Rising</div>
+        <div id="panelRising" style="margin-bottom:14px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff9944;margin-bottom:8px;">Peaking</div>
+        <div id="panelPeaking" style="margin-bottom:14px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff4444;margin-bottom:8px;">Fading</div>
+        <div id="panelFading" style="margin-bottom:14px;"></div>
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Brand Momentum</div>
+        <div id="panelBrands"></div>
+    </div>
+</div>
+
 </body>
-</html>
