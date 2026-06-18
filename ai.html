@@ -306,6 +306,38 @@
 .brief-season-info { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; }
 .brief-title-display { font-family: var(--font-display); font-size: 18px; font-weight: 300; font-style: italic; color: var(--white); }
 
+/* SIDE PANEL */
+.panel-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.28s; }
+.panel-overlay.open { opacity:1;pointer-events:all; }
+.side-panel { position:fixed;top:0;right:0;width:360px;max-width:90vw;height:100vh;background:var(--panel);border-left:1px solid var(--border);z-index:201;transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column; }
+.side-panel.open { transform:translateX(0); }
+.side-panel-head { display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0; }
+.side-panel-title { font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--gray); }
+.side-panel-close { background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:0;line-height:1;transition:color 0.18s; }
+.side-panel-close:hover { color:var(--white); }
+.side-panel-section { padding:20px 24px;border-bottom:1px solid var(--border); }
+.side-panel-section-label { font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--dim);margin-bottom:14px; }
+.panel-history-item { padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color 0.18s; }
+.panel-history-item:last-child { border-bottom:none; }
+.panel-history-item:hover .phi-title { color:var(--accent); }
+.phi-title { font-size:11px;color:var(--off-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px; }
+.phi-date { font-size:9px;color:var(--dim);letter-spacing:0.08em; }
+.panel-new-chat { display:block;width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--gray);cursor:pointer;transition:all 0.18s;margin-bottom:16px; }
+.panel-new-chat:hover { border-color:var(--accent);color:var(--accent); }
+.dots-btn { background:none;border:none;color:var(--gray);cursor:pointer;padding:4px 8px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;transition:color 0.18s; }
+.dots-btn:hover { color:var(--white); }
+.dots-btn span { width:4px;height:4px;background:currentColor;border-radius:50%;display:block; }
+/* Brief in panel */
+.panel-signal-row { display:flex;align-items:center;gap:8px;padding:4px 0; }
+.panel-signal-name { font-size:10px;color:var(--off-white);flex:1;line-height:1.3; }
+.panel-signal-bar { width:36px;height:1px;background:var(--border);position:relative;flex-shrink:0; }
+.panel-signal-fill { position:absolute;left:0;top:0;height:100%; }
+.panel-signal-pct { font-size:9px;min-width:26px;text-align:right;flex-shrink:0; }
+.panel-brand-row { display:flex;gap:8px;padding:4px 0; }
+.panel-brand-arrow { font-size:9px;flex-shrink:0;margin-top:1px; }
+.panel-brand-name { font-size:10px;color:var(--off-white); }
+.panel-brand-note { font-size:9px;color:var(--dim);line-height:1.4; }
+
 /* HISTORY DROPDOWN */
 .history-dropdown-btn { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.18s; }
 .history-dropdown-btn:hover { color: var(--white); }
@@ -561,33 +593,22 @@
             <span class="tier-pill" id="tierPill">SPARK — FREE</span>
         </div>
     </div>
-    <!-- MOBILE TABS -->
-    <div class="ai-tabs">
-        <button class="ai-tab-btn active" id="tabBtnChat" onclick="switchAITab('chat')">Chat</button>
-        <button class="ai-tab-btn" id="tabBtnBrief" onclick="switchAITab('brief')">Brief</button>
-    </div>
-
-    <!-- CHAT TAB -->
+    <!-- CHAT PANEL — full width, no tabs -->
     <div id="aiTabChat" class="ai-tab-content">
     <div class="chat-panel" style="max-width:100%;">
-        <div class="chat-top chat-top-wrap">
-            <div style="display:flex;align-items:center;gap:16px;">
+        <div class="chat-top">
+            <div style="display:flex;align-items:center;gap:12px;">
                 <div class="chat-status"><div class="dot-live"></div>AI Trend Analyst — Online</div>
-                <button class="history-dropdown-btn" onclick="toggleHistoryDropdown()" id="historyToggleBtn">
-                    History <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <button class="history-dropdown-btn" onclick="newChat()" style="color:var(--dim);">+ New</button>
             </div>
-            <label class="voice-toggle">
-                <input type="checkbox" id="autoSpeak">
-                <div class="toggle-track"><div class="toggle-thumb"></div></div>
-                Auto-speak
-            </label>
-            <!-- History dropdown -->
-            <div class="history-dropdown-panel" id="historyDropdownPanel">
-                <div id="historyList" class="history-list">
-                    <div class="history-empty">Sign in to save history</div>
-                </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <label class="voice-toggle">
+                    <input type="checkbox" id="autoSpeak">
+                    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                    Auto-speak
+                </label>
+                <button class="dots-btn" onclick="openSidePanel()" title="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
         <div class="quick-bar">
@@ -706,6 +727,49 @@
     </div>
 
     </div><!-- end brief tab -->
+
+<!-- PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closeSidePanel()"></div>
+
+<!-- SIDE PANEL -->
+<div class="side-panel" id="sidePanel">
+    <div class="side-panel-head">
+        <span class="side-panel-title">PMPNY Intelligence</span>
+        <button class="side-panel-close" onclick="closeSidePanel()">×</button>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="side-panel-section">
+        <div class="side-panel-section-label">Chat History</div>
+        <button class="panel-new-chat" onclick="newChat();closeSidePanel()">+ New Chat</button>
+        <div id="historyList" class="history-list" style="max-height:200px;overflow-y:auto;">
+            <div class="history-empty">Sign in to save history</div>
+        </div>
+    </div>
+
+    <!-- BRIEF -->
+    <div class="side-panel-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="side-panel-section-label" style="margin:0;">Monthly Brief</div>
+            <span style="font-size:9px;letter-spacing:0.1em;color:var(--accent);" id="panelSeasonLabel">SS26</span>
+        </div>
+        <div style="font-family:var(--font-display);font-size:14px;font-weight:300;font-style:italic;color:var(--white);margin-bottom:12px;" id="panelBriefTitle">—</div>
+        <!-- Colors -->
+        <div id="panelColors" style="display:flex;gap:4px;margin-bottom:16px;"></div>
+        <!-- Rising -->
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Rising</div>
+        <div id="panelRising" style="margin-bottom:14px;"></div>
+        <!-- Peaking -->
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff9944;margin-bottom:8px;">Peaking</div>
+        <div id="panelPeaking" style="margin-bottom:14px;"></div>
+        <!-- Fading -->
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:#ff4444;margin-bottom:8px;">Fading</div>
+        <div id="panelFading" style="margin-bottom:14px;"></div>
+        <!-- Brand Momentum -->
+        <div style="font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Brand Momentum</div>
+        <div id="panelBrands"></div>
+    </div>
+</div>
 
 <!-- PRICING — minimal -->
 <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
@@ -951,6 +1015,50 @@ async function loadWeeklyBrief() {
                 html += renderBrands(bm.holding, '→', '#ff9944');
                 html += renderBrands(bm.cooling, '↓', '#ff4444');
                 brandsList.innerHTML = html || '<div style="font-size:10px;color:var(--dim);">No data</div>';
+            }
+        }
+
+        // Update side panel brief
+        const panelSeasonEl = document.getElementById('panelSeasonLabel');
+        const panelTitleEl = document.getElementById('panelBriefTitle');
+        if (panelSeasonEl && data.season) panelSeasonEl.textContent = data.season;
+        if (panelTitleEl && data.title) panelTitleEl.textContent = data.title;
+
+        if (data.colors?.length) {
+            const pc = document.getElementById('panelColors');
+            if (pc) pc.innerHTML = data.colors.slice(0,5).map(c =>
+                `<div title="${c.name}" style="width:16px;height:16px;background:${c.hex};border:1px solid rgba(255,255,255,0.1);flex-shrink:0;"></div>`
+            ).join('');
+        }
+
+        if (data.signals?.length) {
+            const renderPanel = (arr, color, track) => arr.length ? arr.map(s =>
+                `<div class="panel-signal-row">
+                    <span class="panel-signal-name">${s.name}</span>
+                    <div class="panel-signal-bar"><div class="panel-signal-fill" style="width:${s.pct}%;background:${track}"></div></div>
+                    <span class="panel-signal-pct" style="color:${color}">${s.pct}%</span>
+                </div>`).join('') : '<div style="font-size:10px;color:var(--dim);">—</div>';
+            const rising = data.signals.filter(s => s.direction === 'rising');
+            const peaking = data.signals.filter(s => s.direction === 'peaking');
+            const fading = data.signals.filter(s => s.direction === 'fading');
+            const pr = document.getElementById('panelRising');
+            const pp = document.getElementById('panelPeaking');
+            const pf = document.getElementById('panelFading');
+            if (pr) pr.innerHTML = renderPanel(rising, 'var(--accent)', 'rgba(204,255,0,0.6)');
+            if (pp) pp.innerHTML = renderPanel(peaking, '#ff9944', 'rgba(255,153,68,0.5)');
+            if (pf) pf.innerHTML = renderPanel(fading, '#ff4444', 'rgba(255,68,68,0.4)');
+        }
+
+        if (data.brand_momentum) {
+            const bm = data.brand_momentum;
+            const pb = document.getElementById('panelBrands');
+            if (pb) {
+                const renderB = (arr, arrow, color) => (arr||[]).map(b =>
+                    `<div class="panel-brand-row">
+                        <span class="panel-brand-arrow" style="color:${color}">${arrow}</span>
+                        <div><div class="panel-brand-name">${b.name}</div><div class="panel-brand-note">${b.note||''}</div></div>
+                    </div>`).join('');
+                pb.innerHTML = renderB(bm.rising,'↑','var(--accent)') + renderB(bm.holding,'→','#ff9944') + renderB(bm.cooling,'↓','#ff4444');
             }
         }
 
@@ -1394,6 +1502,18 @@ function addMsg(role, text) {
     body.appendChild(d); body.scrollTop=body.scrollHeight; return d;
 }
 function qp(text) { document.getElementById('chatInput').value=text; send(); }
+
+// SIDE PANEL
+function openSidePanel() {
+    document.getElementById('sidePanel').classList.add('open');
+    document.getElementById('panelOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeSidePanel() {
+    document.getElementById('sidePanel').classList.remove('open');
+    document.getElementById('panelOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
 
 // TAB SWITCHING — mobile
 function switchAITab(tab) {
