@@ -26,8 +26,10 @@
             --font-mono: 'DM Mono', 'Courier New', monospace;
         }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; line-height: 1.65; min-height: 100vh; overflow-x: hidden; }
+        /* FIX: overflow-x moved from body to html — prevents iOS Safari from creating a scroll container
+           that clips position:fixed elements starting off-screen (translateX(100%)) */
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; line-height: 1.65; min-height: 100vh; }
         nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(8,8,8,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
         .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
         .nav-logo-text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--white); text-transform: uppercase; }
@@ -280,116 +282,111 @@
         .foot-links a { font-size: 9px; letter-spacing: 0.1em; color: var(--gray); text-decoration: none; transition: color 0.18s; text-transform: uppercase; white-space: nowrap; }
         .foot-links a:hover { color: var(--white); }
         /* MOBILE TABS */
-.ai-tabs { display: none; }
-.ai-tab-btn { flex: 1; padding: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; background: var(--panel); border: none; border-bottom: 2px solid transparent; color: var(--gray); cursor: pointer; transition: all 0.18s; }
-.ai-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-.ai-tab-content { display: block; }
-
-/* BRIEF GRID */
-.brief-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-top: 32px; }
-.brief-col { background: var(--panel); padding: 24px 20px; }
-.brief-col-label { font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.brief-col-signals { display: flex; flex-direction: column; gap: 10px; }
-.brief-signal-row { display: flex; align-items: center; gap: 8px; }
-.brief-signal-name { font-size: 11px; color: var(--off-white); flex: 1; line-height: 1.3; }
-.brief-signal-bar { width: 40px; height: 1px; background: var(--border); position: relative; flex-shrink: 0; }
-.brief-signal-fill { position: absolute; left: 0; top: 0; height: 100%; }
-.brief-signal-pct { font-size: 9px; min-width: 28px; text-align: right; flex-shrink: 0; }
-.brief-signal-note { font-size: 9px; color: var(--dim); margin-top: 2px; line-height: 1.4; }
-.brief-brand-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
-.brief-brand-arrow { font-size: 10px; flex-shrink: 0; margin-top: 1px; }
-.brief-brand-info { font-size: 11px; color: var(--off-white); line-height: 1.4; }
-.brief-brand-note { font-size: 9px; color: var(--dim); }
-
-/* BRIEF COLORS ROW */
-.brief-colors-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-top: 1px solid var(--border); margin-top: 1px; flex-wrap: wrap; gap: 16px; }
-.brief-season-info { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; }
-.brief-title-display { font-family: var(--font-display); font-size: 18px; font-weight: 300; font-style: italic; color: var(--white); }
-
-/* SIDE PANEL */
-.panel-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.28s; }
-.panel-overlay.open { opacity:1;pointer-events:all; }
-.side-panel { position:fixed;top:0;right:0;width:360px;max-width:90vw;height:100vh;background:var(--panel);border-left:1px solid var(--border);z-index:201;transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column; }
-.side-panel.open { transform:translateX(0); }
-.side-panel-head { display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0; }
-.side-panel-title { font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--gray); }
-.side-panel-close { background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:0;line-height:1;transition:color 0.18s; }
-.side-panel-close:hover { color:var(--white); }
-.side-panel-section { padding:20px 24px;border-bottom:1px solid var(--border); }
-.side-panel-section-label { font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--dim);margin-bottom:14px; }
-.panel-history-item { padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color 0.18s; }
-.panel-history-item:last-child { border-bottom:none; }
-.panel-history-item:hover .phi-title { color:var(--accent); }
-.phi-title { font-size:11px;color:var(--off-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px; }
-.phi-date { font-size:9px;color:var(--dim);letter-spacing:0.08em; }
-.panel-new-chat { display:block;width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--gray);cursor:pointer;transition:all 0.18s;margin-bottom:16px; }
-.panel-new-chat:hover { border-color:var(--accent);color:var(--accent); }
-.dots-btn { background:none;border:none;color:var(--gray);cursor:pointer;padding:4px 8px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;transition:color 0.18s; }
-.dots-btn:hover { color:var(--white); }
-.dots-btn span { width:4px;height:4px;background:currentColor;border-radius:50%;display:block; }
-/* Brief in panel */
-.panel-signal-row { display:flex;align-items:center;gap:8px;padding:4px 0; }
-.panel-signal-name { font-size:10px;color:var(--off-white);flex:1;line-height:1.3; }
-.panel-signal-bar { width:36px;height:1px;background:var(--border);position:relative;flex-shrink:0; }
-.panel-signal-fill { position:absolute;left:0;top:0;height:100%; }
-.panel-signal-pct { font-size:9px;min-width:26px;text-align:right;flex-shrink:0; }
-.panel-brand-row { display:flex;gap:8px;padding:4px 0; }
-.panel-brand-arrow { font-size:9px;flex-shrink:0;margin-top:1px; }
-.panel-brand-name { font-size:10px;color:var(--off-white); }
-.panel-brand-note { font-size:9px;color:var(--dim);line-height:1.4; }
-
-/* HISTORY DROPDOWN */
-.history-dropdown-btn { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.18s; }
-.history-dropdown-btn:hover { color: var(--white); }
-.history-dropdown-panel { position: absolute; top: 100%; left: 0; right: 0; background: var(--panel); border: 1px solid var(--border); border-top: none; z-index: 50; max-height: 240px; overflow-y: auto; display: none; }
-.history-dropdown-panel.open { display: block; }
-.chat-top-wrap { position: relative; }
-
-@media (max-width: 640px) {
-    .chat-foot { padding: 8px 12px; }
-    .chat-foot-row { gap: 8px; }
-    textarea#chatInput { font-size: 16px; padding: 10px 12px; }
-    #attachBtn, #micBtn { width: 40px; height: 40px; flex-shrink: 0; }
-    #sendBtn { padding: 10px 16px; font-size: 9px; height: 40px; }
-    .quick-bar { padding: 10px 12px 0; gap: 6px; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
-    .qp { white-space: nowrap; flex-shrink: 0; font-size: 9px; padding: 5px 10px; }
-    .chat-panel { height: calc(100vh - 200px); }
-    .app-bar { padding: 16px 0 14px; }
-    nav { padding: 14px 20px; }
-    .nav-links { display: none; }
-    h1 { font-size: 40px; }
-    /* Show tabs on mobile */
-    .ai-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 0; }
-    /* Brief grid — 2 col on mobile: signals left, brands right */
-    .brief-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto auto;
-        grid-template-areas:
-            "rising brands"
-            "peaking brands"
-            "fading brands";
-        margin-top: 0;
-    }
-    .brief-col:nth-child(1) { grid-area: rising; }
-    .brief-col:nth-child(2) { grid-area: peaking; }
-    .brief-col:nth-child(3) { grid-area: fading; }
-    .brief-col:nth-child(4) { grid-area: brands; }
-    .brief-colors-row { padding: 16px 0; flex-direction: column; align-items: flex-start; gap: 12px; }
-}
-@media (min-width: 641px) and (max-width: 1024px) {
-    .brief-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas:
-            "rising brands"
-            "peaking brands"
-            "fading brands";
-    }
-    .brief-col:nth-child(1) { grid-area: rising; }
-    .brief-col:nth-child(2) { grid-area: peaking; }
-    .brief-col:nth-child(3) { grid-area: fading; }
-    .brief-col:nth-child(4) { grid-area: brands; }
-}
-@media (max-width: 1024px) {
+        .ai-tabs { display: none; }
+        .ai-tab-btn { flex: 1; padding: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; background: var(--panel); border: none; border-bottom: 2px solid transparent; color: var(--gray); cursor: pointer; transition: all 0.18s; }
+        .ai-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .ai-tab-content { display: block; }
+        /* BRIEF GRID */
+        .brief-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-top: 32px; }
+        .brief-col { background: var(--panel); padding: 24px 20px; }
+        .brief-col-label { font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .brief-col-signals { display: flex; flex-direction: column; gap: 10px; }
+        .brief-signal-row { display: flex; align-items: center; gap: 8px; }
+        .brief-signal-name { font-size: 11px; color: var(--off-white); flex: 1; line-height: 1.3; }
+        .brief-signal-bar { width: 40px; height: 1px; background: var(--border); position: relative; flex-shrink: 0; }
+        .brief-signal-fill { position: absolute; left: 0; top: 0; height: 100%; }
+        .brief-signal-pct { font-size: 9px; min-width: 28px; text-align: right; flex-shrink: 0; }
+        .brief-signal-note { font-size: 9px; color: var(--dim); margin-top: 2px; line-height: 1.4; }
+        .brief-brand-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+        .brief-brand-arrow { font-size: 10px; flex-shrink: 0; margin-top: 1px; }
+        .brief-brand-info { font-size: 11px; color: var(--off-white); line-height: 1.4; }
+        .brief-brand-note { font-size: 9px; color: var(--dim); }
+        /* BRIEF COLORS ROW */
+        .brief-colors-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-top: 1px solid var(--border); margin-top: 1px; flex-wrap: wrap; gap: 16px; }
+        .brief-season-info { font-size: 9px; letter-spacing: 0.2em; color: var(--gray); text-transform: uppercase; }
+        .brief-title-display { font-family: var(--font-display); font-size: 18px; font-weight: 300; font-style: italic; color: var(--white); }
+        /* SIDE PANEL — FIX: z-index raised to 1100/1200 to clear auth modal (1000) and nav (200) */
+        .panel-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1100;opacity:0;pointer-events:none;transition:opacity 0.28s; }
+        .panel-overlay.open { opacity:1;pointer-events:all; }
+        .side-panel { position:fixed;top:0;right:0;width:360px;max-width:90vw;height:100vh;background:var(--panel);border-left:1px solid var(--border);z-index:1200;transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column; }
+        .side-panel.open { transform:translateX(0); }
+        .side-panel-head { display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0; }
+        .side-panel-title { font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--gray); }
+        .side-panel-close { background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:0;line-height:1;transition:color 0.18s; }
+        .side-panel-close:hover { color:var(--white); }
+        .side-panel-section { padding:20px 24px;border-bottom:1px solid var(--border); }
+        .side-panel-section-label { font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--dim);margin-bottom:14px; }
+        .panel-history-item { padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color 0.18s; }
+        .panel-history-item:last-child { border-bottom:none; }
+        .panel-history-item:hover .phi-title { color:var(--accent); }
+        .phi-title { font-size:11px;color:var(--off-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px; }
+        .phi-date { font-size:9px;color:var(--dim);letter-spacing:0.08em; }
+        .panel-new-chat { display:block;width:100%;padding:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--gray);cursor:pointer;transition:all 0.18s;margin-bottom:16px; }
+        .panel-new-chat:hover { border-color:var(--accent);color:var(--accent); }
+        .dots-btn { background:none;border:none;color:var(--gray);cursor:pointer;padding:8px 10px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;transition:color 0.18s;min-width:44px;min-height:44px; }
+        .dots-btn:hover { color:var(--white); }
+        .dots-btn span { width:4px;height:4px;background:currentColor;border-radius:50%;display:block; }
+        /* Brief in panel */
+        .panel-signal-row { display:flex;align-items:center;gap:8px;padding:4px 0; }
+        .panel-signal-name { font-size:10px;color:var(--off-white);flex:1;line-height:1.3; }
+        .panel-signal-bar { width:36px;height:1px;background:var(--border);position:relative;flex-shrink:0; }
+        .panel-signal-fill { position:absolute;left:0;top:0;height:100%; }
+        .panel-signal-pct { font-size:9px;min-width:26px;text-align:right;flex-shrink:0; }
+        .panel-brand-row { display:flex;gap:8px;padding:4px 0; }
+        .panel-brand-arrow { font-size:9px;flex-shrink:0;margin-top:1px; }
+        .panel-brand-name { font-size:10px;color:var(--off-white); }
+        .panel-brand-note { font-size:9px;color:var(--dim);line-height:1.4; }
+        /* HISTORY DROPDOWN */
+        .history-dropdown-btn { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.18s; }
+        .history-dropdown-btn:hover { color: var(--white); }
+        .history-dropdown-panel { position: absolute; top: 100%; left: 0; right: 0; background: var(--panel); border: 1px solid var(--border); border-top: none; z-index: 50; max-height: 240px; overflow-y: auto; display: none; }
+        .history-dropdown-panel.open { display: block; }
+        .chat-top-wrap { position: relative; }
+        @media (max-width: 640px) {
+            .chat-foot { padding: 8px 12px; }
+            .chat-foot-row { gap: 8px; }
+            textarea#chatInput { font-size: 16px; padding: 10px 12px; }
+            #attachBtn, #micBtn { width: 40px; height: 40px; flex-shrink: 0; }
+            #sendBtn { padding: 10px 16px; font-size: 9px; height: 40px; }
+            .quick-bar { padding: 10px 12px 0; gap: 6px; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+            .qp { white-space: nowrap; flex-shrink: 0; font-size: 9px; padding: 5px 10px; }
+            .chat-panel { height: calc(100vh - 200px); }
+            .app-bar { padding: 16px 0 14px; }
+            nav { padding: 14px 20px; }
+            .nav-links { display: none; }
+            h1 { font-size: 40px; }
+            /* Show tabs on mobile */
+            .ai-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+            /* Brief grid — 2 col on mobile */
+            .brief-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto;
+                grid-template-areas:
+                    "rising brands"
+                    "peaking brands"
+                    "fading brands";
+                margin-top: 0;
+            }
+            .brief-col:nth-child(1) { grid-area: rising; }
+            .brief-col:nth-child(2) { grid-area: peaking; }
+            .brief-col:nth-child(3) { grid-area: fading; }
+            .brief-col:nth-child(4) { grid-area: brands; }
+            .brief-colors-row { padding: 16px 0; flex-direction: column; align-items: flex-start; gap: 12px; }
+        }
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .brief-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas:
+                    "rising brands"
+                    "peaking brands"
+                    "fading brands";
+            }
+            .brief-col:nth-child(1) { grid-area: rising; }
+            .brief-col:nth-child(2) { grid-area: peaking; }
+            .brief-col:nth-child(3) { grid-area: fading; }
+            .brief-col:nth-child(4) { grid-area: brands; }
+        }
+        @media (max-width: 1024px) {
             nav { padding: 14px 24px; }
             .hero { padding: 120px 24px 60px; grid-template-columns: 1fr; gap: 48px; }
             .hero-signals { display: grid; grid-template-columns: 1fr 1fr; }
@@ -501,35 +498,26 @@
         <h2 class="paywall-title">Upgrade for<br><em>unlimited access.</em></h2>
         <p class="paywall-desc">Your 20 free messages are up. Upgrade to keep designing with intelligence.</p>
         <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);margin-bottom:24px;">
-            <!-- SPARK -->
             <div style="background:var(--panel-2);padding:16px 20px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                     <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);">Spark</span>
                     <span style="font-family:var(--font-display);font-size:20px;font-weight:300;">Free <span style="font-family:var(--font-mono);font-size:11px;color:var(--gray);">/ forever</span></span>
                 </div>
-                <div style="font-size:10px;color:var(--gray);line-height:1.8;">
-                    20 AI messages/day · Voice input · Weekly trend brief · 5 image uploads/month · Chat history
-                </div>
+                <div style="font-size:10px;color:var(--gray);line-height:1.8;">20 AI messages/day · Voice input · Weekly trend brief · 5 image uploads/month · Chat history</div>
             </div>
-            <!-- PLUS -->
             <div style="background:rgba(204,255,0,0.05);border-left:2px solid var(--accent);padding:16px 20px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                     <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Plus <span style="font-size:8px;background:var(--accent);color:var(--black);padding:2px 6px;margin-left:6px;">POPULAR</span></span>
                     <span style="font-family:var(--font-display);font-size:20px;font-weight:300;">$9 <span style="font-family:var(--font-mono);font-size:11px;color:var(--gray);">/ mo</span></span>
                 </div>
-                <div style="font-size:10px;color:var(--gray);line-height:1.8;">
-                    Unlimited AI messages · Unlimited image uploads · Mood board builder · Visual color palettes · Full brief archive · Export as PDF
-                </div>
+                <div style="font-size:10px;color:var(--gray);line-height:1.8;">Unlimited AI messages · Unlimited image uploads · Mood board builder · Visual color palettes · Full brief archive · Export as PDF</div>
             </div>
-            <!-- STUDIO -->
             <div style="background:var(--panel-2);padding:16px 20px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                     <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);">Studio</span>
                     <span style="font-family:var(--font-display);font-size:20px;font-weight:300;">$50 <span style="font-family:var(--font-mono);font-size:11px;color:var(--gray);">/ mo</span></span>
                 </div>
-                <div style="font-size:10px;color:var(--gray);line-height:1.8;">
-                    Everything in Plus · Quarterly trend analysis on your work · Written PDF feedback by email · Direct studio intelligence · Early feature access
-                </div>
+                <div style="font-size:10px;color:var(--gray);line-height:1.8;">Everything in Plus · Quarterly trend analysis on your work · Written PDF feedback by email · Direct studio intelligence · Early feature access</div>
             </div>
         </div>
         <button class="paywall-cta" onclick="handleUpgrade()">Get Plus — $9/mo →</button>
@@ -559,7 +547,7 @@
     </div>
 </nav>
 
-<!-- RECONNECT BANNER — shows when tab hidden during active request -->
+<!-- RECONNECT BANNER -->
 <div id="reconnectBanner" style="display:none;padding:10px 16px;background:rgba(255,68,68,0.1);border-bottom:1px solid rgba(255,68,68,0.25);font-size:11px;color:#ff6666;text-align:center;letter-spacing:0.08em;position:fixed;top:61px;left:0;right:0;z-index:199;">
     Returning to send your request...
 </div>
@@ -593,7 +581,6 @@
             <span class="tier-pill" id="tierPill">SPARK — FREE</span>
         </div>
     </div>
-    <!-- CHAT PANEL — full width, no tabs -->
     <div id="aiTabChat" class="ai-tab-content">
     <div class="chat-panel" style="max-width:100%;">
         <div class="chat-top">
@@ -642,12 +629,9 @@
             </div>
         </div>
     </div>
-    </div><!-- end chat tab -->
+    </div>
 
-    <!-- BRIEF TAB (mobile) / SECTION (desktop — below chat) -->
     <div id="aiTabBrief" class="ai-tab-content">
-
-    <!-- BRIEF HEADER -->
     <div class="brief-colors-row">
         <div>
             <div class="brief-season-info" id="briefWeekLabel">Monthly Brief · June 2026</div>
@@ -661,13 +645,8 @@
         </div>
         <span class="tier-pill" id="briefSeasonLabel">SS26</span>
     </div>
-
-    <!-- BRIEF NOTE -->
     <div id="briefNote" style="display:none;font-size:11px;color:var(--gray);line-height:1.7;padding:14px 0;border-bottom:1px solid var(--border);font-style:italic;"></div>
-
-    <!-- 4-COLUMN BRIEF GRID -->
     <div class="brief-grid">
-        <!-- RISING -->
         <div class="brief-col">
             <div class="brief-col-label" style="color:var(--accent);">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
@@ -677,7 +656,6 @@
                 <div class="brief-signal-row"><span class="brief-signal-name">Structural Volume</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:84%;background:rgba(204,255,0,0.6)"></div></div><span class="brief-signal-pct" style="color:var(--accent)">84%</span></div>
             </div>
         </div>
-        <!-- PEAKING -->
         <div class="brief-col">
             <div class="brief-col-label" style="color:#ff9944;">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -687,7 +665,6 @@
                 <div class="brief-signal-row"><span class="brief-signal-name">Chain Hardware</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:52%;background:rgba(255,153,68,0.5)"></div></div><span class="brief-signal-pct" style="color:#ff9944">52%</span></div>
             </div>
         </div>
-        <!-- FADING -->
         <div class="brief-col">
             <div class="brief-col-label" style="color:#ff4444;">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -697,7 +674,6 @@
                 <div class="brief-signal-row"><span class="brief-signal-name">Logo Streetwear</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:22%;background:rgba(255,68,68,0.4)"></div></div><span class="brief-signal-pct" style="color:#ff4444">22%</span></div>
             </div>
         </div>
-        <!-- BRAND MOMENTUM -->
         <div class="brief-col">
             <div class="brief-col-label" style="color:var(--gray-light);">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
@@ -708,8 +684,6 @@
             </div>
         </div>
     </div>
-
-    <!-- MOOD BOARD BUILDER (collapsed by default) -->
     <div style="margin-top:1px;background:var(--panel);border-top:1px solid var(--border);">
         <button onclick="toggleMoodboardBuilder()" style="width:100%;padding:14px 20px;background:none;border:none;color:var(--gray);font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;text-align:left;">
             Mood Board Builder <span id="mbBuilderArrow" style="transition:transform 0.2s;">↓</span>
@@ -725,10 +699,8 @@
             <button onclick="buildHybridMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Build Mood Board →</button>
         </div>
     </div>
+    </div>
 
-    </div><!-- end brief tab -->
-
-<!-- PRICING — minimal -->
 <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
     <div style="display:flex;gap:8px;align-items:center;">
         <span style="font-size:8px;letter-spacing:0.04em;text-transform:uppercase;color:var(--dim);white-space:nowrap;">Spark — Free</span>
@@ -772,40 +744,24 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').cat
 const SUPABASE_URL = 'https://lgnzudnxnehkdzsqijyf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storage: window.localStorage
-    }
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: window.localStorage }
 });
 let currentUser = null, currentConvId = null, isGuest = false;
 const FREE_LIMIT = 20;
 
-// Restore session on PWA load — critical for iOS home screen apps
 async function restoreSession() {
     try {
         const { data: { session } } = await sb.auth.getSession();
-        if (session?.user) {
-            currentUser = session.user;
-            updateAuthUI();
-            loadHistory();
-            closeModal();
-        }
+        if (session?.user) { currentUser = session.user; updateAuthUI(); loadHistory(); closeModal(); }
     } catch(e) {}
 }
 restoreSession();
 
-// Re-check session when user returns to app (switching apps on mobile)
 document.addEventListener('visibilitychange', async () => {
     if (!document.hidden && !currentUser) {
         try {
             const { data: { session } } = await sb.auth.getSession();
-            if (session?.user) {
-                currentUser = session.user;
-                updateAuthUI();
-                loadHistory();
-            }
+            if (session?.user) { currentUser = session.user; updateAuthUI(); loadHistory(); }
         } catch(e) {}
     }
 });
@@ -937,7 +893,6 @@ async function loadWeeklyBrief() {
         if (weekEl2 && data.week_label) weekEl2.textContent = data.week_label;
         const titleEl2 = document.getElementById('briefTitleEl');
         if (titleEl2 && data.title) titleEl2.textContent = data.title;
-
         // Render signals by direction — new grid layout
         if (data.signals?.length) {
             const rising = data.signals.filter(s => s.direction === 'rising');
@@ -956,7 +911,6 @@ async function loadWeeklyBrief() {
             if (pEl) pEl.innerHTML = renderGridSigs(peaking, '#ff9944', 'rgba(255,153,68,0.5)');
             if (fEl) fEl.innerHTML = renderGridSigs(fading, '#ff4444', 'rgba(255,68,68,0.4)');
         }
-
         // Render brand momentum
         if (data.brand_momentum) {
             const bm = data.brand_momentum;
@@ -980,14 +934,12 @@ async function loadWeeklyBrief() {
         const panelTitleEl = document.getElementById('panelBriefTitle');
         if (panelSeasonEl && data.season) panelSeasonEl.textContent = data.season;
         if (panelTitleEl && data.title) panelTitleEl.textContent = data.title;
-
         if (data.colors?.length) {
             const pc = document.getElementById('panelColors');
             if (pc) pc.innerHTML = data.colors.slice(0,5).map(c =>
                 `<div title="${c.name}" style="width:16px;height:16px;background:${c.hex};border:1px solid rgba(255,255,255,0.1);flex-shrink:0;"></div>`
             ).join('');
         }
-
         if (data.signals?.length) {
             const renderPanel = (arr, color, track) => arr.length ? arr.map(s =>
                 `<div class="panel-signal-row">
@@ -1005,7 +957,6 @@ async function loadWeeklyBrief() {
             if (pp) pp.innerHTML = renderPanel(peaking, '#ff9944', 'rgba(255,153,68,0.5)');
             if (pf) pf.innerHTML = renderPanel(fading, '#ff4444', 'rgba(255,68,68,0.4)');
         }
-
         if (data.brand_momentum) {
             const bm = data.brand_momentum;
             const pb = document.getElementById('panelBrands');
@@ -1018,8 +969,6 @@ async function loadWeeklyBrief() {
                 pb.innerHTML = renderB(bm.rising,'↑','var(--accent)') + renderB(bm.holding,'→','#ff9944') + renderB(bm.cooling,'↓','#ff4444');
             }
         }
-
-        // Update hero signals
         if (data.signals?.length) {
             data.signals.slice(0, 5).forEach((s, i) => {
                 const meta = document.getElementById('hsMeta' + i);
@@ -1135,7 +1084,7 @@ function processText(text) {
     return text;
 }
 
-// PROGRESSIVE DISPLAY — universal section card detection
+// PROGRESSIVE DISPLAY
 async function displayProgressively(container, text) {
     const body = document.getElementById('chatBody');
     const existing = container.querySelector('.thinking-indicator');
@@ -1276,7 +1225,7 @@ function isConversational(text) {
     return ['ciao','hello','hi','hey','grazie','thanks','thank you','ok','okay','buongiorno','buonasera','bene','good','perfetto'].some(w => t.startsWith(w)||t===w) || t.length<20;
 }
 
-// CHAT — page visibility + AbortController
+// CHAT
 const history = [];
 let pendingFetch = null;
 document.addEventListener('visibilitychange', () => {
@@ -1297,10 +1246,8 @@ function extractURL(text) {
 async function fetchSiteForChat(url) {
     try {
         const res = await fetch('/api/fetch-site', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url }),
-            signal: AbortSignal.timeout(12000)
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }), signal: AbortSignal.timeout(12000)
         });
         const data = await res.json();
         if (data.error) return null;
@@ -1347,8 +1294,6 @@ async function send() {
         const el = document.getElementById('thinkingText');
         if (el) el.textContent = messages[msgIdx];
     }, 1800);
-
-    // AUTO URL FETCH — detect URL and silently enrich message
     const detectedURL = extractURL(txt);
     if (detectedURL) {
         const thinkEl = document.getElementById('thinkingText');
@@ -1356,18 +1301,12 @@ async function send() {
         const siteData = await fetchSiteForChat(detectedURL);
         if (siteData?.content) {
             const siteContext = `\n\n[WEBSITE CONTENT FROM ${detectedURL}]\nTitle: ${siteData.title || ''}\nDescription: ${siteData.description || ''}\n\n${siteData.content.substring(0, 4000)}\n[END WEBSITE CONTENT]`;
-            if (typeof messageContent === 'string') {
-                messageContent = messageContent + siteContext;
-            } else {
-                const textPart = messageContent.find(p => p.type === 'text');
-                if (textPart) textPart.text += siteContext;
-            }
+            if (typeof messageContent === 'string') { messageContent = messageContent + siteContext; }
+            else { const textPart = messageContent.find(p => p.type === 'text'); if (textPart) textPart.text += siteContext; }
             history[history.length - 1].content = messageContent;
         }
     }
-
     try {
-        // PAGE VISIBILITY — wait if tab hidden
         if (document.hidden) {
             const banner = document.getElementById('reconnectBanner');
             if (banner) banner.style.display = 'block';
@@ -1377,15 +1316,12 @@ async function send() {
             const banner2 = document.getElementById('reconnectBanner');
             if (banner2) banner2.style.display = 'none';
         }
-        // ABORT CONTROLLER — 2 min timeout
         const controller = new AbortController();
         pendingFetch = controller;
         const timeoutId = setTimeout(() => controller.abort(), 120000);
         const res = await fetch('/api/chat', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ messages: history }),
-            signal: controller.signal
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ messages: history }), signal: controller.signal
         });
         clearTimeout(timeoutId);
         pendingFetch = null;
@@ -1479,30 +1415,13 @@ function switchAITab(tab) {
     const btnChat = document.getElementById('tabBtnChat');
     const btnBrief = document.getElementById('tabBtnBrief');
     if (tab === 'chat') {
-        chatTab.style.display = 'block';
-        briefTab.style.display = 'none';
-        btnChat.classList.add('active');
-        btnBrief.classList.remove('active');
+        chatTab.style.display = 'block'; briefTab.style.display = 'none';
+        btnChat.classList.add('active'); btnBrief.classList.remove('active');
     } else {
-        chatTab.style.display = 'none';
-        briefTab.style.display = 'block';
-        btnBrief.classList.add('active');
-        btnChat.classList.remove('active');
+        chatTab.style.display = 'none'; briefTab.style.display = 'block';
+        btnBrief.classList.add('active'); btnChat.classList.remove('active');
     }
 }
-
-// HISTORY DROPDOWN
-function toggleHistoryDropdown() {
-    const panel = document.getElementById('historyDropdownPanel');
-    panel.classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-    const panel = document.getElementById('historyDropdownPanel');
-    const btn = document.getElementById('historyToggleBtn');
-    if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
-        panel.classList.remove('open');
-    }
-});
 
 // MOOD BOARD BUILDER TOGGLE
 function toggleMoodboardBuilder() {
@@ -1626,3 +1545,4 @@ document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('cli
 </div>
 
 </body>
+</html>
