@@ -631,75 +631,7 @@
     </div>
     </div>
 
-    <div id="aiTabBrief" class="ai-tab-content">
-    <div class="brief-colors-row">
-        <div>
-            <div class="brief-season-info" id="briefWeekLabel">Monthly Brief · June 2026</div>
-            <div class="brief-title-display" id="briefTitleEl">The Architecture of Restraint</div>
-        </div>
-        <div class="swatches" id="briefSwatches" style="margin:0;">
-            <div class="swatch-wrap"><div class="swatch" style="background:#6B1C23"></div><div class="swatch-name">Burgundy</div></div>
-            <div class="swatch-wrap"><div class="swatch" style="background:#9CAF88"></div><div class="swatch-name">Sage</div></div>
-            <div class="swatch-wrap"><div class="swatch" style="background:#e8e0d0"></div><div class="swatch-name">Bone</div></div>
-            <div class="swatch-wrap"><div class="swatch" style="background:#080808;border-color:rgba(255,255,255,0.15)"></div><div class="swatch-name">Matte</div></div>
-        </div>
-        <span class="tier-pill" id="briefSeasonLabel">SS26</span>
-    </div>
-    <div id="briefNote" style="display:none;font-size:11px;color:var(--gray);line-height:1.7;padding:14px 0;border-bottom:1px solid var(--border);font-style:italic;"></div>
-    <div class="brief-grid">
-        <div class="brief-col">
-            <div class="brief-col-label" style="color:var(--accent);">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                Rising
-            </div>
-            <div class="brief-col-signals" id="briefSignalsRising">
-                <div class="brief-signal-row"><span class="brief-signal-name">Structural Volume</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:84%;background:rgba(204,255,0,0.6)"></div></div><span class="brief-signal-pct" style="color:var(--accent)">84%</span></div>
-            </div>
-        </div>
-        <div class="brief-col">
-            <div class="brief-col-label" style="color:#ff9944;">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                Peaking
-            </div>
-            <div class="brief-col-signals" id="briefSignalsPeaking">
-                <div class="brief-signal-row"><span class="brief-signal-name">Chain Hardware</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:52%;background:rgba(255,153,68,0.5)"></div></div><span class="brief-signal-pct" style="color:#ff9944">52%</span></div>
-            </div>
-        </div>
-        <div class="brief-col">
-            <div class="brief-col-label" style="color:#ff4444;">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                Fading
-            </div>
-            <div class="brief-col-signals" id="briefSignalsFading">
-                <div class="brief-signal-row"><span class="brief-signal-name">Logo Streetwear</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:22%;background:rgba(255,68,68,0.4)"></div></div><span class="brief-signal-pct" style="color:#ff4444">22%</span></div>
-            </div>
-        </div>
-        <div class="brief-col">
-            <div class="brief-col-label" style="color:var(--gray-light);">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
-                Brand Momentum
-            </div>
-            <div id="briefBrandsList" style="display:flex;flex-direction:column;gap:8px;">
-                <div style="font-size:10px;color:var(--dim);">Loading...</div>
-            </div>
-        </div>
-    </div>
-    <div style="margin-top:1px;background:var(--panel);border-top:1px solid var(--border);">
-        <button onclick="toggleMoodboardBuilder()" style="width:100%;padding:14px 20px;background:none;border:none;color:var(--gray);font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;text-align:left;">
-            Mood Board Builder <span id="mbBuilderArrow" style="transition:transform 0.2s;">↓</span>
-        </button>
-        <div id="mbBuilderPanel" style="display:none;padding:14px 18px 18px;">
-            <textarea id="mbConcept" placeholder="SS27 collection concept — silhouette, materials, mood..." style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:10px 12px;resize:none;outline:none;min-height:60px;line-height:1.6;margin-bottom:8px;box-sizing:border-box;"></textarea>
-            <input type="text" id="mbColorsInput" placeholder="Colors: #9CAF88, #F4E4C1" style="width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:9px 12px;outline:none;margin-bottom:8px;box-sizing:border-box;">
-            <div id="mbPhotoUploadZone" onclick="document.getElementById('mbPhotoInput').click()" style="border:1px dashed var(--border);padding:14px;text-align:center;cursor:pointer;margin-bottom:8px;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
-                <div style="font-size:11px;color:var(--gray);">⬆ Add reference photos (max 12)</div>
-            </div>
-            <input type="file" id="mbPhotoInput" accept="image/*" multiple style="display:none" onchange="onMbPhotos(event)">
-            <div id="mbPhotoGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:8px;"></div>
-            <button onclick="buildHybridMoodboard()" style="width:100%;background:var(--accent);color:var(--black);border:none;padding:11px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Build Mood Board →</button>
-        </div>
-    </div>
-    </div>
+
 
 <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
     <div style="display:flex;gap:8px;align-items:center;">
