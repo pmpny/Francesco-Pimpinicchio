@@ -145,8 +145,8 @@
         .voice-toggle input:checked + .toggle-track { border-color: var(--accent); }
         .voice-toggle input:checked + .toggle-track .toggle-thumb { left: 16px; background: var(--accent); }
         .quick-bar { padding: 12px 20px 0; display: flex; gap: 8px; flex-wrap: wrap; }
-        .qp { font-size: 10px; letter-spacing: 0.1em; color: var(--gray); border: 1px solid var(--border); padding: 5px 11px; background: transparent; font-family: var(--font-mono); cursor: pointer; transition: all 0.18s; }
-        .qp:hover { border-color: var(--accent); color: var(--accent); }
+        .qp { font-size: 10px; letter-spacing: 0.1em; color: var(--black); border: 1px solid var(--accent); padding: 5px 11px; background: var(--accent); font-family: var(--font-mono); cursor: pointer; transition: all 0.18s; }
+        .qp:hover { background: transparent; color: var(--accent); }
         .voice-status { padding: 6px 20px; font-size: 9px; letter-spacing: 0.18em; color: var(--accent); display: none; align-items: center; gap: 8px; text-transform: uppercase; }
         .voice-status.show { display: flex; }
         .vs-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 0.8s ease infinite; }
@@ -160,7 +160,7 @@
         .msg-label { font-size: 8px; letter-spacing: 0.22em; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; }
         .msg.user .msg-label { text-align: right; }
         .msg-body { padding: 13px 17px; font-size: 13px; line-height: 1.75; }
-        .msg.user .msg-body { background: var(--white); color: var(--black); }
+        .msg.user .msg-body { background: var(--accent); color: var(--black); }
         .ai-response { display: flex; flex-direction: column; gap: 4px; }
         .ai-plain { background: var(--panel-2); border: 1px solid var(--border); padding: 18px 20px; font-size: 13px; line-height: 1.9; color: var(--off-white); }
         .section-card { border: 1px solid rgba(255,255,255,0.07); background: #1e1e1a; margin-bottom: 4px; overflow: hidden; padding: 0; }
