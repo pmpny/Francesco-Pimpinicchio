@@ -84,14 +84,14 @@
         .paywall-skip:hover { color: var(--gray); border-color: var(--border-hover); }
         .msg-counter { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); }
         .msg-counter.warning { color: #ff9944; }
-        .hero { min-height: 100vh; padding: 140px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; overflow: hidden; }
+        .hero { min-height: 100vh; padding: 140px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; }
         .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 70% at 5% 50%, rgba(204,255,0,0.025) 0%, transparent 70%); pointer-events: none; }
         .hero-left { position: relative; z-index: 1; }
         .eyebrow { font-size: 9px; letter-spacing: 0.35em; color: var(--gray); text-transform: uppercase; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; }
         .eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gray); }
         h1 { font-family: var(--font-display); font-size: clamp(56px, 7vw, 108px); font-weight: 300; line-height: 0.88; letter-spacing: -0.015em; margin-bottom: 36px; color: var(--white); }
         h1 em { font-style: italic; color: var(--gray-light); }
-        .hero-desc { font-size: 13px; color: var(--gray); max-width: 400px; line-height: 1.85; margin-bottom: 44px; }
+        .hero-desc { font-size: 13px; color: var(--gray); max-width: 560px; line-height: 1.85; margin-bottom: 44px; }
         .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
         .btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 14px 28px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; transition: all 0.22s; }
         .btn-primary { background: var(--white); color: var(--black); }
@@ -286,6 +286,9 @@
         .ai-tab-btn { flex: 1; padding: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; background: var(--panel); border: none; border-bottom: 2px solid transparent; color: var(--gray); cursor: pointer; transition: all 0.18s; }
         .ai-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
         .ai-tab-content { display: block; }
+        /* DESKTOP BRIEF — visible only on desktop, hidden on mobile (stays in side panel) */
+        .desktop-brief { display: block; }
+        @media (max-width: 1024px) { .desktop-brief { display: none !important; } }
         /* BRIEF GRID */
         .brief-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-top: 32px; }
         .brief-col { background: var(--panel); padding: 24px 20px; }
@@ -555,10 +558,10 @@
 
 <!-- HERO -->
 <section class="hero" style="grid-template-columns:1fr;min-height:auto;padding:120px 48px 40px;border-bottom:1px solid var(--accent);">
-    <div class="hero-left">
+    <div class="hero-left" style="max-width:100%;">
         <div class="eyebrow">PMPNY Intelligence — Trend Platform</div>
-        <h1>Trend intel<br>for <em>every</em><br>designer.</h1>
-        <p class="hero-desc" style="margin-bottom:0;">AI-powered fashion trend intelligence. Colors, silhouettes, materials — from runway to resale. Speak it, type it, or upload a photo. Built for independent designers worldwide.</p>
+        <h1 style="max-width:100%;">Trend intel<br>for <em>every</em> designer.</h1>
+        <p class="hero-desc" style="margin-bottom:0;max-width:600px;">AI-powered fashion trend intelligence. Colors, silhouettes, materials — from runway to resale. Speak it, type it, or upload a photo. Built for independent designers worldwide.</p>
     </div>
 </section>
 
@@ -622,6 +625,61 @@
     </div>
 
 
+
+<div class="section desktop-brief" id="desktopBrief" style="padding-bottom:0;padding-top:48px;">
+    <div class="brief-colors-row">
+        <div>
+            <div class="brief-season-info" id="briefWeekLabel">Monthly Brief · June 2026</div>
+            <div class="brief-title-display" id="briefTitleEl">The Architecture of Restraint</div>
+        </div>
+        <div class="swatches" id="briefSwatches" style="margin:0;">
+            <div class="swatch-wrap"><div class="swatch" style="background:#6B1C23"></div><div class="swatch-name">Burgundy</div></div>
+            <div class="swatch-wrap"><div class="swatch" style="background:#9CAF88"></div><div class="swatch-name">Sage</div></div>
+            <div class="swatch-wrap"><div class="swatch" style="background:#e8e0d0"></div><div class="swatch-name">Bone</div></div>
+            <div class="swatch-wrap"><div class="swatch" style="background:#080808;border-color:rgba(255,255,255,0.15)"></div><div class="swatch-name">Matte</div></div>
+        </div>
+        <span class="tier-pill" id="briefSeasonLabel">SS26</span>
+    </div>
+    <div id="briefNote" style="display:none;font-size:11px;color:var(--gray);line-height:1.7;padding:14px 0;border-bottom:1px solid var(--border);font-style:italic;"></div>
+    <div class="brief-grid">
+        <div class="brief-col">
+            <div class="brief-col-label" style="color:var(--accent);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                Rising
+            </div>
+            <div class="brief-col-signals" id="briefSignalsRising">
+                <div class="brief-signal-row"><span class="brief-signal-name">Structural Volume</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:84%;background:rgba(204,255,0,0.6)"></div></div><span class="brief-signal-pct" style="color:var(--accent)">84%</span></div>
+            </div>
+        </div>
+        <div class="brief-col">
+            <div class="brief-col-label" style="color:#ff9944;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                Peaking
+            </div>
+            <div class="brief-col-signals" id="briefSignalsPeaking">
+                <div class="brief-signal-row"><span class="brief-signal-name">Chain Hardware</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:52%;background:rgba(255,153,68,0.5)"></div></div><span class="brief-signal-pct" style="color:#ff9944">52%</span></div>
+            </div>
+        </div>
+        <div class="brief-col">
+            <div class="brief-col-label" style="color:#ff4444;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                Fading
+            </div>
+            <div class="brief-col-signals" id="briefSignalsFading">
+                <div class="brief-signal-row"><span class="brief-signal-name">Logo Streetwear</span><div class="brief-signal-bar"><div class="brief-signal-fill" style="width:22%;background:rgba(255,68,68,0.4)"></div></div><span class="brief-signal-pct" style="color:#ff4444">22%</span></div>
+            </div>
+        </div>
+        <div class="brief-col">
+            <div class="brief-col-label" style="color:var(--gray-light);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+                Brand Momentum
+            </div>
+            <div id="briefBrandsList" style="display:flex;flex-direction:column;gap:8px;">
+                <div style="font-size:10px;color:var(--dim);">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
     <div style="display:flex;gap:8px;align-items:center;">
