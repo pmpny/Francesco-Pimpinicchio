@@ -29,6 +29,8 @@
         /* FIX: overflow-x moved from body to html — prevents iOS Safari from creating a scroll container
            that clips position:fixed elements starting off-screen (translateX(100%)) */
         html { scroll-behavior: smooth; overflow-x: hidden; }
+        ::selection { background: var(--accent); color: var(--black); }
+        ::-moz-selection { background: var(--accent); color: var(--black); }
         body { background: var(--black); color: var(--white); font-family: var(--font-mono); font-size: 13px; line-height: 1.65; min-height: 100vh; }
         nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(8,8,8,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
         .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
