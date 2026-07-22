@@ -1087,8 +1087,29 @@ async function buildHybridMoodboard() {
 }
 function buildMoodboard() { buildHybridMoodboard(); }
 
+// LIVE SEASON — keep ticker + placeholders in sync with the 15-month design horizon
+// (matches api/chat.js and api/generate-brief.js exactly)
+function getDesignSeason() {
+    const now = new Date();
+    const m = now.getMonth() + 1, y = now.getFullYear();
+    let design, after;
+    if (m >= 1 && m <= 6) { design = 'SS' + String(y+1).slice(2); after = 'FW' + String(y+1).slice(2); }
+    else { design = 'FW' + String(y+1).slice(2); after = 'SS' + String(y+2).slice(2); }
+    return { design, after };
+}
+function applyLiveSeason() {
+    const { design, after } = getDesignSeason();
+    document.querySelectorAll('.ticker-season-signals').forEach(el => el.textContent = design + ' Signals');
+    document.querySelectorAll('.ticker-season-intel').forEach(el => el.textContent = after + ' Intelligence');
+    ['briefSeasonLabel','panelSeasonLabel','mbSeason'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && /^(SS|FW)\d{2}$/.test(el.textContent.trim())) el.textContent = design;
+    });
+}
+
 // INIT
 window.addEventListener('load', () => {
+    applyLiveSeason();
     setTimeout(() => { document.querySelectorAll('.signal-fill[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 500);
     updateMsgCounter(); updateUploadCounter();
     loadWeeklyBrief();
