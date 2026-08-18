@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quotidiano — Case Study — PMPNY Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.cs-hero{padding:10rem 3rem 6rem;border-bottom:1px solid var(--faint);position:relative;overflow:hidden;}
+.cs-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(204,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(204,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;}
+.hero-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0.28;}
+.cs-meta{display:flex;gap:2rem;flex-wrap:wrap;margin-top:2rem;}
+.cs-meta-item{border-top:1px solid var(--faint);padding-top:.75rem;}
+.cs-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.cs-meta-val{font-size:12px;color:var(--off-white);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+/* PIECE HEADER */
+.piece-head{display:flex;align-items:baseline;gap:1.25rem;margin-bottom:.5rem;}
+.piece-idx{font-family:var(--serif);font-size:2.6rem;font-weight:300;color:rgba(204,255,0,0.25);line-height:1;}
+.piece-name{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;color:var(--off-white);line-height:1;}
+.piece-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1.25rem;}
+.piece-body{font-size:13px;color:var(--muted);line-height:1.9;max-width:640px;margin-bottom:2.5rem;}
+.piece-body em{color:rgba(237,233,224,.75);font-style:italic;}
+/* FRAMES — line art / tech (contain) */
+.img-frame{background:var(--bg2);border:1px solid var(--faint);padding:1.5rem;display:flex;align-items:center;justify-content:center;}
+.img-frame img{width:100%;max-height:340px;object-fit:contain;display:block;}
+.img-frame.tall img{max-height:440px;}
+.img-frame.spec img{max-height:300px;}
+.img-caption{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.6rem;}
+/* FINISHED — editorial (cover) */
+.shot{position:relative;overflow:hidden;background:var(--bg2);border:1px solid var(--faint);}
+.shot img{width:100%;height:420px;object-fit:cover;object-position:center;display:block;}
+.shot.tall img{height:520px;}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+.trio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+/* PREV / NEXT BAND */
+.pn-band{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--faint);}
+.pn-cell{padding:4rem 3rem;text-decoration:none;display:block;transition:background .3s;position:relative;overflow:hidden;}
+.pn-cell:hover{background:var(--bg2);}
+.pn-prev{border-right:1px solid var(--faint);}
+.pn-next{text-align:right;}
+.pn-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.pn-name{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;color:var(--off-white);line-height:1;transition:color .2s;}
+.pn-cell:hover .pn-name{color:var(--accent);}
+.pn-client{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;}
+@media(max-width:768px){
+  .cs-hero{padding:7rem 1.5rem 3rem;}
+  .two-col,.pair-grid,.trio-grid{grid-template-columns:1fr;}
+  .shot img{height:300px;}
+  .shot.tall img{height:360px;}
+  .pn-band{grid-template-columns:1fr;}
+  .pn-prev{border-right:none;border-bottom:1px solid var(--faint);}
+  .pn-next{text-align:left;}
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
+  <ul class="nav-links"><li><a href="studio.html">Studio</a></li><li><a href="work.html" class="active">Work</a></li><li><a href="https://pimpinicchio.com" target="_blank">Shop</a></li><li><a href="contact.html">Contact</a></li><li><a href="ai.html">AI</a></li></ul>
+  <a href="contact.html" class="nav-cta">Hire Me</a>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="navMobile">
+  <a href="studio.html">Studio</a>
+  <a href="work.html">Work</a>
+  <a href="https://pimpinicchio.com" target="_blank">Shop</a>
+  <a href="contact.html">Contact</a>
+  <a href="ai.html">AI →</a>
+</div>
+
+<!-- HERO -->
+<div class="cs-hero">
+  <div class="cs-grid-bg"></div>
+  <img class="hero-bg-img" src="/images/quotidiano-monteluco-front.webp" alt=""/>
+  <div style="position:relative;z-index:1;max-width:680px;">
+    <a href="work.html" style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:2.5rem;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Back to Work</a>
+    <div class="page-kicker">Case Study 004 — Pimpinicchio New York</div>
+    <h1 class="page-h1" style="margin-top:1rem;">Quotidiano —<br><em>The Everyday.</em></h1>
+    <div class="cs-meta">
+      <div class="cs-meta-item"><div class="cs-meta-label">Role</div><div class="cs-meta-val">Founder &amp; Creative Director</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Line</div><div class="cs-meta-val">Quotidiano — Everyday Series</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Material</div><div class="cs-meta-val">Olive &amp; Russet Vegan Suede</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Named For</div><div class="cs-meta-val">The hills above Spoleto, Umbria</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="marquee-wrap"><div class="marquee-track"><span>The Rocca Tote</span><span class="accent">✦</span><span>The Monteluco Shoulder</span><span class="accent">✦</span><span>L'Oliva Charm</span><span class="accent">✦</span><span>Vegan Suede</span><span class="accent">✦</span><span>Spoleto</span><span class="accent">✦</span><span>Bio-Based Trim</span><span class="accent">✦</span><span>The Rocca Tote</span><span class="accent">✦</span><span>The Monteluco Shoulder</span><span class="accent">✦</span><span>L'Oliva Charm</span><span class="accent">✦</span><span>Vegan Suede</span><span class="accent">✦</span><span>Spoleto</span><span class="accent">✦</span><span>Bio-Based Trim</span><span class="accent">✦</span></div></div>
+
+<!-- OVERVIEW -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="two-col reveal">
+    <div>
+      <div class="section-label">The Line</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.1;color:var(--off-white);margin-bottom:1.5rem;font-style:italic;">"Quotidiano — the everyday. Soft where the VOLT Collection was sharp, and just as intentional."</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.25rem;">Where the runway line is armor, Quotidiano is the everyday counterpart of Pimpinicchio New York — a study in restraint. Slouchy, unlined forms in olive and russet vegan suede, cut to carry a real day and a laptop with it, then finished with the studio's signature hardware and a single drop of volt-yellow.</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;">Each piece is named for the hills above Spoleto, in Umbria, where I grew up: the Rocca fortress, the Monteluco wood, the olive groves. Designed in New York, rooted in Italy — engineered end to end, from first sketch to production-ready specification.</p>
+    </div>
+    <div>
+      <div class="section-label">The Collection</div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--faint);">
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">The Rocca Tote — unlined carryall</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Bag</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">The Monteluco Shoulder — slouchy daily</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Bag</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">L'Oliva — cast-metal olive charm</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Hardware</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">Olive vegan suede &amp; bio-based trim</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Material</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">Sketch → 3D → tech pack → production</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Process</span></div>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem;"><span class="tag">Product Design</span><span class="tag">Hardware Engineering</span><span class="tag">Vegan Suede</span><span class="tag">Tech Packs</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- L'OLIVA — THE DESIGN JOURNEY -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="piece-head reveal"><span class="piece-idx">01</span><span class="piece-name">L'Oliva</span></div>
+  <div class="piece-sub reveal">The Charm — Sketch to Cast Metal</div>
+  <p class="piece-body reveal"><em>A memory, cast in metal.</em> Brass-gold olive leaves engraved with the Pimpinicchio mark, a black olive tipped with spikes, and a single drop of volt-yellow at its heart. The full journey below: hand sketch, 3D model, the engraved leaf drawing, the production spec, and the finished piece on the bag.</p>
+
+  <div class="pair-grid reveal">
+    <div><div class="img-frame tall"><img src="/images/quotidiano-oliva-sketch.jpg" alt="L'Oliva hand sketch"/></div><div class="img-caption">01 — Hand sketch ideation</div></div>
+    <div><div class="img-frame tall"><img src="/images/quotidiano-oliva-3d.jpg" alt="L'Oliva 3D model"/></div><div class="img-caption">02 — 3D structural model</div></div>
+  </div>
+  <div class="pair-grid reveal">
+    <div><div class="img-frame tall"><img src="/images/quotidiano-oliva-leaf.jpg" alt="Engraved olive leaf CAD"/></div><div class="img-caption">03 — Engraved leaf — CAD &amp; dimensions</div></div>
+    <div><div class="img-frame tall spec"><img src="/images/quotidiano-oliva-spec.jpg" alt="L'Oliva technical specification"/></div><div class="img-caption">04 — Production specification pack</div></div>
+  </div>
+  <div class="pair-grid reveal">
+    <div><div class="shot tall"><img src="/images/quotidiano-oliva-charm.jpg" alt="L'Oliva finished charm"/></div><div class="img-caption">05 — Finished charm — spiked olive, volt-yellow tip</div></div>
+    <div><div class="shot tall"><img src="/images/quotidiano-oliva-onbag.webp" alt="L'Oliva charm on bag"/></div><div class="img-caption">06 — Styled on the bag</div></div>
+  </div>
+</section>
+
+<!-- THE ROCCA TOTE -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="piece-head reveal"><span class="piece-idx">02</span><span class="piece-name">The Rocca Tote</span></div>
+  <div class="piece-sub reveal">Named for La Rocca Albornoziana, the fortress above Spoleto</div>
+  <p class="piece-body reveal">Not because it's hard — because it holds everything. A soft, unlined tote in vegan suede with black bio-based vegan leather trim, foldable flat for shipping, on a studded base with integrated piercing rings. It carries a whole day, a 16-inch laptop included, and comes with two removable pouches on dog-clips. <em>46.6 × 35 × 16 cm. Russet brown. Brass-gold and gunmetal hardware.</em></p>
+
+  <div class="pair-grid reveal">
+    <div><div class="img-frame tall"><img src="/images/quotidiano-rocca-sketch.jpeg" alt="Rocca Tote hand sketch"/></div><div class="img-caption">01 — Hand sketch ideation</div></div>
+    <div><div class="img-frame tall spec"><img src="/images/quotidiano-rocca-spec.jpg" alt="Rocca Tote technical specification"/></div><div class="img-caption">02 — Production specification pack</div></div>
+  </div>
+  <div class="pair-grid reveal">
+    <div><div class="shot tall"><img src="/images/quotidiano-rocca-front.webp" alt="Rocca Tote finished"/></div><div class="img-caption">03 — Finished tote</div></div>
+    <div><div class="shot tall"><img src="/images/quotidiano-rocca-styled.jpg" alt="Rocca Tote with pouches"/></div><div class="img-caption">04 — With removable pouches</div></div>
+  </div>
+</section>
+
+<!-- THE MONTELUCO SHOULDER -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="piece-head reveal"><span class="piece-idx">03</span><span class="piece-name">The Monteluco Shoulder</span></div>
+  <div class="piece-sub reveal">Named for the sacred wood above Spoleto</div>
+  <p class="piece-body reveal">The green mountain I grew up escaping to. A soft, slouchy shoulder bag in olive vegan suede that drapes effortlessly without losing its edge — a free-moving T-bar handle plus a detachable strap, a studded base, side D-rings, and the signature volt-yellow logo patch. Built for every day, carried two ways, sized to close cleanly around a 13-inch MacBook. <em>34 × 21 × 11 cm. Dark olive, Pantone 19-0419. Brass-gold and gunmetal hardware.</em></p>
+
+  <div class="pair-grid reveal">
+    <div><div class="img-frame tall spec"><img src="/images/quotidiano-monteluco-spec.jpg" alt="Monteluco Shoulder technical specification"/></div><div class="img-caption">01 — Production specification pack</div></div>
+    <div><div class="shot tall"><img src="/images/quotidiano-monteluco-front.webp" alt="Monteluco Shoulder finished"/></div><div class="img-caption">02 — Finished shoulder bag</div></div>
+  </div>
+  <div class="reveal"><div class="shot"><img src="/images/quotidiano-monteluco-detail.jpg" alt="Monteluco hardware detail"/></div><div class="img-caption">03 — Hardware &amp; strap detail</div></div>
+</section>
+
+<!-- PREV / NEXT BAND -->
+<div class="pn-band">
+  <a href="work-cromia.html" class="pn-cell pn-prev">
+    <div class="pn-label">← Previous Project</div>
+    <div class="pn-name">Cromia</div>
+    <div class="pn-client">Case Study 003 — Geometry &amp; Scale</div>
+  </a>
+  <a href="work-versace.html" class="pn-cell pn-next">
+    <div class="pn-label">Next Project →</div>
+    <div class="pn-name">Versace</div>
+    <div class="pn-client">Case Study 005 — Concept Study</div>
+  </a>
+</div>
+
+<footer><div class="footer-logo">PMPNY Design Studio<div style="font-size:9px;margin-top:4px;color:rgba(107,104,96,.6)">Long Island City, NY</div></div><div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="ai.html">AI</a><a href="contact.html">Contact</a></div><div class="footer-right">© 2026 Francesco Pimpinicchio</div></footer>
+<script>
+const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));
+function toggleMobileNav(){document.getElementById('navHamburger').classList.toggle('open');document.getElementById('navMobile').classList.toggle('open');}
+document.addEventListener('click',function(e){var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');if(n&&n.classList.contains('open')&&!n.contains(e.target)&&!b.contains(e.target)){n.classList.remove('open');b.classList.remove('open');}});
+</script>
+</body>
+</html>
