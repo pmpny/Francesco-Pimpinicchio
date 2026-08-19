@@ -3,33 +3,55 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Cromia — Case Study — PMPNY Design Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="style.css"/>
 <style>
 .cs-hero{padding:10rem 3rem 6rem;border-bottom:1px solid var(--faint);position:relative;overflow:hidden;}
 .cs-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(204,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(204,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;}
-.hero-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;opacity:0.3;}
+.hero-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0.28;}
 .cs-meta{display:flex;gap:2rem;flex-wrap:wrap;margin-top:2rem;}
 .cs-meta-item{border-top:1px solid var(--faint);padding-top:.75rem;}
 .cs-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .cs-meta-val{font-size:12px;color:var(--off-white);}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
-/* EDITORIAL IMAGE SYSTEM */
 .img-frame{background:var(--bg2);border:1px solid var(--faint);padding:1.5rem;display:flex;align-items:center;justify-content:center;}
-.img-frame img{width:100%;max-height:300px;object-fit:contain;display:block;}
-.img-frame.tall img{max-height:380px;}
-.img-frame.portrait img{max-height:440px;}
+.img-frame img{width:100%;max-height:340px;object-fit:contain;display:block;}
+.img-frame.tall img{max-height:420px;}
 .img-caption{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.6rem;}
-.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;}
-.trio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:3rem;}
-/* RED CARPET - these are editorial photos, cover is fine but sized properly */
-.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
-.rc-item{position:relative;overflow:hidden;}
-.rc-item img{width:100%;height:380px;object-fit:cover;object-position:top;display:block;}
-.rc-caption{padding:.75rem 0;}
-.rc-name{font-family:var(--serif);font-size:1.1rem;color:var(--off-white);}
-.rc-event{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dim);}
-@media(max-width:768px){.two-col,.pair-grid,.trio-grid,.rc-grid{grid-template-columns:1fr;}}
+.shot{position:relative;overflow:hidden;background:var(--bg2);border:1px solid var(--faint);}
+.shot img{width:100%;height:420px;object-fit:cover;object-position:center;display:block;}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+.trio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+.sig-grid{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--faint);}
+.sig-col{padding:2.5rem 2rem;border-right:1px solid var(--faint);}
+.sig-col:last-child{border-right:none;}
+.sig-name{font-family:var(--serif);font-size:1.7rem;font-weight:300;color:var(--off-white);margin-bottom:.4rem;}
+.sig-kicker{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.sig-body{font-size:12px;color:var(--muted);line-height:1.85;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--faint);}
+.stat{background:var(--bg2);padding:1.75rem 1.5rem;}
+.stat-n{font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);line-height:1;}
+.stat-n.sm{font-size:1.15rem;margin-top:6px;}
+.stat-l{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px;}
+.pn-band{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--faint);}
+.pn-cell{padding:4rem 3rem;text-decoration:none;display:block;transition:background .3s;}
+.pn-cell:hover{background:var(--bg2);}
+.pn-prev{border-right:1px solid var(--faint);}
+.pn-next{text-align:right;}
+.pn-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.pn-name{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;color:var(--off-white);line-height:1;transition:color .2s;}
+.pn-cell:hover .pn-name{color:var(--accent);}
+.pn-client{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;}
+@media(max-width:768px){
+  .cs-hero{padding:7rem 1.5rem 3rem;}
+  .two-col,.pair-grid,.trio-grid,.sig-grid{grid-template-columns:1fr;}
+  .sig-col{border-right:none;border-bottom:1px solid var(--faint);}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .shot img{height:300px;}
+  .pn-band{grid-template-columns:1fr;}
+  .pn-prev{border-right:none;border-bottom:1px solid var(--faint);}
+  .pn-next{text-align:left;}
+}
 </style>
 </head>
 <body>
@@ -37,75 +59,139 @@
   <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
   <ul class="nav-links"><li><a href="studio.html">Studio</a></li><li><a href="work.html" class="active">Work</a></li><li><a href="https://pimpinicchio.com" target="_blank">Shop</a></li><li><a href="contact.html">Contact</a></li><li><a href="ai.html">AI</a></li></ul>
   <a href="contact.html" class="nav-cta">Hire Me</a>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
 </nav>
+<div class="nav-mobile" id="navMobile">
+  <a href="studio.html">Studio</a><a href="work.html">Work</a><a href="https://pimpinicchio.com" target="_blank">Shop</a><a href="contact.html">Contact</a><a href="ai.html">AI →</a>
+</div>
 
+<!-- HERO -->
 <div class="cs-hero">
   <div class="cs-grid-bg"></div>
   <img class="hero-bg-img" src="/images/cromia-hero.png" alt=""/>
-  <div style="position:relative;z-index:1;max-width:640px;">
+  <div style="position:relative;z-index:1;max-width:700px;">
     <a href="work.html" style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:2.5rem;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Back to Work</a>
-    <div class="page-kicker">Case Study 003 — LA.I.PE SPA, Tolentino, Italy</div>
-    <h1 class="page-h1" style="margin-top:1rem;">Cromia —<br><em>Geometry & Scale.</em></h1>
+    <div class="page-kicker">Case Study 003 — LA.I.PE SpA, Tolentino, Italy</div>
+    <h1 class="page-h1" style="margin-top:1rem;">Cromia —<br><em>Designed from Zero.</em></h1>
     <div class="cs-meta">
-      <div class="cs-meta-item"><div class="cs-meta-label">Role</div><div class="cs-meta-val">Accessories Designer</div></div>
-      <div class="cs-meta-item"><div class="cs-meta-label">Period</div><div class="cs-meta-val">July 2017 – July 2019</div></div>
-      <div class="cs-meta-item"><div class="cs-meta-label">Manufacturer for</div><div class="cs-meta-val">Vivienne Westwood, Valextra, Berluti</div></div>
-      <div class="cs-meta-item"><div class="cs-meta-label">Output</div><div class="cs-meta-val">17–25 Collections/Year</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Role</div><div class="cs-meta-val">Accessories Designer — Full Authorship</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Period</div><div class="cs-meta-val">2017 – 2019 · Tolentino, Italy</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">House Pedigree</div><div class="cs-meta-val">Vivienne Westwood · Valextra · Berluti</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Output</div><div class="cs-meta-val">17–25 Collections / Year</div></div>
     </div>
   </div>
 </div>
 
-<div class="marquee-wrap"><div class="marquee-track"><span>Ginger Hardware</span><span class="accent">✦</span><span>Kiki Line</span><span class="accent">✦</span><span>Italian Craftsmanship</span><span class="accent">✦</span><span>Venice Film Festival</span><span class="accent">✦</span><span>CAD to 3D</span><span class="accent">✦</span><span>Matelassé</span><span class="accent">✦</span><span>Ginger Hardware</span><span class="accent">✦</span><span>Kiki Line</span><span class="accent">✦</span><span>Italian Craftsmanship</span><span class="accent">✦</span><span>Venice Film Festival</span><span class="accent">✦</span><span>CAD to 3D</span><span class="accent">✦</span><span>Matelassé</span><span class="accent">✦</span></div></div>
+<div class="marquee-wrap"><div class="marquee-track"><span>Designed From Zero</span><span class="accent">✦</span><span>Ginger Hardware</span><span class="accent">✦</span><span>Kiki Line</span><span class="accent">✦</span><span>Italian Craftsmanship</span><span class="accent">✦</span><span>Venice Film Festival</span><span class="accent">✦</span><span>2D → 3D CAD</span><span class="accent">✦</span><span>Matelassé</span><span class="accent">✦</span><span>Designed From Zero</span><span class="accent">✦</span><span>Ginger Hardware</span><span class="accent">✦</span><span>Kiki Line</span><span class="accent">✦</span><span>Italian Craftsmanship</span><span class="accent">✦</span><span>Venice Film Festival</span><span class="accent">✦</span><span>2D → 3D CAD</span><span class="accent">✦</span><span>Matelassé</span><span class="accent">✦</span></div></div>
 
-<!-- OVERVIEW -->
+<!-- THE MANDATE -->
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
   <div class="two-col reveal">
     <div>
-      <div class="section-label">The Work</div>
-      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.1;color:var(--off-white);margin-bottom:1.5rem;font-style:italic;">"As a designer for La.i.pe — the manufacturing powerhouse behind Vivienne Westwood and Valextra — I led the end-to-end prototyping of custom hardware and structural silhouettes."</h2>
-      <p style="font-size:13px;color:var(--muted);line-height:1.9;">Precise translation from 2D ideation to 3D mechanical CADs, ensuring the final product met the rigorous standards of high-end Italian craftsmanship.</p>
+      <div class="section-label">The Mandate</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.15;color:var(--off-white);margin-bottom:1.5rem;font-style:italic;">"Nothing arrived on my desk half-finished. I designed the collections from zero — every shape, every clasp, every stud."</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.25rem;">LA.I.PE SpA is the Italian manufacturing house behind some of the industry's most exacting names — Vivienne Westwood, Valextra, Berluti. Working to that technical standard, I held full design authorship over Cromia's seasonal lines: originating every silhouette from a blank page, engineering the hardware suite that defined it, and carrying both through to production.</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;">This was not styling, and it was not contribution to someone else's concept. It was end-to-end authorship — the shape and the hardware, both mine — across 17 to 25 handbag collections a year, from the first pencil line to the final plated clasp.</p>
     </div>
     <div>
-      <div class="section-label">Scope</div>
+      <div class="section-label">Scope of Authorship</div>
       <div style="display:flex;flex-direction:column;gap:1px;background:var(--faint);">
-        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">17–25 seasonal collections / year</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Scale</span></div>
-        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">Custom hardware end-to-end</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Role</span></div>
-        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">4+ overseas suppliers managed</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Network</span></div>
-        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--off-white);">Venice Film Festival placements</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">PR</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;"><span style="font-size:12px;color:var(--off-white);">Full silhouette design — every shape, from zero</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Design</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;"><span style="font-size:12px;color:var(--off-white);">Bespoke hardware suites — rings, clasps, studs</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Hardware</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;"><span style="font-size:12px;color:var(--off-white);">2D ideation → 3D mechanical CAD</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Engineering</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;"><span style="font-size:12px;color:var(--off-white);">Prototyping with Italian master artisans</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Craft</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;"><span style="font-size:12px;color:var(--off-white);">International sampling &amp; supplier coordination</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Production</span></div>
+        <div style="background:var(--bg2);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;"><span style="font-size:12px;color:var(--off-white);">4+ overseas suppliers managed</span><span style="font-size:9px;color:var(--accent-dim);text-transform:uppercase;letter-spacing:.1em;">Network</span></div>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem;"><span class="tag">Silhouette Design</span><span class="tag">Hardware Engineering</span><span class="tag">CAD</span><span class="tag">Italian Manufacturing</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FULL AUTHORSHIP / PROCESS -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">Full Authorship — Sketch to Production</div>
+  <p style="font-size:13px;color:var(--muted);max-width:640px;margin-bottom:2.5rem;line-height:1.9;">Every Cromia bag travelled the same road: a hand sketch, resolved into 3D mechanical CAD, prototyped with the atelier, corrected across samples, and released to production. Owning the whole chain meant the idea never got diluted in translation — the clasp on the shelf was the clasp I drew.</p>
+  <div class="trio-grid reveal">
+    <div><div class="img-frame tall"><img src="/images/cromia-sketch.png" alt="Cromia hand sketch and 2D ideation"/></div><div class="img-caption">01 — Hand sketch &amp; 2D ideation</div></div>
+    <div><div class="img-frame tall"><img src="/images/cromia-hardware.png" alt="Cromia 3D mechanical CAD hardware"/></div><div class="img-caption">02 — 3D mechanical CAD — hardware from scratch</div></div>
+    <div><div class="img-frame tall"><img src="/images/cromia-production.png" alt="Cromia prototype and production"/></div><div class="img-caption">03 — Prototype &amp; production with Italian artisans</div></div>
+  </div>
+</section>
+
+<!-- SIGNATURE LINES & HARDWARE -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">Signature Lines &amp; Hardware</div>
+  <p style="font-size:13px;color:var(--muted);max-width:640px;margin-bottom:2.5rem;line-height:1.9;">Across two years, certain designs became recognizable codes of the house — each one originated end to end, shape and hardware together.</p>
+  <div class="sig-grid reveal">
+    <div class="sig-col">
+      <div class="sig-kicker">Hardware Suite</div>
+      <div class="sig-name">Ginger</div>
+      <div class="sig-body">A bespoke hardware family — clasp, rings, and fittings — designed from mold to plating finish and carried across a season's silhouettes as a unifying signature.</div>
+    </div>
+    <div class="sig-col">
+      <div class="sig-kicker">Seasonal Line</div>
+      <div class="sig-name">Kiki</div>
+      <div class="sig-body">A full seasonal line originated from zero — silhouette, proportion, construction, and its own hardware language — developed from first sketch through to production sampling.</div>
+    </div>
+    <div class="sig-col">
+      <div class="sig-kicker">Construction</div>
+      <div class="sig-name">Matelassé</div>
+      <div class="sig-body">Quilted, padded matelassé bodies engineered to hold architectural structure while keeping a soft hand — a technique refined across multiple collections.</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOGNITION -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="two-col reveal" style="align-items:center;">
+    <div>
+      <div class="section-label">Recognition</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.6rem,2.6vw,2.2rem);font-weight:300;line-height:1.2;color:var(--off-white);margin-bottom:1.25rem;">Built to a red-carpet standard.</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;">Pieces from these collections reached the red carpet at the Venice Film Festival, produced to the standard of a house trusted by Vivienne Westwood, Valextra, and Berluti. Two years of designing at that bar built the technical fluency — silhouette, hardware, and production — that underpins every project the studio takes on today.</p>
+    </div>
+    <div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-n">17–25</div><div class="stat-l">Collections / Year</div></div>
+        <div class="stat"><div class="stat-n">2</div><div class="stat-l">Years, Full Authorship</div></div>
+        <div class="stat"><div class="stat-n">4+</div><div class="stat-l">Overseas Suppliers</div></div>
+        <div class="stat"><div class="stat-n sm">Venice</div><div class="stat-l">Film Festival Placements</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- WORK ARCHIVE -->
+<!-- SELECTED WORK -->
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
-  <div class="section-label reveal">Design Archive</div>
-  <p style="font-size:12px;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.85;">17–25 seasonal collections engineered annually. Hardware architecture, material sourcing, and production management across Italian factories and global partners.</p>
-  <div class="pair-grid reveal">
-    <div><div class="img-frame tall"><img src="/images/cromia-sketch.png" alt="Technical Sketch"/></div><div class="img-caption">01 — Technical sketch & CAD</div></div>
-    <div><div class="img-frame tall"><img src="/images/cromia-hardware.png" alt="Hardware Detail"/></div><div class="img-caption">02 — Hardware engineering</div></div>
-  </div>
-  <div class="pair-grid reveal">
-    <div><div class="img-frame"><img src="/images/cromia-production.png" alt="Production"/></div><div class="img-caption">03 — Production management</div></div>
-    <div><div class="img-frame"><img src="/images/cromia-hero.png" alt="Final Product"/></div><div class="img-caption">04 — Final collection</div></div>
+  <div class="section-label reveal">Selected Work</div>
+  <p style="font-size:12px;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.85;">Silhouettes and hardware designed for Cromia's seasonal collections.</p>
+  <div class="trio-grid reveal">
+    <div><div class="shot"><img src="/images/cromia-product-1.png" alt="Cromia design"/></div><div class="img-caption">Seasonal silhouette</div></div>
+    <div><div class="shot"><img src="/images/cromia-product-2.png" alt="Cromia design"/></div><div class="img-caption">Hardware in context</div></div>
+    <div><div class="shot"><img src="/images/cromia-product-3.png" alt="Cromia design"/></div><div class="img-caption">Matelassé construction</div></div>
   </div>
 </section>
 
-<section style="padding:4rem 3rem;border-top:1px solid var(--faint);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:2rem;">
-  <div style="font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:300;color:var(--off-white);">Working on a similar<br><em style="color:rgba(237,233,224,.4)">challenge?</em></div>
-  <div style="display:flex;flex-direction:column;gap:1rem;align-items:flex-end;">
-    <a href="contact.html" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--off-white);text-decoration:none;padding:14px 32px;">Start a Project →</a>
-    <a href="work.html" class="btn-link">← All Work</a>
-  </div>
-</section>
+<!-- PREV / NEXT BAND -->
+<div class="pn-band">
+  <a href="work-betsey.html" class="pn-cell pn-prev">
+    <div class="pn-label">← Previous Project</div>
+    <div class="pn-name">Betsey Johnson</div>
+    <div class="pn-client">Case Study 002 — Capsule Collection</div>
+  </a>
+  <a href="work-quotidiano.html" class="pn-cell pn-next">
+    <div class="pn-label">Next Project →</div>
+    <div class="pn-name">Quotidiano</div>
+    <div class="pn-client">Case Study 004 — The Everyday</div>
+  </a>
+</div>
 
-<footer><div class="footer-logo">PMPNY Design Studio</div><div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="ai.html">AI</a><a href="contact.html">Contact</a></div><div class="footer-right">© 2026 Francesco Pimpinicchio</div></footer>
-<script>const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));</script>
+<footer><div class="footer-logo">PMPNY Design Studio<div style="font-size:9px;margin-top:4px;color:rgba(107,104,96,.6)">Long Island City, NY</div></div><div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="ai.html">AI</a><a href="contact.html">Contact</a></div><div class="footer-right">© 2026 Francesco Pimpinicchio</div></footer>
 <script>
-function toggleMobileNav() {
-    document.getElementById('navHamburger').classList.toggle('open');
-    document.getElementById('navMobile').classList.toggle('open');
-}
+const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));
+function toggleMobileNav(){document.getElementById('navHamburger').classList.toggle('open');document.getElementById('navMobile').classList.toggle('open');}
+document.addEventListener('click',function(e){var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');if(n&&n.classList.contains('open')&&!n.contains(e.target)&&!b.contains(e.target)){n.classList.remove('open');b.classList.remove('open');}});
 </script>
 </body>
 </html>
