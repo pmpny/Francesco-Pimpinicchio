@@ -43,6 +43,29 @@
 .pn-cell:hover .pn-name{color:var(--accent);}
 .pn-client{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;}
 @media(max-width:768px){.pn-band{grid-template-columns:1fr;}.pn-prev{border-right:none;border-bottom:1px solid var(--faint);}.pn-next{text-align:left;}}
+/* BAG & LOOK SECTIONS */
+.media{background:var(--bg2);border:1px solid var(--faint);height:400px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.media.contain{padding:1.25rem;}
+.media.contain img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+.media.cover img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.media.tall{height:480px;}
+.bag-head{display:flex;align-items:baseline;gap:1.25rem;margin-bottom:.4rem;}
+.bag-idx{font-family:var(--serif);font-size:2.4rem;font-weight:300;color:rgba(204,255,0,0.25);line-height:1;}
+.bag-name{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;color:var(--off-white);line-height:1;}
+.bag-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.bag-body{font-size:13px;color:var(--muted);line-height:1.9;max-width:660px;margin-bottom:2.5rem;}
+.lineup-full{margin-bottom:2rem;background:var(--bg2);border:1px solid var(--faint);padding:1.5rem;}
+.lineup-full img{width:100%;object-fit:contain;display:block;}
+.look{margin-bottom:4rem;}.look:last-child{margin-bottom:0;}
+.look-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:.3rem;}
+.look-num{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-dim);}
+.look-name{font-family:var(--serif);font-size:clamp(1.6rem,2.6vw,2.2rem);font-weight:300;color:var(--off-white);line-height:1;}
+.look-body{font-size:13px;color:var(--muted);line-height:1.9;max-width:660px;margin:1rem 0 1.25rem;font-style:italic;}
+.look-meta{display:flex;gap:2.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.look-meta-item{max-width:340px;border-top:1px solid var(--faint);padding-top:.7rem;}
+.look-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.look-meta-val{font-size:12px;color:var(--off-white);line-height:1.6;}
+@media(max-width:768px){.media{height:300px;}.media.tall{height:340px;}}
 </style>
 </head>
 <body>
@@ -68,68 +91,93 @@
   </div>
 </div>
 
-<div class="marquee-wrap"><div class="marquee-track"><span>Boldly Edgy</span><span class="accent">✦</span><span>Unapologetically Sexy</span><span class="accent">✦</span><span>Bio-Based Vegan Leather</span><span class="accent">✦</span><span>NYFW Runway 7</span><span class="accent">✦</span><span>Laser-Cut Aperture</span><span class="accent">✦</span><span>Custom Zinc Hardware</span><span class="accent">✦</span><span>End-to-End Brand Architecture</span><span class="accent">✦</span><span>Boldly Edgy</span><span class="accent">✦</span><span>Unapologetically Sexy</span><span class="accent">✦</span><span>Bio-Based Vegan Leather</span><span class="accent">✦</span><span>NYFW Runway 7</span><span class="accent">✦</span><span>Laser-Cut Aperture</span><span class="accent">✦</span><span>Custom Zinc Hardware</span><span class="accent">✦</span><span>End-to-End Brand Architecture</span><span class="accent">✦</span></div></div>
+<div class="marquee-wrap"><div class="marquee-track"><span>Boldly Edgy</span><span class="accent">✦</span><span>Unapologetically Sexy</span><span class="accent">✦</span><span>Bio-Based Vegan Leather</span><span class="accent">✦</span><span>NYFW Runway 7</span><span class="accent">✦</span><span>Dark '90s × Cyber</span><span class="accent">✦</span><span>VOLT Monogram Print</span><span class="accent">✦</span><span>End-to-End Brand Architecture</span><span class="accent">✦</span><span>Boldly Edgy</span><span class="accent">✦</span><span>Unapologetically Sexy</span><span class="accent">✦</span><span>Bio-Based Vegan Leather</span><span class="accent">✦</span><span>NYFW Runway 7</span><span class="accent">✦</span><span>Dark '90s × Cyber</span><span class="accent">✦</span><span>VOLT Monogram Print</span><span class="accent">✦</span><span>End-to-End Brand Architecture</span><span class="accent">✦</span></div></div>
 
-<!-- OVERVIEW -->
+<!-- COLLECTION INSPIRATION -->
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
   <div class="two-col reveal">
     <div>
-      <div class="section-label">The Architecture of Aperture</div>
-      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.1;color:var(--off-white);margin-bottom:1.5rem;">End-to-End Brand Architecture — from sketch to runway.</h2>
-      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.25rem;">The Aperture collection represents a shift from traditional accessory design to end-to-end brand architecture. By utilizing a laser-cut structural reveal, the studio highlights the contrast between matte bio-based vegan leather and the high-visibility Volt interior.</p>
-      <p style="font-size:13px;color:var(--muted);line-height:1.9;">Every component — from the custom zinc hardware to the reinforced gussets — was meticulously engineered to ensure precision and high-volume production scalability.</p>
+      <div class="section-label">The Concept</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.15;color:var(--off-white);margin-bottom:1.5rem;">Dark '90s, wired for now.</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.25rem;">The VOLT Collection is built on a dark-'90s foundation with a cyber charge — geometric, asymmetric tailoring in spliced, architectural cuts and hard lines. Every silhouette, from the garments to the bags, is engineered around the same language of tension and asymmetry.</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;">The signature <strong style="color:var(--off-white);font-weight:500;">VOLT print</strong> is a pattern generated from the house logo itself — the connecting line that links the first <em>M</em> in Pimpinicchio to the <em>N</em> of New York, repeated into a monogram. The bags are named for the New York architecture that shaped them: <strong style="color:var(--off-white);font-weight:500;">30H, Trinity, Dey</strong>.</p>
     </div>
     <div>
       <div class="section-label">By the Numbers</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--faint);">
-        <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">5</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Runway Looks</div></div>
+        <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">6</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Runway Looks</div></div>
         <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">10+</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Bag Designs</div></div>
         <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">9</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Press Features</div></div>
         <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:1rem;font-weight:300;color:var(--off-white);margin-top:4px;">Runway 7, NYC</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Venue</div></div>
       </div>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem;">
-        <span class="tag">100% Vegan</span><span class="tag">Bio-Based Vegan Leather</span><span class="tag">Custom Hardware</span><span class="tag">LGBTQ+ Owned</span>
+        <span class="tag">Dark '90s × Cyber</span><span class="tag">Asymmetric Tailoring</span><span class="tag">VOLT Monogram</span><span class="tag">Bio-Based Vegan Leather</span><span class="tag">LGBTQ+ Owned</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DESIGN PROCESS -->
-<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
-  <div class="section-label reveal">Design Process — The Aperture</div>
-  <p style="font-size:12px;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.85;">From sketch to structural prototype — developing the laser-cut Aperture reveal and custom zinc hardware suite.</p>
-  <div class="pair-grid reveal">
-    <div><div class="img-frame tall"><img src="/images/volt-lateral.png" alt="Aperture Sketch"/></div><div class="img-caption">01 — Technical ideation</div></div>
-    <div><div class="img-frame tall"><img src="/images/volt-detail.png" alt="Aperture Design"/></div><div class="img-caption">02 — Structural design</div></div>
-  </div>
-  <div class="img-frame reveal" style="margin-bottom:2rem;padding:2rem;">
-    <img src="/images/volt-nyfw.png" alt="Studio Process" style="max-height:400px;"/>
-  </div>
-  <div class="trio-grid reveal">
-    <div><div class="img-frame"><img src="/images/volt-material1.png" alt="Hardware Variation" style="max-height:280px;"/></div><div class="img-caption">03 — Base variation</div></div>
-    <div><div class="img-frame"><img src="/images/volt-material2.png" alt="Stud Variation" style="max-height:280px;"/></div><div class="img-caption">04 — Stud hardware</div></div>
-    <div><div class="img-frame"><img src="/images/volt-studio.png" alt="Embroidery Variation" style="max-height:280px;"/></div><div class="img-caption">05 — Embroidery variation</div></div>
-  </div>
+<!-- SIGNATURE BAGS -->
+<section style="padding:5rem 3rem 2rem;">
+  <div class="section-label reveal">The Bags — Named for New York</div>
+  <p style="font-size:12px;color:var(--muted);max-width:560px;margin-bottom:1rem;line-height:1.85;">Three signature silhouettes, each drawn from a piece of the city's architecture and engineered from sketch to production.</p>
 </section>
-
-<!-- RUNWAY -->
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
-  <div class="section-label reveal">NYFW — Runway 7, September 2025</div>
-  <p style="font-size:12px;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.85;">The VOLT Collection — 5 looks, 10+ bags, full runway presentation.</p>
-  <div class="runway-grid reveal">
-    <div class="runway-item runway-item-tall"><img src="/images/nyfw-collection.png" alt="VOLT Collection — NYFW Runway 7"/></div>
-    <div class="runway-item runway-item-tall"><img src="https://pimpinicchio.com/cdn/shop/files/IMG_1304.webp?v=1776433782&width=1000" alt="VOLT Collection — NYFW look"/></div>
-  </div>
+  <div class="bag-head reveal"><span class="bag-idx">30H</span><span class="bag-name">30H Chain Bag</span></div>
+  <div class="bag-sub reveal">Inspired by The Edge — 30 Hudson Yards, NY</div>
+  <p class="bag-body reveal">Named for 30 Hudson Yards, home to The Edge — the angled, frameless-glass deck that juts asymmetrically into the sky, suspended over the city. That geometry became the bag: sharp asymmetric planes, matelassé sides, oversized brass rings, and a detachable chain and strap, in bio-based vegan leather.</p>
+  <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-30h-sketch.png" alt="30H Chain Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media contain"><img src="/images/volt-30h-cad.png" alt="30H Chain Bag 02 — Logo-piercing pendant · technical CAD"/></div><div class="img-caption">02 — Logo-piercing pendant · technical CAD</div></div><div><div class="media cover"><img src="/images/volt-30h-editorial.png" alt="30H Chain Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
 </section>
-
-<!-- BAGS HIGHLIGHT -->
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
-  <div class="section-label reveal">The Accessories — Product Photography</div>
-  <div class="trio-grid reveal">
-    <div><div class="img-frame tall"><img src="https://pimpinicchio.com/cdn/shop/files/trinity_hobo_bag2.jpg?v=1770844887&width=800" alt="Trinity Hobo" style="max-height:380px;"/></div><div class="img-caption">Trinity 39 Hobo Bag</div></div>
-    <div><div class="img-frame tall"><img src="https://pimpinicchio.com/cdn/shop/files/IMG_1304.webp?v=1776433782&width=800" alt="VOLT Bag" style="max-height:380px;"/></div><div class="img-caption">VOLT Collection runway</div></div>
-    <div><div class="img-frame tall"><img src="https://pimpinicchio.com/cdn/shop/files/redtubebagstraps.jpg?v=1770574111&width=800" alt="140E Tube" style="max-height:380px;"/></div><div class="img-caption">140E Tube Crossbody</div></div>
+  <div class="bag-head reveal"><span class="bag-idx">Trinity</span><span class="bag-name">Trinity Hobo Bag</span></div>
+  <div class="bag-sub reveal">Named for Trinity Street, NY</div>
+  <p class="bag-body reveal">An asymmetric, sculptural hobo — a curved form molded to the body, its soft tension held by structured edges. Named for Trinity Street, it is engineered to fold, drape, and carry weight without ever losing its silhouette.</p>
+  <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-trinity-sketch.png" alt="Trinity Hobo Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media cover"><img src="/images/volt-trinity-runway.png" alt="Trinity Hobo Bag 02 — Runway"/></div><div class="img-caption">02 — Runway</div></div><div><div class="media cover"><img src="/images/volt-trinity-editorial.png" alt="Trinity Hobo Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
+</section>
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="bag-head reveal"><span class="bag-idx">Dey</span><span class="bag-name">Dey Bag</span></div>
+  <div class="bag-sub reveal">Named for Dey Street, NY</div>
+  <p class="bag-body reveal">An asymmetric bag anchored by a macro metal plate — hardware treated as architecture. Named for Dey Street, it pushes the collection's geometric language into one oversized, structural statement.</p>
+  <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-dey-sketch.png" alt="Dey Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media cover"><img src="/images/volt-dey-runway.png" alt="Dey Bag 02 — Runway"/></div><div class="img-caption">02 — Runway</div></div><div><div class="media cover"><img src="/images/volt-dey-editorial.png" alt="Dey Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
+</section>
+<!-- THE LINE-UP -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">The Collection Line-Up</div>
+  <p style="font-size:12px;color:var(--muted);max-width:560px;margin-bottom:2.5rem;line-height:1.85;">The full VOLT collection developed as a single geometric world, presented at NYFW Runway 7.</p>
+  <div class="lineup-full reveal"><img src="/images/volt-lineup-sketches.png" alt="VOLT Collection line-up — six looks"/></div>
+  <div class="img-caption reveal" style="margin-bottom:2.5rem;">The six-look line-up</div>
+  <div class="media cover tall reveal"><img src="/images/volt-runway-group.png" alt="Francesco Pimpinicchio with models — NYFW Runway 7"/></div>
+  <div class="img-caption reveal">Runway 7 — with the models</div>
+</section>
+<!-- THE LOOKS -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">The Looks — NYFW Runway 7</div>
+  <p style="font-size:12px;color:var(--muted);max-width:560px;margin-bottom:3rem;line-height:1.85;">Selected looks from the collection, styled and shown on the runway.</p>
+<div class="look reveal">
+  <div class="look-head"><span class="look-num">Look 3</span><span class="look-name">Split Authority</span></div>
+  <p class="look-body">An asymmetric blazer-mini spliced in pinstripe and monogram, cut to sculpt and stride. Mini length, maximum command.</p>
+  <div class="look-meta">
+    <div class="look-meta-item"><div class="look-meta-label">Pieces in the set</div><div class="look-meta-val">Split Authority Blazer Mini.</div></div>
+    <div class="look-meta-item"><div class="look-meta-label">Runway bags</div><div class="look-meta-val">30H Bag (VOLT) in bio-based vegan leather; black asymmetrical tote.</div></div>
   </div>
+  <div class="trio-grid"><div><div class="media contain"><img src="/images/volt-look3-sketch.png" alt="Split Authority Sketch"/></div><div class="img-caption">Sketch</div></div><div><div class="media cover"><img src="/images/volt-look3-model.png" alt="Split Authority On the model"/></div><div class="img-caption">On the model</div></div><div><div class="media cover"><img src="/images/volt-look3-runway.png" alt="Split Authority Runway"/></div><div class="img-caption">Runway</div></div></div>
+</div><div class="look reveal">
+  <div class="look-head"><span class="look-num">Look 2</span><span class="look-name">Volt Pinstripe</span></div>
+  <p class="look-body">Tailored precision with a deconstructed twist. A sleeveless monogram vest wraps and ties over architectural pinstripe trousers with an angled overlay.</p>
+  <div class="look-meta">
+    <div class="look-meta-item"><div class="look-meta-label">Pieces in the set</div><div class="look-meta-val">Deconstructed Monogram Vest; Pinstripe Wrap-Front Trouser.</div></div>
+    <div class="look-meta-item"><div class="look-meta-label">Runway bags</div><div class="look-meta-val">Mini asymmetrical duffle in VOLT and black (bio-based vegan leather); Round 804E duffle in black.</div></div>
+  </div>
+  <div class="trio-grid"><div><div class="media contain"><img src="/images/volt-look2-sketch.png" alt="Volt Pinstripe Sketch"/></div><div class="img-caption">Sketch</div></div><div><div class="media cover"><img src="/images/volt-look2-model.png" alt="Volt Pinstripe On the model"/></div><div class="img-caption">On the model</div></div><div><div class="media cover"><img src="/images/volt-look2-editorial.png" alt="Volt Pinstripe Editorial"/></div><div class="img-caption">Editorial</div></div></div>
+</div><div class="look reveal">
+  <div class="look-head"><span class="look-num">Look 5</span><span class="look-name">Volt Trench & Bias Monogram Dress</span></div>
+  <p class="look-body">Fluid drama under a high-gloss shell. A bias-cut monogram dress with a vegan-leather waist detail slips beneath a neon trench with denim tabs.</p>
+  <div class="look-meta">
+    <div class="look-meta-item"><div class="look-meta-label">Pieces in the set</div><div class="look-meta-val">High-Gloss Volt Trench; Asymmetric Bias-Cut Monogram Dress.</div></div>
+    <div class="look-meta-item"><div class="look-meta-label">Runway bags</div><div class="look-meta-val">Burgundy clutch in bio-based vegan leather.</div></div>
+  </div>
+  <div class="trio-grid"><div><div class="media contain"><img src="/images/volt-look5-sketch.png" alt="Volt Trench & Bias Monogram Dress Sketch"/></div><div class="img-caption">Sketch</div></div><div><div class="media cover"><img src="/images/volt-look5-model.png" alt="Volt Trench & Bias Monogram Dress On the model"/></div><div class="img-caption">On the model</div></div><div><div class="media cover"><img src="/images/volt-look5-editorial.png" alt="Volt Trench & Bias Monogram Dress Editorial"/></div><div class="img-caption">Editorial</div></div></div>
+</div>
 </section>
 
 <!-- PRESS -->
