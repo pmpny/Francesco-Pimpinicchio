@@ -26,17 +26,22 @@
 .coming-h { font-family: var(--serif); font-size: clamp(2rem, 4vw, 4rem); font-weight: 300; color: var(--off-white); margin-bottom: 1rem; }
 .coming-sub { font-size: 12px; color: var(--muted); max-width: 480px; margin: 0 auto 2rem; line-height: 1.85; }
 @media(max-width:768px){.spec-teaser{grid-template-columns:1fr 1fr;}.blurred-specs{grid-template-columns:1fr 1fr;}}
+.pn-band{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--faint);}
+.pn-cell{padding:4rem 3rem;text-decoration:none;display:block;transition:background .3s;}
+.pn-cell:hover{background:var(--bg2);}
+.pn-prev{border-right:1px solid var(--faint);}
+.pn-next{text-align:right;}
+.pn-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.pn-name{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;color:var(--off-white);line-height:1;transition:color .2s;}
+.pn-cell:hover .pn-name{color:var(--accent);}
+.pn-client{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;}
+@media(max-width:768px){.pn-band{grid-template-columns:1fr;}.pn-prev{border-right:none;border-bottom:1px solid var(--faint);}.pn-next{text-align:left;}}
 </style>
 </head>
 <body>
 <nav id="nav">
   <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
-  <ul class="nav-links">
-    <li><a href="studio.html">Studio</a></li>
-    <li><a href="work.html" class="active">Work</a></li>
-    <li><a href="press.html">Press</a></li><li><a href="contact.html">Contact</a></li>
-    <li><a href="ai.html">AI</a></li>
-  </ul>
+  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="studio.html">Studio</a></li><li><a href="work.html" class="active">Work</a></li><li><a href="press.html">Press</a></li><li><a href="https://pimpinicchio.com" target="_blank">Shop</a></li><li><a href="contact.html">Contact</a></li><li><a href="ai.html">AI</a></li></ul>
   <a href="contact.html" class="nav-cta">Hire Me</a>
 </nav>
 
@@ -122,6 +127,11 @@
   <h2 class="coming-h">Full case study<br><em style="color:rgba(237,233,224,0.4)">coming soon.</em></h2>
   <p class="coming-sub">Want to discuss a similar freelance project? I'm available for capsule development, hardware engineering, and full technical specification packs with rapid turnaround.</p>
   <a href="contact.html" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bg);background:var(--off-white);text-decoration:none;padding:14px 32px;display:inline-block;transition:background 0.2s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--off-white)'">Start a Project →</a>
+</div>
+
+<div class="pn-band">
+  <a href="work-pimpinicchio.html" class="pn-cell pn-prev"><div class="pn-label">← Previous Project</div><div class="pn-name">The VOLT Collection</div><div class="pn-client">Case Study 001 — Pimpinicchio New York</div></a>
+  <a href="work-cromia.html" class="pn-cell pn-next"><div class="pn-label">Next Project →</div><div class="pn-name">Cromia</div><div class="pn-client">Case Study 003 — Designed from Zero</div></a>
 </div>
 
 <footer>
