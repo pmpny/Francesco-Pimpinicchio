@@ -1,299 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PMPNY Design Studio — Industrial Fashion & Brand Architecture</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pimpinicchio New York — Case Study — PMPNY Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="style.css"/>
 <style>
-:root { --accent: #ccff00; --accent-dim: rgba(204,255,0,0.25); }
-.hero{position:relative;height:100vh;min-height:700px;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3rem 4rem;overflow:hidden;}
-.hero-bg{position:absolute;inset:0;background:var(--bg);}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(140,140,132,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(140,140,132,0.04) 1px,transparent 1px);background-size:80px 80px;animation:grid-drift 30s linear infinite;}
-@keyframes grid-drift{0%{transform:translate(0,0)}100%{transform:translate(80px,80px)}}
-.hero-line{position:absolute;top:0;left:38%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(204,255,0,0.06) 30%,rgba(204,255,0,0.06) 70%,transparent);}
-.hero-arch{position:absolute;right:8%;top:50%;transform:translateY(-50%);width:340px;height:480px;border:1px solid rgba(140,140,132,0.1);border-radius:200px 200px 0 0;}
-.hero-arch::before{content:'';position:absolute;inset:24px;border:1px solid rgba(140,140,132,0.06);border-radius:180px 180px 0 0;}
-.hero-kicker{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;opacity:0;animation:fade-up 1s ease 0.3s forwards;}
-.hero-h1{font-family:var(--serif);font-weight:300;font-size:clamp(3.5rem,7vw,6.5rem);line-height:0.95;letter-spacing:-0.01em;color:var(--off-white);max-width:700px;margin-bottom:2rem;opacity:0;animation:fade-up 1.2s ease 0.5s forwards;}
-.hero-h1 em{font-style:italic;color:rgba(237,233,224,0.5);}
-.hero-sub-row{display:flex;align-items:flex-end;gap:3rem;opacity:0;animation:fade-up 1s ease 0.85s forwards;}
-.hero-sub{font-size:12px;color:var(--muted);max-width:340px;line-height:1.8;}
-.hero-cta{flex-shrink:0;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(204,255,0,0.3);padding-bottom:4px;white-space:nowrap;transition:color 0.2s,letter-spacing 0.3s;}
-.hero-cta:hover{color:var(--accent);letter-spacing:0.22em;}
-.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);opacity:0;animation:fade-in 1s ease 1.8s forwards;}
-.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(138,138,130,0.5),transparent);animation:scroll-pulse 2s ease infinite;}
-@keyframes fade-up{to{opacity:1;transform:translateY(0)}from{opacity:0;transform:translateY(30px)}}
-@keyframes fade-in{to{opacity:1}}
-@keyframes scroll-pulse{0%,100%{opacity:0.3}50%{opacity:1}}
-.services{padding:10rem 3rem;}
-.services-grid{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--faint);}
-.service{padding:3rem 2.5rem;border-right:1px solid var(--faint);position:relative;overflow:hidden;transition:background 0.4s;}
-.service:last-child{border-right:none;}
-.service:hover{background:var(--bg2);}
-.service-num{font-size:11px;letter-spacing:0.14em;color:var(--muted);margin-bottom:2rem;display:block;}
-.service-title{font-family:var(--serif);font-size:2.2rem;font-weight:300;line-height:1.05;color:var(--off-white);margin-bottom:1.5rem;}
-.service-body{font-size:12px;color:var(--muted);line-height:1.9;}
-.service-list{list-style:none;margin-top:1.5rem;}
-.service-list li{font-size:11px;color:var(--muted);padding:0.5rem 0;border-top:1px solid var(--faint);display:flex;align-items:center;gap:0.75rem;}
-.service-list li::before{content:'→';color:var(--muted);font-size:10px;opacity:0.5;}
-.service-big{position:absolute;right:1.5rem;bottom:-1rem;font-family:var(--serif);font-size:8rem;font-weight:300;color:rgba(255,255,255,0.03);pointer-events:none;line-height:1;user-select:none;}
-.case{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--faint);}
-.case.reverse{direction:rtl;}
-.case.reverse>*{direction:ltr;}
-.case-visual{position:relative;height:560px;background:var(--bg2);overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.case-info{padding:4rem;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--faint);}
-.case.reverse .case-info{border-left:none;border-right:1px solid var(--faint);}
-.case-num{font-size:10px;letter-spacing:0.16em;color:var(--muted);margin-bottom:1rem;}
-.case-client{font-size:11px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.5rem;}
-.case-title{font-family:var(--serif);font-size:2.6rem;font-weight:300;line-height:1.05;color:var(--off-white);margin-bottom:1.5rem;font-style:italic;}
-.case-body{font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:2.5rem;}
-.case-tags{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:2.5rem;}
-.case-link{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(204,255,0,0.2);padding-bottom:3px;width:fit-content;transition:color 0.2s,letter-spacing 0.3s;}
-.case-link:hover{color:var(--accent);letter-spacing:0.2em;}
-.vis-noise{position:absolute;inset:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
-.ai{padding:8rem 3rem;border-top:1px solid var(--faint);display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
-.intel-badge{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-dim);padding:5px 14px;margin-bottom:2rem;}
-.intel-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.intel-h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,3.5vw,3.5rem);line-height:1.05;color:var(--off-white);margin-bottom:1.5rem;}
-.intel-body{font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:2.5rem;}
-.intel-link{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--off-white);text-decoration:none;border-bottom:1px solid rgba(204,255,0,0.2);padding-bottom:3px;width:fit-content;transition:letter-spacing 0.3s;}
-.intel-link:hover{letter-spacing:0.22em;color:var(--accent);}
-.intel-visual{position:relative;height:420px;border:1px solid var(--faint);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg2);}
-.intel-grid-vis{position:absolute;inset:0;background-image:linear-gradient(rgba(140,140,132,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(140,140,132,0.05) 1px,transparent 1px);background-size:40px 40px;}
-.intel-data{position:relative;z-index:1;display:flex;flex-direction:column;gap:1.5rem;width:80%;}
-.ibar-row{display:flex;flex-direction:column;gap:6px;}
-.ibar-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;}
-.ibar-track{height:2px;background:var(--faint);}
-.ibar-fill{height:100%;background:rgba(204,255,0,0.6);}
-.contact-section{padding:8rem 3rem;border-top:1px solid var(--faint);display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;}
-.contact-h2{font-family:var(--serif);font-weight:300;font-size:clamp(3rem,5vw,5.5rem);line-height:0.95;color:var(--off-white);margin-bottom:1rem;}
-.contact-h2 em{font-style:italic;color:rgba(237,233,224,0.45);}
-.contact-line{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-bottom:1px solid var(--faint);}
-.contact-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
-.contact-val{font-size:12px;color:var(--off-white);text-decoration:none;transition:color 0.2s;}
-.contact-val:hover{color:var(--accent);}
-.contact-btn{display:inline-block;margin-top:2.5rem;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bg);background:var(--off-white);text-decoration:none;padding:14px 32px;transition:background 0.2s,color 0.2s;}
-.contact-btn:hover{background:var(--accent);color:var(--bg);}
-@media(max-width:768px){
-  .hero{padding:0 1.5rem 3rem;}
-  .hero-arch{display:none;}
-  .services{padding:5rem 1.5rem;}
-  .services-grid,.case,.ai,.contact-section{grid-template-columns:1fr;}
-  .service{border-right:none;border-bottom:1px solid var(--faint);}
-  .case-info,.case.reverse .case-info{border-left:none;border-right:none;border-top:1px solid var(--faint);}
-  .case-visual{height:300px;}
-  .ai,.contact-section{padding:4rem 1.5rem;}
-}
+.cs-hero{padding:10rem 3rem 6rem;border-bottom:1px solid var(--faint);position:relative;overflow:hidden;min-height:80vh;display:flex;flex-direction:column;justify-content:flex-end;}
+.cs-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0.3;}
+.cs-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(8,8,7,0.6),rgba(8,8,7,0.2));z-index:1;}
+.cs-meta{display:flex;gap:2rem;flex-wrap:wrap;margin-top:2rem;}
+.cs-meta-item{border-top:1px solid rgba(237,233,224,0.2);padding-top:.75rem;}
+.cs-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(237,233,224,0.5);margin-bottom:4px;}
+.cs-meta-val{font-size:12px;color:var(--off-white);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+/* EDITORIAL IMAGE SYSTEM */
+.img-frame{background:var(--bg2);border:1px solid var(--faint);padding:1.5rem;display:flex;align-items:center;justify-content:center;}
+.img-frame img{width:100%;max-height:320px;object-fit:contain;display:block;}
+.img-frame.tall img{max-height:420px;}
+.img-caption{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.6rem;}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;}
+.trio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:3rem;}
+/* RUNWAY — editorial cover shots */
+.runway-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;}
+.runway-item img{width:100%;height:460px;object-fit:cover;object-position:top;display:block;}
+.runway-item-tall img{height:580px;}
+/* PRESS */
+.press-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.press-item{}
+.press-item img{width:100%;height:280px;object-fit:cover;object-position:top;display:block;margin-bottom:.75rem;}
+.press-pub{font-size:11px;font-weight:500;color:var(--off-white);margin-bottom:3px;}
+.press-date{font-size:10px;color:var(--accent-dim);letter-spacing:.08em;}
+@media(max-width:768px){.two-col,.pair-grid,.trio-grid,.runway-grid,.press-grid{grid-template-columns:1fr;}.cs-hero-bg{opacity:0.2;}}
+/* PREV / NEXT BAND */
+.pn-band{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--faint);}
+.pn-cell{padding:4rem 3rem;text-decoration:none;display:block;transition:background .3s;}
+.pn-cell:hover{background:var(--bg2);}
+.pn-prev{border-right:1px solid var(--faint);}
+.pn-next{text-align:right;}
+.pn-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.pn-name{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;color:var(--off-white);line-height:1;transition:color .2s;}
+.pn-cell:hover .pn-name{color:var(--accent);}
+.pn-client{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;}
+@media(max-width:768px){.pn-band{grid-template-columns:1fr;}.pn-prev{border-right:none;border-bottom:1px solid var(--faint);}.pn-next{text-align:left;}}
+/* BAG & LOOK SECTIONS */
+.media{background:var(--bg2);border:1px solid var(--faint);aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.media.contain{padding:1.25rem;}
+.media.contain img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+.media.cover img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.media.tall{aspect-ratio:20/9;}
+.bag-head{display:flex;align-items:baseline;gap:1.25rem;margin-bottom:.4rem;}
+.bag-idx{font-family:var(--serif);font-size:2.4rem;font-weight:300;color:rgba(204,255,0,0.25);line-height:1;}
+.bag-name{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;color:var(--off-white);line-height:1;}
+.bag-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dim);margin-bottom:1rem;}
+.bag-body{font-size:13px;color:var(--muted);line-height:1.9;max-width:660px;margin-bottom:2.5rem;}
+.lineup-full{margin-bottom:2rem;background:var(--bg2);border:1px solid var(--faint);padding:1.5rem;}
+.lineup-full img{width:100%;object-fit:contain;display:block;}
+.look{margin-bottom:4rem;}.look:last-child{margin-bottom:0;}
+.look-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:.3rem;}
+.look-num{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-dim);}
+.look-name{font-family:var(--serif);font-size:clamp(1.6rem,2.6vw,2.2rem);font-weight:300;color:var(--off-white);line-height:1;}
+.look-body{font-size:13px;color:var(--muted);line-height:1.9;max-width:660px;margin:1rem 0 1.25rem;font-style:italic;}
+.look-meta{display:flex;gap:2.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.look-meta-item{max-width:340px;border-top:1px solid var(--faint);padding-top:.7rem;}
+.look-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.look-meta-val{font-size:12px;color:var(--off-white);line-height:1.6;}
+@media(max-width:768px){.media.tall{aspect-ratio:16/9;}}
 </style>
 </head>
 <body>
 <nav id="nav">
   <a href="index.html" class="nav-logo">PMPNY Design Studio</a>
-  <ul class="nav-links">
-    <li><a href="studio.html">Studio</a></li>
-    <li><a href="work.html">Work</a></li>
-    <li><a href="https://pimpinicchio.com" target="_blank">Shop</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="ai.html">AI</a></li>
-  </ul>
+  <ul class="nav-links"><li><a href="studio.html">Studio</a></li><li><a href="work.html" class="active">Work</a></li><li><a href="press.html">Press</a></li><li><a href="https://pimpinicchio.com" target="_blank">Shop</a></li><li><a href="contact.html">Contact</a></li><li><a href="ai.html">AI</a></li></ul>
   <a href="contact.html" class="nav-cta">Hire Me</a>
-  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
 </nav>
-<div class="nav-mobile" id="navMobile">
-  <a href="studio.html">Studio</a>
-  <a href="work.html">Work</a>
-  <a href="https://pimpinicchio.com" target="_blank">Shop</a>
-  <a href="contact.html">Contact</a>
-  <a href="ai.html" class="ai-link">AI Intelligence →</a>
-</div>
-<section class="hero">
-  <div class="hero-bg">
-    <div class="hero-grid"></div>
-    <div class="hero-line"></div>
-    <div class="hero-arch"></div>
-    <div class="vis-noise"></div>
-  </div>
-  <p class="hero-kicker">Long Island City, New York — Est. 2022</p>
-  <h1 class="hero-h1">We engineer<br><em>the unseen</em><br>foundations.</h1>
-  <div class="hero-sub-row">
-    <p class="hero-sub">PMPNY Design Studio builds the hidden architecture behind luxury accessories — from structural concept to global production. Led by Francesco Pimpinicchio.</p>
-    <a href="work.html" class="hero-cta">View selected work →</a>
-  </div>
-  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
-</section>
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>Engineering</span><span class="accent">✦</span><span>Prototyping</span><span class="accent">✦</span><span>Production</span><span class="accent">✦</span><span>Hardware Design</span><span class="accent">✦</span><span>Material Sourcing</span><span class="accent">✦</span><span>CAD Rendering</span><span class="accent">✦</span><span>Tech Packs</span><span class="accent">✦</span><span>Italian Manufacturing</span><span class="accent">✦</span>
-    <span>Engineering</span><span class="accent">✦</span><span>Prototyping</span><span class="accent">✦</span><span>Production</span><span class="accent">✦</span><span>Hardware Design</span><span class="accent">✦</span><span>Material Sourcing</span><span class="accent">✦</span><span>CAD Rendering</span><span class="accent">✦</span><span>Tech Packs</span><span class="accent">✦</span><span>Italian Manufacturing</span><span class="accent">✦</span>
-  </div>
-</div>
-<section class="services reveal">
-  <div class="section-label">Studio Services</div>
-  <div class="services-grid">
-    <div class="service reveal reveal-delay-1">
-      <span class="service-num">01 / Engineering</span>
-      <h3 class="service-title">Concept to Structure</h3>
-      <p class="service-body">Creative direction and industrial design translation — transforming vision into precise, manufacturable reality.</p>
-      <ul class="service-list"><li>Creative direction</li><li>Technical sketching</li><li>CAD rendering</li><li>Hardware design</li><li>Comprehensive tech packs</li></ul>
-      <span class="service-big">01</span>
-    </div>
-    <div class="service reveal reveal-delay-2">
-      <span class="service-num">02 / Prototyping</span>
-      <h3 class="service-title">Material & Form</h3>
-      <p class="service-body">Pattern making, global material sourcing (luxury leather & sustainable alternatives), and physical sampling.</p>
-      <ul class="service-list"><li>Pattern making</li><li>Luxury leather sourcing</li><li>Sustainable material alternatives</li><li>Physical sampling</li><li>Structural testing</li></ul>
-      <span class="service-big">02</span>
-    </div>
-    <div class="service reveal reveal-delay-3">
-      <span class="service-num">03 / Production</span>
-      <h3 class="service-title">Scale & Delivery</h3>
-      <p class="service-body">End-to-end manufacturing management across Italy and global partners — small batch to high volume.</p>
-      <ul class="service-list"><li>Small batch manufacturing</li><li>High-volume production</li><li>Italian factory management</li><li>Global sourcing network</li><li>Strict quality control</li></ul>
-      <span class="service-big">03</span>
-    </div>
-  </div>
-</section>
-<!-- VOLT CASE -->
-<div class="case reveal">
-  <div class="case-visual">
-    <img src="/images/volt-hero.png" style="width:100%;height:100%;object-fit:cover;object-position:center;">
-    <div style="position:absolute;bottom:1.5rem;right:1.5rem;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(237,233,224,0.7);text-shadow:0 1px 4px rgba(0,0,0,0.8);">VOLT Collection — NYFW 2025</div>
-  </div>
-  <div class="case-info">
-    <div class="case-num">Case Study 001</div>
-    <div class="case-client">Pimpinicchio New York</div>
-    <h3 class="case-title">The Aperture</h3>
-    <p class="case-body">The signature has never been a print — it is a reveal. A precise cut through exterior armor to expose the Voltage underneath. Shown at NYFW Runway 7, September 2025. Featured in Harper's Bazaar, Cosmopolitan, Glamour, L'Officiel.</p>
-    <div class="case-tags"><span class="tag">Creative Direction</span><span class="tag">NYFW</span><span class="tag">Hardware Engineering</span><span class="tag">Bio-Based Vegan Leather</span></div>
-    <a href="work-pimpinicchio.html" class="case-link">View Case Study →</a>
-  </div>
-</div>
-<!-- CROMIA CASE -->
-<div class="case reverse reveal">
-  <div class="case-visual">
-    <img src="/images/cromia-hero.png" style="width:100%;height:100%;object-fit:cover;object-position:center;">
-    <div style="position:absolute;bottom:1.5rem;right:1.5rem;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(204,255,0,0.4);">Cromia — Geometry & Scale</div>
-  </div>
-  <div class="case-info">
-    <div class="case-num">Case Study 003</div>
-    <div class="case-client">LA.I.PE SPA — Cromia, Italy</div>
-    <h3 class="case-title">Geometry & Scale</h3>
-    <p class="case-body">Translating bold architectural silhouettes into scalable commercial production. Engineered 17–25 seasonal handbag collections annually for Italian luxury powerhouse Cromia. 2 years, 3 continents.</p>
-    <div class="case-tags"><span class="tag">Pattern Making</span><span class="tag">Italian Manufacturing</span><span class="tag">Global Production</span></div>
-    <a href="work-cromia.html" class="case-link">View Case Study →</a>
-  </div>
-</div>
-<!-- L'OLIVA DETAIL -->
-<div class="case reveal">
-  <div class="case-visual">
-    <img src="/images/Olive_bag_charm.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;">
-    <div style="position:absolute;bottom:1.5rem;right:1.5rem;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(204,255,0,0.5);">L'Oliva — Quotidiano</div>
-  </div>
-  <div class="case-info">
-    <div class="case-num">The Everyday — Quotidiano</div>
-    <div class="case-client">Pimpinicchio New York</div>
-    <h3 class="case-title">L'Oliva</h3>
-    <p class="case-body">A memory cast in metal — brass-gold olive leaves engraved with the Pimpinicchio mark, a black olive tipped with a single drop of volt-yellow. A piece of where I come from, now something you can carry. Part of Quotidiano, the everyday line rooted in the hills above Spoleto.</p>
-    <div class="case-tags"><span class="tag">Hardware Design</span><span class="tag">Vegan</span><span class="tag">Umbria</span></div>
-    <a href="work-quotidiano.html" class="case-link">View Case Study →</a>
-  </div>
-</div>
-<!-- AI INTELLIGENCE SECTION — no pricing -->
-<div class="ai reveal">
-  <div>
-    <div class="intel-badge"><div class="intel-dot"></div>Live</div>
-    <h2 class="intel-h2">PMPNY<br>Intelligence.</h2>
-    <p class="intel-body">AI-powered fashion trend intelligence for designers who can't afford WGSN. Runway, street style, resale signals — surfaced conversationally, curated weekly from the studio.</p>
-    <a href="ai.html" class="intel-link">Your AI creative director. Start now →</a>
-  </div>
-  <div class="intel-visual reveal reveal-delay-2">
-    <div class="intel-grid-vis"></div>
-    <div class="intel-data">
-      <div class="ibar-row"><div class="ibar-label"><span id="iName0">Structural Volume</span><span id="iPct0">↑ 84%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill0" style="width:84%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span id="iName1">Hardware Detailing</span><span id="iPct1">↑ 71%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill1" style="width:71%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span id="iName2">Warm Neutral Tones</span><span id="iPct2">↑ 63%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill2" style="width:63%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span id="iName3">Bio Material Adoption</span><span id="iPct3">↑ 58%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill3" style="width:58%"></div></div></div>
-      <div class="ibar-row"><div class="ibar-label"><span id="iName4">Chain Hardware</span><span id="iPct4">↑ 47%</span></div><div class="ibar-track"><div class="ibar-fill" id="iFill4" style="width:47%"></div></div></div>
-      <div id="iSeasonLabel" style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(204,255,0,0.06);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(204,255,0,0.2);">Current signals — SS26</div>
-    </div>
-  </div>
-</div>
-<!-- CONTACT -->
-<div class="contact-section reveal">
-  <div>
-    <div class="section-label">Contact</div>
-    <h2 class="contact-h2">Let's<br><em>work</em><br>together.</h2>
-    <p style="font-size:12px;color:var(--muted);line-height:1.9;margin-top:1.5rem;">Whether you're launching a capsule, scaling a collection, or building out your design team — the conversation starts here.</p>
-  </div>
-  <div class="reveal reveal-delay-2">
-    <div class="contact-line"><span class="contact-label">Email</span><a href="mailto:info@pmpny.com" class="contact-val">info@pmpny.com</a></div>
-    <div class="contact-line"><span class="contact-label">Direct</span><a href="mailto:francesco@pmpny.com" class="contact-val">francesco@pmpny.com</a></div>
-    <div class="contact-line"><span class="contact-label">Phone</span><a href="tel:+19176865563" class="contact-val">+1 917 686 5563</a></div>
-    <div class="contact-line"><span class="contact-label">Studio</span><span class="contact-val">51-02 21st St Suite 4A, LIC NY</span></div>
-    <div class="contact-line"><span class="contact-label">Stockist</span><span class="contact-val">Wolf & Badger — New York</span></div>
-    <a href="mailto:info@pmpny.com" class="contact-btn">Start a Project →</a>
-  </div>
-</div>
-<footer>
-  <div class="footer-logo">PMPNY Design Studio<div class="footer-location" style="font-size:9px;margin-top:4px;color:rgba(107,104,96,0.6);">Long Island City, New York</div></div>
-  <div class="footer-links">
-    <a href="studio.html">Studio</a>
-    <a href="work.html">Work</a>
-    <a href="https://pimpinicchio.com">Shop</a>
-    <a href="ai.html">AI</a>
-    <a href="contact.html">Contact</a>
-  </div>
-  <div class="footer-right">© 2026 PMPNY Design Studio<br><span style="font-size:9px;">Francesco Pimpinicchio</span></div>
-</footer>
-<script>
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
 
-// Load live signals from Supabase brief
-async function loadHomepageSignals() {
-    try {
-        const res = await fetch('https://lgnzudnxnehkdzsqijyf.supabase.co/rest/v1/weekly_brief?is_active=eq.true&order=published_at.desc&limit=1', {
-            headers: {
-                'apikey': 'sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-',
-                'Authorization': 'Bearer sb_publishable_FJXaNdvilSg5OxFRSh3WGA_H2WG6a_-'
-            }
-        });
-        const data = await res.json();
-        if (!data?.[0]?.signals?.length) return;
-        const brief = data[0];
-        brief.signals.slice(0, 5).forEach((s, i) => {
-            const name = document.getElementById('iName' + i);
-            const pct = document.getElementById('iPct' + i);
-            const fill = document.getElementById('iFill' + i);
-            if (name) name.textContent = s.name;
-            if (pct) pct.textContent = '↑ ' + s.pct + '%';
-            if (fill) fill.style.width = s.pct + '%';
-        });
-        const label = document.getElementById('iSeasonLabel');
-        if (label && brief.season) label.textContent = 'Current signals — ' + brief.season;
-    } catch(e) {}
-}
-window.addEventListener('load', loadHomepageSignals);
-document.querySelectorAll('.reveal').forEach(el => new IntersectionObserver((entries) => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.1}).observe(el));
+<div class="cs-hero">
+  <img class="cs-hero-bg" src="/images/volt-hero.png" alt="VOLT Collection NYFW"/>
+  <div class="cs-grid-bg"></div>
+  <div style="position:relative;z-index:2;max-width:720px;">
+    <a href="work.html" style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(237,233,224,0.6);text-decoration:none;display:inline-block;margin-bottom:2.5rem;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='rgba(237,233,224,0.6)'">← Back to Work</a>
+    <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Case Study 001 — Pimpinicchio New York</div>
+    <h1 style="font-family:var(--serif);font-weight:300;font-size:clamp(3rem,6vw,5.5rem);line-height:.95;color:var(--off-white);margin-bottom:2rem;">The VOLT<br><em style="color:rgba(237,233,224,0.55)">Collection.</em></h1>
+    <div class="cs-meta">
+      <div class="cs-meta-item"><div class="cs-meta-label">Shown At</div><div class="cs-meta-val">NYFW Runway 7</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Date</div><div class="cs-meta-val">September 2025</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Role</div><div class="cs-meta-val">Founder & Creative Director</div></div>
+      <div class="cs-meta-item"><div class="cs-meta-label">Press Features</div><div class="cs-meta-val">28 International</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="marquee-wrap"><div class="marquee-track"><span>Boldly Edgy</span><span class="accent">✦</span><span>Unapologetically Sexy</span><span class="accent">✦</span><span>Bio-Based Vegan Leather</span><span class="accent">✦</span><span>NYFW Runway 7</span><span class="accent">✦</span><span>Dark '90s × Cyber</span><span class="accent">✦</span><span>VOLT Monogram Print</span><span class="accent">✦</span><span>End-to-End Brand Architecture</span><span class="accent">✦</span><span>Boldly Edgy</span><span class="accent">✦</span><span>Unapologetically Sexy</span><span class="accent">✦</span><span>Bio-Based Vegan Leather</span><span class="accent">✦</span><span>NYFW Runway 7</span><span class="accent">✦</span><span>Dark '90s × Cyber</span><span class="accent">✦</span><span>VOLT Monogram Print</span><span class="accent">✦</span><span>End-to-End Brand Architecture</span><span class="accent">✦</span></div></div>
+
+<!-- COLLECTION INSPIRATION -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="two-col reveal">
+    <div>
+      <div class="section-label">The Concept</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;line-height:1.15;color:var(--off-white);margin-bottom:1.5rem;">Dark '90s, wired for now.</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.25rem;">The VOLT Collection is built on a dark-'90s foundation with a cyber charge — geometric, asymmetric tailoring in spliced, architectural cuts and hard lines. Every silhouette, from the garments to the bags, is engineered around the same language of tension and asymmetry.</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.9;">The signature <strong style="color:var(--off-white);font-weight:500;">VOLT print</strong> is a pattern generated from the house logo itself — the connecting line that links the first <em>M</em> in Pimpinicchio to the <em>N</em> of New York, repeated into a monogram. The bags are named for the New York architecture that shaped them: <strong style="color:var(--off-white);font-weight:500;">30H, Trinity, Dey</strong>.</p>
+    </div>
+    <div>
+      <div class="section-label">By the Numbers</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--faint);">
+        <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">6</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Runway Looks</div></div>
+        <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">10+</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Bag Designs</div></div>
+        <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--off-white);">28</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Press Features</div></div>
+        <div style="background:var(--bg2);padding:1.5rem;"><div style="font-family:var(--serif);font-size:1rem;font-weight:300;color:var(--off-white);margin-top:4px;">Runway 7, NYC</div><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Venue</div></div>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem;">
+        <span class="tag">Dark '90s × Cyber</span><span class="tag">Asymmetric Tailoring</span><span class="tag">VOLT Monogram</span><span class="tag">Bio-Based Vegan Leather</span><span class="tag">LGBTQ+ Owned</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNATURE BAGS -->
+<section style="padding:5rem 3rem 2rem;">
+  <div class="section-label reveal">The Bags — Named for New York</div>
+  <p style="font-size:12px;color:var(--muted);max-width:560px;margin-bottom:1rem;line-height:1.85;">Three signature silhouettes, each drawn from a piece of the city's architecture and engineered from sketch to production.</p>
+</section>
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="bag-head reveal"><span class="bag-idx">30H</span><span class="bag-name">30H Chain Bag</span></div>
+  <div class="bag-sub reveal">Inspired by The Edge — 30 Hudson Yards, NY</div>
+  <p class="bag-body reveal">Named for 30 Hudson Yards, home to The Edge — the angled, frameless-glass deck that juts asymmetrically into the sky, suspended over the city. That geometry became the bag: sharp asymmetric planes, matelassé sides, oversized brass rings, and a chain, in bio-based vegan leather.</p>
+  <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-30h-sketch.png" alt="30H Chain Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media contain"><img src="/images/volt-30h-cad.png" alt="30H Chain Bag 02 — Logo-piercing pendant · technical CAD"/></div><div class="img-caption">02 — Logo-piercing pendant · technical CAD</div></div><div><div class="media cover"><img src="/images/volt-30h-editorial.png" alt="30H Chain Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
+</section>
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="bag-head reveal"><span class="bag-idx">Trinity</span><span class="bag-name">Trinity Hobo Bag</span></div>
+  <div class="bag-sub reveal">Named for Trinity Street, NY</div>
+  <p class="bag-body reveal">An asymmetric, sculptural hobo — a curved form molded to the body, its soft tension held by structured edges. Named for Trinity Street, it is engineered to fold, drape, and carry weight without ever losing its silhouette.</p>
+  <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-trinity-sketch.png" alt="Trinity Hobo Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media cover"><img src="/images/volt-trinity-runway.png" alt="Trinity Hobo Bag 02 — Runway"/></div><div class="img-caption">02 — Runway</div></div><div><div class="media cover"><img src="/images/volt-trinity-editorial.png" alt="Trinity Hobo Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
+</section>
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="bag-head reveal"><span class="bag-idx">Dey</span><span class="bag-name">Dey Bag</span></div>
+  <div class="bag-sub reveal">Named for Dey Street, NY</div>
+  <p class="bag-body reveal">An asymmetric bag anchored by a macro metal plate — hardware treated as architecture. Named for Dey Street, it pushes the collection's geometric language into one oversized, structural statement.</p>
+  <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-dey-sketch.png" alt="Dey Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media cover"><img src="/images/volt-dey-runway.png" alt="Dey Bag 02 — Runway"/></div><div class="img-caption">02 — Runway</div></div><div><div class="media cover"><img src="/images/volt-dey-editorial.png" alt="Dey Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
+</section>
+<!-- THE LINE-UP -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">The Collection Line-Up</div>
+  <p style="font-size:12px;color:var(--muted);max-width:560px;margin-bottom:2.5rem;line-height:1.85;">The full VOLT collection developed as a single geometric world, presented at NYFW Runway 7.</p>
+  <div class="lineup-full reveal"><img src="/images/volt-lineup-sketches.png" alt="VOLT Collection line-up — six looks"/></div>
+  <div class="img-caption reveal" style="margin-bottom:2.5rem;">The six-look line-up</div>
+  <div class="media cover tall reveal"><img src="/images/volt-runway-group.png" alt="Francesco Pimpinicchio with models — NYFW Runway 7"/></div>
+  <div class="img-caption reveal">Runway 7 — with the models</div>
+</section>
+<!-- THE LOOKS -->
+<section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
+  <div class="section-label reveal">The Looks — NYFW Runway 7</div>
+  <p style="font-size:12px;color:var(--muted);max-width:560px;margin-bottom:3rem;line-height:1.85;">Selected looks from the collection, styled and shown on the runway.</p>
+<div class="look reveal">
+  <div class="look-head"><span class="look-num">Look 3</span><span class="look-name">Split Authority</span></div>
+  <p class="look-body">An asymmetric blazer-mini spliced in pinstripe and monogram, cut to sculpt and stride. Mini length, maximum command.</p>
+  <div class="look-meta">
+    <div class="look-meta-item"><div class="look-meta-label">Pieces in the set</div><div class="look-meta-val">Split Authority Blazer Mini.</div></div>
+    <div class="look-meta-item"><div class="look-meta-label">Runway bags</div><div class="look-meta-val">30H Bag (VOLT) in bio-based vegan leather; black asymmetrical tote.</div></div>
+  </div>
+  <div class="trio-grid"><div><div class="media contain"><img src="/images/volt-look3-sketch.png" alt="Split Authority Sketch"/></div><div class="img-caption">Sketch</div></div><div><div class="media cover"><img src="/images/volt-look3-model.png" alt="Split Authority On the model"/></div><div class="img-caption">On the model</div></div><div><div class="media cover"><img src="/images/volt-look3-runway.png" alt="Split Authority Runway"/></div><div class="img-caption">Runway</div></div></div>
+</div><div class="look reveal">
+  <div class="look-head"><span class="look-num">Look 2</span><span class="look-name">Volt Pinstripe</span></div>
+  <p class="look-body">Tailored precision with a deconstructed twist. A sleeveless monogram vest wraps and ties over architectural pinstripe trousers with an angled overlay.</p>
+  <div class="look-meta">
+    <div class="look-meta-item"><div class="look-meta-label">Pieces in the set</div><div class="look-meta-val">Deconstructed Monogram Vest; Pinstripe Wrap-Front Trouser.</div></div>
+    <div class="look-meta-item"><div class="look-meta-label">Runway bags</div><div class="look-meta-val">Mini asymmetrical duffle in VOLT and black (bio-based vegan leather); Round 804E duffle in black.</div></div>
+  </div>
+  <div class="trio-grid"><div><div class="media contain"><img src="/images/volt-look2-sketch.png" alt="Volt Pinstripe Sketch"/></div><div class="img-caption">Sketch</div></div><div><div class="media cover"><img src="/images/volt-look2-model.png" alt="Volt Pinstripe On the model"/></div><div class="img-caption">On the model</div></div><div><div class="media cover"><img src="/images/volt-look2-editorial.png" alt="Volt Pinstripe Editorial"/></div><div class="img-caption">Editorial</div></div></div>
+</div><div class="look reveal">
+  <div class="look-head"><span class="look-num">Look 5</span><span class="look-name">Volt Trench & Bias Monogram Dress</span></div>
+  <p class="look-body">Fluid drama under a high-gloss shell. A bias-cut monogram dress with a vegan-leather waist detail slips beneath a neon trench with denim tabs.</p>
+  <div class="look-meta">
+    <div class="look-meta-item"><div class="look-meta-label">Pieces in the set</div><div class="look-meta-val">High-Gloss Volt Trench; Asymmetric Bias-Cut Monogram Dress.</div></div>
+    <div class="look-meta-item"><div class="look-meta-label">Runway bags</div><div class="look-meta-val">Burgundy clutch in bio-based vegan leather.</div></div>
+  </div>
+  <div class="trio-grid"><div><div class="media contain"><img src="/images/volt-look5-sketch.png" alt="Volt Trench & Bias Monogram Dress Sketch"/></div><div class="img-caption">Sketch</div></div><div><div class="media cover"><img src="/images/volt-look5-model.png" alt="Volt Trench & Bias Monogram Dress On the model"/></div><div class="img-caption">On the model</div></div><div><div class="media cover"><img src="/images/volt-look5-editorial.png" alt="Volt Trench & Bias Monogram Dress Editorial"/></div><div class="img-caption">Editorial</div></div></div>
+</div>
+</section>
+
+<!-- PRESS STRIP -->
+<section style="padding:5rem 3rem;">
+  <div class="section-label reveal">Press &amp; Recognition</div>
+  <div style="border:1px solid var(--faint);background:var(--bg2);padding:2.5rem;" class="reveal">
+    <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;text-align:center;">Pimpinicchio New York — featured in</div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.4rem 1.75rem;">
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">Harper's Bazaar</span>
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">Elle</span>
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">Cosmopolitan</span>
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">Grazia</span>
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">Glamour</span>
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">L'Officiel</span>
+      <span style="font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);color:var(--off-white);">LadyGunn</span>
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="press.html" class="btn-link">See all 28 press features →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PREV / NEXT BAND -->
+<div class="pn-band">
+  <a href="work-fendi.html" class="pn-cell pn-prev">
+    <div class="pn-label">← Previous Project</div>
+    <div class="pn-name">Fendi × Apple</div>
+    <div class="pn-client">Case Study 006 — Concept Study</div>
+  </a>
+  <a href="work-betsey.html" class="pn-cell pn-next">
+    <div class="pn-label">Next Project →</div>
+    <div class="pn-name">Betsey Johnson</div>
+    <div class="pn-client">Case Study 002 — Capsule Collection</div>
+  </a>
+</div>
+
+<footer><div class="footer-logo">PMPNY Design Studio</div><div class="footer-links"><a href="index.html">Home</a><a href="work.html">Work</a><a href="studio.html">Studio</a><a href="press.html">Press</a><a href="ai.html">AI</a><a href="contact.html">Contact</a></div><div class="footer-right">© 2026 Francesco Pimpinicchio</div></footer>
+<script>const nav=document.getElementById('nav');window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));document.querySelectorAll('.reveal').forEach(el=>new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1}).observe(el));</script>
+<script>
 function toggleMobileNav() {
-    var btn = document.getElementById('navHamburger');
-    var nav = document.getElementById('navMobile');
-    if (btn) btn.classList.toggle('open');
-    if (nav) nav.classList.toggle('open');
+    document.getElementById('navHamburger').classList.toggle('open');
+    document.getElementById('navMobile').classList.toggle('open');
 }
-document.addEventListener('click', function(e) {
-    var nav = document.getElementById('navMobile');
-    var btn = document.getElementById('navHamburger');
-    if (nav && nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
-        nav.classList.remove('open');
-        btn.classList.remove('open');
-    }
-});
 </script>
 </body>
 </html>
