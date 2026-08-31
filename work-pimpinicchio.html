@@ -44,11 +44,11 @@
 .pn-client{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;}
 @media(max-width:768px){.pn-band{grid-template-columns:1fr;}.pn-prev{border-right:none;border-bottom:1px solid var(--faint);}.pn-next{text-align:left;}}
 /* BAG & LOOK SECTIONS */
-.media{background:var(--bg2);border:1px solid var(--faint);height:400px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.media{background:var(--bg2);border:1px solid var(--faint);aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .media.contain{padding:1.25rem;}
 .media.contain img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
 .media.cover img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
-.media.tall{height:480px;}
+.media.tall{aspect-ratio:20/9;}
 .bag-head{display:flex;align-items:baseline;gap:1.25rem;margin-bottom:.4rem;}
 .bag-idx{font-family:var(--serif);font-size:2.4rem;font-weight:300;color:rgba(204,255,0,0.25);line-height:1;}
 .bag-name{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;color:var(--off-white);line-height:1;}
@@ -65,7 +65,7 @@
 .look-meta-item{max-width:340px;border-top:1px solid var(--faint);padding-top:.7rem;}
 .look-meta-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
 .look-meta-val{font-size:12px;color:var(--off-white);line-height:1.6;}
-@media(max-width:768px){.media{height:300px;}.media.tall{height:340px;}}
+@media(max-width:768px){.media.tall{aspect-ratio:16/9;}}
 </style>
 </head>
 <body>
@@ -125,7 +125,7 @@
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
   <div class="bag-head reveal"><span class="bag-idx">30H</span><span class="bag-name">30H Chain Bag</span></div>
   <div class="bag-sub reveal">Inspired by The Edge — 30 Hudson Yards, NY</div>
-  <p class="bag-body reveal">Named for 30 Hudson Yards, home to The Edge — the angled, frameless-glass deck that juts asymmetrically into the sky, suspended over the city. That geometry became the bag: sharp asymmetric planes, matelassé sides, oversized brass rings, and a detachable chain and strap, in bio-based vegan leather.</p>
+  <p class="bag-body reveal">Named for 30 Hudson Yards, home to The Edge — the angled, frameless-glass deck that juts asymmetrically into the sky, suspended over the city. That geometry became the bag: sharp asymmetric planes, matelassé sides, oversized brass rings, and a chain, in bio-based vegan leather.</p>
   <div class="trio-grid reveal"><div><div class="media contain"><img src="/images/volt-30h-sketch.png" alt="30H Chain Bag 01 — Sketch"/></div><div class="img-caption">01 — Sketch</div></div><div><div class="media contain"><img src="/images/volt-30h-cad.png" alt="30H Chain Bag 02 — Logo-piercing pendant · technical CAD"/></div><div class="img-caption">02 — Logo-piercing pendant · technical CAD</div></div><div><div class="media cover"><img src="/images/volt-30h-editorial.png" alt="30H Chain Bag 03 — Editorial"/></div><div class="img-caption">03 — Editorial</div></div></div>
 </section>
 <section style="padding:5rem 3rem;border-bottom:1px solid var(--faint);">
